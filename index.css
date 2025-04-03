@@ -22,14 +22,14 @@ main { padding: 20px; }
 .balance { text-align: center; }
 .button-section { display: flex; justify-content: space-between; margin-bottom: 20px; }
 .left-buttons, .right-buttons { display: flex; gap: 10px; }
-.transfer button, .settings-modal button, .auth-form button, #close-devices-modal { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+.transfer button, .settings-modal button, .auth-form button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
 .transaction-history ul { list-style: none; padding: 0; }
 footer { display: flex; justify-content: space-between; padding: 20px; background-color: #f4f4f4; position: fixed; bottom: 0; width: 100%; }
 .footer-left, .footer-right { display: flex; flex-direction: column; }
 
 /* Modal and Form Styles */
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; }
-.modal-content { background: white; padding: 20px; border-radius: 5px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; }
+.modal-content { background: white; padding: 20px; border-radius: 5px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
 .tabs { display: flex; margin-bottom: 20px; }
 .tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; background: #ddd; border: none; }
 .tab.active { background: #bbb; }
@@ -54,8 +54,20 @@ footer { display: flex; justify-content: space-between; padding: 20px; backgroun
 .toggle-btn:not(.active) { background-color: gray; color: white; }
 
 /* Manage Devices */
-.device-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
-.device-item p { margin: 5px 0; }
+.devices-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
+.device-modal { background: #f9f9f9; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); position: relative; }
+.device-modal h3 { margin: 0 0 10px; }
+.device-info p { margin: 5px 0; }
+.slider-group { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+.slider-btn { padding: 5px 10px; border: none; cursor: pointer; }
+.slider-btn.on.active { background-color: green; color: white; }
+.slider-btn.off.active { background-color: red; color: white; }
+.slider-btn:not(.active) { background-color: gray; color: white; }
+.device-stats p { margin: 5px 0; }
+#disconnect-device { position: absolute; top: 10px; right: 10px; padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer; }
+#add-device-btn { position: fixed; bottom: 60px; right: 20px; width: 40px; height: 40px; font-size: 24px; background-color: #007bff; color: white; border: none; border-radius: 50%; cursor: pointer; }
+#add-device-modal .modal-content button, #confirm-disconnect-modal .modal-content button { display: block; margin: 10px 0; }
+#manual-device-modal .modal-content { max-width: 400px; }
 
 /* Responsive Design */
 @media (max-width: 600px) {
@@ -75,6 +87,7 @@ footer { display: flex; justify-content: space-between; padding: 20px; backgroun
     #not-logged-in h2 { font-size: 20px; }
     #not-logged-in p { font-size: 14px; }
     .settings-container { grid-template-columns: 1fr; }
+    .devices-container { grid-template-columns: 1fr; }
     .modal-content { width: 95%; }
 }
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -82,4 +95,8 @@ footer { display: flex; justify-content: space-between; padding: 20px; backgroun
     .balances { font-size: 14px; }
     .button-section button { font-size: 14px; }
     .settings-container { grid-template-columns: 1fr 1fr; }
+    .devices-container { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+}
+@media (min-width: 1025px) {
+    .devices-container { grid-template-columns: repeat(5, 1fr); }
 }
