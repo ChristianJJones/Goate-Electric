@@ -49,7 +49,19 @@ return deviceManagerInformation {
                           "IMEI";
                         "ipAddress";
 "batteryStatus";                     "Wi-fi";        
-batteryLevel";     }
+"batteryLevel";                    
+
+
+return TheLambduckModem {
+ "modelName";
+"batteryStatus";    
+"batteryLevel";
+"Wi-fi"; 
+"BlueToothTethering";
+"ipAddress";
+ 
+
+}
 
 
 
