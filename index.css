@@ -72,4 +72,14 @@ footer { display: flex; justify-content: space-between; padding: 20px; backgroun
     .left-buttons, .right-buttons { flex-direction: column; align-items: center; margin-bottom: 20px; }
     footer { flex-direction: column; align-items: center; }
     .footer-left, .footer-right { text-align: center; margin-bottom: 10px; }
-    #not-logged-in h2 { font-size:
+    #not-logged-in h2 { font-size: 20px; }
+    #not-logged-in p { font-size: 14px; }
+    .settings-container { grid-template-columns: 1fr; }
+    .modal-content { width: 95%; }
+}
+@media (min-width: 601px) and (max-width: 1024px) {
+    .navigation li { margin: 0 10px; }
+    .balances { font-size: 14px; }
+    .button-section button { font-size: 14px; }
+    .settings-container { grid-template-columns: 1fr 1fr; }
+}
