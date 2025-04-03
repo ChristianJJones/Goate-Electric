@@ -228,4 +228,241 @@ function updateSettingsPage() {
     document.getElementById('kyc-name').textContent = `${user.firstName} ${user.lastName}`;
     document.getElementById('kyc-dob').textContent = user.dob;
     document.getElementById('kyc-address').textContent = `${user.address}, ${user.city}, ${user.state} ${user.zip}`;
-    const ssnSpan = document.getElementById('kyc-ss
+    const ssnSpan = document.getElementById('kyc-ssn');
+    const toggleSsn = document.getElementById('toggle-ssn');
+    ssnSpan.textContent = '****';
+    toggleSsn.textContent = 'Show';
+    toggleSsn.onclick = () => {
+        ssnSpan.textContent = ssnSpan.textContent === '****' ? user.ssn : '****';
+        toggleSsn.textContent = ssnSpan.textContent === '****' ? 'Show' : 'Hide';
+    };
+
+    document.getElementById('account-settings-form').onsubmit = (e) => {
+        e.preventDefault();
+        const newPassword = document.getElementById('change-password').value;
+        const newAddress = document.getElementById('change-address').value;
+        const newUsername = document.getElementById('change-username').value;
+        const newEmailPhone = document.getElementById('change-email-phone').value;
+        const addEmailPhone = document.getElementById('add-email-phone').value;
+
+        if (newPassword) user.password = newPassword;
+        if (newAddress) {
+            user.address = newAddress;
+            user.state = 'State'; // Mock Google Maps
+            user.city = 'City';
+            user.zip = '12345';
+        }
+        if (newUsername && /^[a-zA-Z0-9]{3,}$/.test(newUsername) && !users.some(u => u.username === newUsername && u.username !== username)) {
+            user.username = newUsername;
+            username = newUsername;
+        }
+        if (newEmailPhone) user.emailPhone = newEmailPhone;
+        if (addEmailPhone) user.emailPhone = addEmailPhone;
+        localStorage.setItem('users', JSON.stringify(users));
+        updateUserSection();
+        updateSettingsPage();
+        alert('Account updated');
+    };
+
+    document.getElementById('connect-plaid').onclick = () => {
+        alert('Plaid integration placeholder.');
+    };
+    document.getElementById('manual-debit-form').onsubmit = (e) => {
+        e.preventDefault();
+        const number = document.getElementById('debit-number').value;
+        const expiry = document.getElementById('debit-expiry').value;
+        const cvc = document.getElementById('debit-cvc').value;
+        if (/^\d{16}$/.test(number) && /^\d{2}\/\d{2}$/.test(expiry) && /^\d{3}$/.test(cvc)) {
+            user.debitCard = { number, expiry, cvc };
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Debit card added');
+        } else {
+            alert('Invalid debit card details');
+        }
+    };
+
+    const orderCardBtn = document.getElementById('order-card');
+    const cardInfo = document.getElementById('card-info');
+    if (!cardOrdered) {
+        orderCardBtn.style.display = 'block';
+        cardInfo.style.display = 'none';
+        orderCardBtn.onclick = () => {
+            cardOrdered = true;
+            cardDetails = { number: '1234567890123456', cvc: '123', expiry: '12/25' };
+            user.card = cardDetails;
+            localStorage.setItem('users', JSON.stringify(users));
+            updateCardSettings();
+        };
+    } else {
+        updateCardSettings();
+    }
+}
+
+function updateCardSettings() {
+    const orderCardBtn = document.getElementById('order-card');
+    const cardInfo = document.getElementById('card-info');
+    orderCardBtn.style.display = 'none';
+    cardInfo.style.display = 'block';
+
+    const cardNumber = document.getElementById('card-number');
+    const cardCvc = document.getElementById('card-cvc');
+    const cardExpiry = document.getElementById('card-expiry');
+    const toggleCard = document.getElementById('toggle-card');
+    cardNumber.textContent = '**** **** **** ****';
+    cardCvc.textContent = '***';
+    cardExpiry.textContent = '**/**';
+    toggleCard.textContent = 'Show';
+    toggleCard.onclick = () => {
+        if (cardNumber.textContent === '**** **** **** ****') {
+            cardNumber.textContent = cardDetails.number;
+            cardCvc.textContent = cardDetails.cvc;
+            cardExpiry.textContent = cardDetails.expiry;
+            toggleCard.textContent = 'Hide';
+        } else {
+            cardNumber.textContent = '**** **** **** ****';
+            cardCvc.textContent = '***';
+            cardExpiry.textContent = '**/**';
+            toggleCard.textContent = 'Show';
+        }
+    };
+
+    const zpeYes = document.getElementById('zpe-yes');
+    const zpeNo = document.getElementById('zpe-no');
+    const wcYes = document.getElementById('wc-yes');
+    const wcNo = document.getElementById('wc-no');
+    zpeYes.onclick = () => toggleSpending('zpe', true);
+    zpeNo.onclick = () => toggleSpending('zpe', false);
+    wcYes.onclick = () => toggleSpending('wc', true);
+    wcNo.onclick = () => toggleSpending('wc', false);
+}
+
+function toggleSpending(type, enabled) {
+    const yesBtn = document.getElementById(`${type}-yes`);
+    const noBtn = document.getElementById(`${type}-no`);
+    if (enabled) {
+        yesBtn.classList.add('active');
+        noBtn.classList.remove('active');
+    } else {
+        yesBtn.classList.remove('active');
+        noBtn.classList.add('active');
+    }
+    const user = users.find(u => u.username === username);
+    user[`${type}Spending`] = enabled;
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+// Manage Devices
+function connectDevice() {
+    isDeviceConnected = true;
+    const newDevice = {
+        id: Date.now(),
+        name: `Device-${devices.length + 1}`,
+        status: 'Connected',
+        lastUpdate: new Date().toLocaleString()
+    };
+    devices.push(newDevice);
+    const user = users.find(u => u.username === username);
+    if (user) {
+        user.devices = devices;
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+    updateUserSection();
+    startRealTimeDeviceUpdates();
+}
+
+function showManageDevicesModal() {
+    const modal = document.getElementById('devices-modal');
+    modal.style.display = 'flex';
+    updateDeviceList();
+    document.getElementById('close-devices-modal').onclick = () => {
+        modal.style.display = 'none';
+    };
+}
+
+function updateDeviceList() {
+    const deviceList = document.getElementById('device-list');
+    const user = users.find(u => u.username === username);
+    devices = user?.devices || devices;
+    deviceList.innerHTML = '';
+    devices.forEach(device => {
+        const div = document.createElement('div');
+        div.className = 'device-item';
+        div.innerHTML = `
+            <p><strong>ID:</strong> ${device.id}</p>
+            <p><strong>Name:</strong> ${device.name}</p>
+            <p><strong>Status:</strong> ${device.status}</p>
+            <p><strong>Last Update:</strong> ${device.lastUpdate}</p>
+        `;
+        deviceList.appendChild(div);
+    });
+}
+
+let deviceUpdateInterval = null;
+function startRealTimeDeviceUpdates() {
+    if (!deviceUpdateInterval) {
+        deviceUpdateInterval = setInterval(() => {
+            devices.forEach(device => {
+                device.lastUpdate = new Date().toLocaleString();
+                device.status = Math.random() > 0.1 ? 'Connected' : 'Disconnected';
+            });
+            const user = users.find(u => u.username === username);
+            if (user) {
+                user.devices = devices;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            if (document.getElementById('devices-modal').style.display === 'flex') {
+                updateDeviceList();
+            }
+        }, 5000);
+    }
+}
+
+function stopRealTimeDeviceUpdates() {
+    if (deviceUpdateInterval) {
+        clearInterval(deviceUpdateInterval);
+        deviceUpdateInterval = null;
+    }
+}
+
+// Page navigation
+const pages = document.querySelectorAll('.page');
+const navLinks = document.querySelectorAll('.nav-link');
+
+function showPage(pageId) {
+    pages.forEach(page => {
+        if (page.id === pageId) {
+            page.style.display = 'block';
+            setTimeout(() => page.classList.remove('hidden'), 10);
+            if (pageId === 'home') updateHomeSection();
+            if (pageId === 'settings') updateSettingsPage();
+            if (pageId === 'manage-devices' && isDeviceConnected) showManageDevicesModal();
+        } else {
+            page.classList.add('hidden');
+            page.addEventListener('transitionend', () => {
+                page.style.display = 'none';
+            }, { once: true });
+        }
+    });
+}
+
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.getAttribute('href').substring(1);
+        showPage(pageId);
+        window.history.pushState(null, '', `#${pageId}`);
+    });
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    const initialPageId = window.location.hash.substring(1) || 'home';
+    showPage(initialPageId);
+    updateUserSection();
+    const user = users.find(u => u.username === username);
+    if (user && user.devices && user.devices.length > 0) {
+        devices = user.devices;
+        isDeviceConnected = true;
+        startRealTimeDeviceUpdates();
+    }
+});
