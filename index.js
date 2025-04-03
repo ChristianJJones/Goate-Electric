@@ -15,6 +15,7 @@ const securityQuestions = [
     "Childhood nickname", "Favorite sport", "Favorite book",
     "Favorite vacation spot", "Dream job", "Favorite color", "Favorite animal"
 ];
+const MAX_FREE_DEVICES = 5;
 
 // Simulated transaction history
 const transactions = [
@@ -53,7 +54,7 @@ function updateUserSection() {
         userSection.innerHTML = html;
 
         if (isDeviceConnected) {
-            document.getElementById('manage-devices')?.addEventListener('click', showManageDevicesModal);
+            document.getElementById('manage-devices')?.addEventListener('click', () => showPage('manage-devices'));
             document.getElementById('connect-device')?.addEventListener('click', connectDevice);
         }
     }
@@ -112,6 +113,7 @@ document.getElementById('user-section').addEventListener('click', (event) => {
         isLoggedIn = false;
         isDeviceConnected = false;
         username = '';
+        devices = [];
         updateUserSection();
         updateHomeSection();
     } else if (event.target.id === 'connect-device') {
@@ -220,7 +222,7 @@ document.getElementById('signup-password-confirm').addEventListener('input', (e)
     else e.target.parentElement.classList.remove('error');
 });
 
-// Settings page
+// Settings page (unchanged)
 function updateSettingsPage() {
     const user = users.find(u => u.username === username);
     if (!user) return;
@@ -248,7 +250,7 @@ function updateSettingsPage() {
         if (newPassword) user.password = newPassword;
         if (newAddress) {
             user.address = newAddress;
-            user.state = 'State'; // Mock Google Maps
+            user.state = 'State';
             user.city = 'City';
             user.zip = '12345';
         }
@@ -352,75 +354,222 @@ function toggleSpending(type, enabled) {
 }
 
 // Manage Devices
-function connectDevice() {
-    isDeviceConnected = true;
-    const newDevice = {
+function connectDevice(deviceData = null) {
+    const user = users.find(u => u.username === username);
+    if (!user) return;
+    const activeDevices = devices.filter(d => d.active).length;
+    if (activeDevices >= MAX_FREE_DEVICES && usdBalance < 1) {
+        alert('You need $1 USD to add more than 5 devices.');
+        return;
+    }
+    if (activeDevices >= MAX_FREE_DEVICES) usdBalance -= 1;
+
+    const newDevice = deviceData || {
         id: Date.now(),
         name: `Device-${devices.length + 1}`,
-        status: 'Connected',
-        lastUpdate: new Date().toLocaleString()
+        battery: Math.floor(Math.random() * 100),
+        wifi: Math.random() > 0.5 ? 'Connected' : 'Disconnected',
+        autoChargeZPE: false,
+        chargeOnReceiveZPE: false,
+        autoConnectWC: false,
+        connectOnReceiveWC: false,
+        totalZPEConsumed: 0,
+        totalWCConsumed: 0,
+        active: true
     };
-    devices.push(newDevice);
-    const user = users.find(u => u.username === username);
-    if (user) {
-        user.devices = devices;
-        localStorage.setItem('users', JSON.stringify(users));
+
+    if (devices.some(d => d.id === newDevice.id && d.active)) {
+        alert('Your device is already connected.');
+        return;
     }
+    devices.push(newDevice);
+    user.devices = devices;
+    localStorage.setItem('users', JSON.stringify(users));
+    isDeviceConnected = true;
     updateUserSection();
-    startRealTimeDeviceUpdates();
+    updateManageDevicesPage();
+    startDeviceMonitoring();
 }
 
-function showManageDevicesModal() {
-    const modal = document.getElementById('devices-modal');
+function updateManageDevicesPage() {
+    const container = document.getElementById('devices-container');
+    container.innerHTML = '';
+    const user = users.find(u => u.username === username);
+    devices = user?.devices || devices;
+    devices.filter(d => d.active).forEach(device => {
+        const modal = document.createElement('div');
+        modal.className = 'device-modal';
+        modal.innerHTML = `
+            <h3>${device.name}</h3>
+            <div class="device-info">
+                <p>Battery: <span id="battery-${device.id}">${device.battery}%</span></p>
+                <p>WiFi: <span id="wifi-${device.id}">${device.wifi}</span></p>
+            </div>
+            <div class="slider-group">
+                <label>Auto-Charge w/ $ZPE:</label>
+                <button class="slider-btn on" id="auto-charge-${device.id}-on">${device.autoChargeZPE ? 'On' : 'On'}</button>
+                <button class="slider-btn off" id="auto-charge-${device.id}-off">${device.autoChargeZPE ? 'Off' : 'Off'}</button>
+            </div>
+            <div class="slider-group">
+                <label>Charge On-Receive $ZPE:</label>
+                <button class="slider-btn on" id="charge-receive-${device.id}-on">${device.chargeOnReceiveZPE ? 'On' : 'On'}</button>
+                <button class="slider-btn off" id="charge-receive-${device.id}-off">${device.chargeOnReceiveZPE ? 'Off' : 'Off'}</button>
+            </div>
+            <div class="slider-group">
+                <label>Auto-Connect w/ $WC:</label>
+                <button class="slider-btn on" id="auto-connect-${device.id}-on">${device.autoConnectWC ? 'On' : 'On'}</button>
+                <button class="slider-btn off" id="auto-connect-${device.id}-off">${device.autoConnectWC ? 'Off' : 'Off'}</button>
+            </div>
+            <div class="slider-group">
+                <label>Connect On-Receive $WC:</label>
+                <button class="slider-btn on" id="connect-receive-${device.id}-on">${device.connectOnReceiveWC ? 'On' : 'On'}</button>
+                <button class="slider-btn off" id="connect-receive-${device.id}-off">${device.connectOnReceiveWC ? 'Off' : 'Off'}</button>
+            </div>
+            <div class="device-stats">
+                <p>Total $ZPE Consumed: <span id="zpe-consumed-${device.id}">${device.totalZPEConsumed}</span></p>
+                <p>Total $WC Consumed: <span id="wc-consumed-${device.id}">${device.totalWCConsumed}</span></p>
+            </div>
+            <button id="disconnect-${device.id}" class="disconnect-device">Disconnect</button>
+        `;
+        container.appendChild(modal);
+
+        // Slider logic
+        toggleSlider(device, 'auto-charge', 'autoChargeZPE');
+        toggleSlider(device, 'charge-receive', 'chargeOnReceiveZPE');
+        toggleSlider(device, 'auto-connect', 'autoConnectWC');
+        toggleSlider(device, 'connect-receive', 'connectOnReceiveWC');
+
+        // Disconnect button
+        document.getElementById(`disconnect-${device.id}`).onclick = () => showConfirmDisconnect(device.id);
+    });
+
+    document.getElementById('add-device-btn').onclick = () => {
+        document.getElementById('add-device-modal').style.display = 'flex';
+    };
+    document.getElementById('manual-add-device').onclick = () => {
+        document.getElementById('add-device-modal').style.display = 'none';
+        document.getElementById('manual-device-modal').style.display = 'flex';
+    };
+    document.getElementById('scan-device').onclick = () => {
+        document.getElementById('add-device-modal').style.display = 'none';
+        alert('Scanning device (camera/NFC placeholder)');
+        connectDevice({ id: Date.now(), name: `Scanned-Device`, battery: 50, wifi: 'Connected', autoChargeZPE: false, chargeOnReceiveZPE: false, autoConnectWC: false, connectOnReceiveWC: false, totalZPEConsumed: 0, totalWCConsumed: 0, active: true });
+    };
+    document.getElementById('get-device').onclick = () => {
+        document.getElementById('add-device-modal').style.display = 'none';
+        connectDevice();
+    };
+    document.getElementById('manual-device-form').onsubmit = (e) => {
+        e.preventDefault();
+        const modelName = document.getElementById('model-name').value;
+        const serialNumber = document.getElementById('serial-number').value;
+        const imei = document.getElementById('imei').value;
+        document.getElementById('manual-device-modal').style.display = 'none';
+        connectDevice({ id: parseInt(imei), name: modelName, battery: 75, wifi: 'Connected', autoChargeZPE: false, chargeOnReceiveZPE: false, autoConnectWC: false, connectOnReceiveWC: false, totalZPEConsumed: 0, totalWCConsumed: 0, active: true, serialNumber });
+    };
+}
+
+function toggleSlider(device, prefix, prop) {
+    const onBtn = document.getElementById(`${prefix}-${device.id}-on`);
+    const offBtn = document.getElementById(`${prefix}-${device.id}-off`);
+    if (device[prop]) {
+        onBtn.classList.add('active');
+        offBtn.classList.remove('active');
+    } else {
+        onBtn.classList.remove('active');
+        offBtn.classList.add('active');
+    }
+    onBtn.onclick = () => {
+        device[prop] = true;
+        onBtn.classList.add('active');
+        offBtn.classList.remove('active');
+        updateDeviceInStorage(device);
+    };
+    offBtn.onclick = () => {
+        device[prop] = false;
+        onBtn.classList.remove('active');
+        offBtn.classList.add('active');
+        updateDeviceInStorage(device);
+    };
+}
+
+function updateDeviceInStorage(device) {
+    const user = users.find(u => u.username === username);
+    const index = devices.findIndex(d => d.id === device.id);
+    devices[index] = device;
+    user.devices = devices;
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+function showConfirmDisconnect(deviceId) {
+    const modal = document.getElementById('confirm-disconnect-modal');
     modal.style.display = 'flex';
-    updateDeviceList();
-    document.getElementById('close-devices-modal').onclick = () => {
+    document.getElementById('confirm-yes').onclick = () => {
+        const device = devices.find(d => d.id === deviceId);
+        device.active = false;
+        isDeviceConnected = devices.some(d => d.active);
+        updateDeviceInStorage(device);
+        modal.style.display = 'none';
+        updateManageDevicesPage();
+        updateUserSection();
+    };
+    document.getElementById('confirm-no').onclick = () => {
         modal.style.display = 'none';
     };
 }
 
-function updateDeviceList() {
-    const deviceList = document.getElementById('device-list');
-    const user = users.find(u => u.username === username);
-    devices = user?.devices || devices;
-    deviceList.innerHTML = '';
-    devices.forEach(device => {
-        const div = document.createElement('div');
-        div.className = 'device-item';
-        div.innerHTML = `
-            <p><strong>ID:</strong> ${device.id}</p>
-            <p><strong>Name:</strong> ${device.name}</p>
-            <p><strong>Status:</strong> ${device.status}</p>
-            <p><strong>Last Update:</strong> ${device.lastUpdate}</p>
-        `;
-        deviceList.appendChild(div);
-    });
-}
-
-let deviceUpdateInterval = null;
-function startRealTimeDeviceUpdates() {
-    if (!deviceUpdateInterval) {
-        deviceUpdateInterval = setInterval(() => {
+let deviceMonitorInterval = null;
+function startDeviceMonitoring() {
+    if (!deviceMonitorInterval) {
+        deviceMonitorInterval = setInterval(() => {
             devices.forEach(device => {
-                device.lastUpdate = new Date().toLocaleString();
-                device.status = Math.random() > 0.1 ? 'Connected' : 'Disconnected';
+                if (!device.active) return;
+                device.battery = Math.max(0, Math.min(100, device.battery - Math.random() * 5));
+                device.wifi = Math.random() > 0.2 ? 'Connected' : 'Disconnected';
+
+                if (device.autoChargeZPE && device.battery <= 20 && zeropointBalance >= (100 - device.battery)) {
+                    const amount = 100 - device.battery;
+                    zeropointBalance -= amount;
+                    device.battery = 100;
+                    device.totalZPEConsumed += amount;
+                }
+                if (device.chargeOnReceiveZPE && device.battery === 0 && zeropointBalance >= 100) {
+                    zeropointBalance -= 100;
+                    device.battery = 100;
+                    device.totalZPEConsumed += 100;
+                }
+                if (device.autoConnectWC && device.wifi === 'Disconnected' && wirelessBalance >= 1) {
+                    wirelessBalance -= 1;
+                    device.wifi = 'Connected';
+                    device.totalWCConsumed += 1;
+                }
+                if (device.connectOnReceiveWC && device.wifi === 'Disconnected' && wirelessBalance >= 1) {
+                    wirelessBalance -= 1;
+                    device.wifi = 'Connected';
+                    device.totalWCConsumed += 1;
+                }
+
+                if (document.getElementById(`battery-${device.id}`)) {
+                    document.getElementById(`battery-${device.id}`).textContent = `${device.battery}%`;
+                    document.getElementById(`wifi-${device.id}`).textContent = device.wifi;
+                    document.getElementById(`zpe-consumed-${device.id}`).textContent = device.totalZPEConsumed;
+                    document.getElementById(`wc-consumed-${device.id}`).textContent = device.totalWCConsumed;
+                }
             });
             const user = users.find(u => u.username === username);
-            if (user) {
-                user.devices = devices;
-                localStorage.setItem('users', JSON.stringify(users));
-            }
-            if (document.getElementById('devices-modal').style.display === 'flex') {
-                updateDeviceList();
-            }
+            user.devices = devices;
+            localStorage.setItem('users', JSON.stringify(users));
+            document.getElementById('zeropoint-balance').textContent = zeropointBalance.toFixed(2);
+            document.getElementById('wireless-balance').textContent = wirelessBalance.toFixed(2);
+            document.getElementById('usd-balance').textContent = usdBalance.toFixed(2);
         }, 5000);
     }
 }
 
-function stopRealTimeDeviceUpdates() {
-    if (deviceUpdateInterval) {
-        clearInterval(deviceUpdateInterval);
-        deviceUpdateInterval = null;
+function stopDeviceMonitoring() {
+    if (deviceMonitorInterval) {
+        clearInterval(deviceMonitorInterval);
+        deviceMonitorInterval = null;
     }
 }
 
@@ -435,7 +584,7 @@ function showPage(pageId) {
             setTimeout(() => page.classList.remove('hidden'), 10);
             if (pageId === 'home') updateHomeSection();
             if (pageId === 'settings') updateSettingsPage();
-            if (pageId === 'manage-devices' && isDeviceConnected) showManageDevicesModal();
+            if (pageId === 'manage-devices' && isDeviceConnected) updateManageDevicesPage();
         } else {
             page.classList.add('hidden');
             page.addEventListener('transitionend', () => {
@@ -462,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = users.find(u => u.username === username);
     if (user && user.devices && user.devices.length > 0) {
         devices = user.devices;
-        isDeviceConnected = true;
-        startRealTimeDeviceUpdates();
+        isDeviceConnected = devices.some(d => d.active);
+        if (isDeviceConnected) startDeviceMonitoring();
     }
 });
