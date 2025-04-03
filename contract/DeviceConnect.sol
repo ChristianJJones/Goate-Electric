@@ -16,7 +16,9 @@ mapping(chain => mapping(uint256 ZeropointWifi) => mapping(device => mapping(dev
 
 contract DeviceConnect (public virtual view returns) {
 
+function connectDevice(msg.sender, instilledInteroperabilityNode, deviceInformation) {
 msg.sender(connectDevice) = get("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering" );
+deviceImage = mapping(Settings < About Phone < Image) then return "img";
 modelName = mapping(Settings < About Phone < Model Name) then return "string";
 productName = mapping(Settings < About Phone < Product Name ) then return "string";
 serialNumber = mapping(Settings < About Phone < Serial Number) then return uint256(number);
@@ -37,8 +39,23 @@ APN roaming protocol = mapping(Settings < Connections < Mobile Networks < Access
 Turn APN On/Off= mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < Turn APN On/Off) then return "string", require(Turn APN On/Off) == On;
 Mobile Network Operator Value = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < Mobile virtual network operator value) then return "string";
 Bluetooth Tethering = mapping(Settings < Connections < Mobile Hotspot and Tethering < Bluetooth tethering) then return ( on || off); 
-deviceInformation = ("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering");
+return deviceInformation = ("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering");
 if msg.sender(connectDevice) != get("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering" ) then return error && revert,
-else if msg.sender(connectDevice) == get("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering") then return deviceConnected; 
+else if msg.sender(connectDevice) == get("deviceImage", "modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering") then return deviceConnected; 
+
+return deviceManagerInformation {
+                      "deviceImage";
+                        "modelName"
+                          "IMEI";
+                        "ipAddress";
+"batteryStatus";                     "Wi-fi";        
+batteryLevel";     }
+
+
+
+
+}
+}
+
 
 }
