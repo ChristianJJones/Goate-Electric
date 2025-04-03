@@ -248,11 +248,39 @@
         </section>
         <section id="manage-devices" class="page hidden" style="display: none;">
             <h2>Manage Devices</h2>
-            <div id="devices-modal" class="modal" style="display: none;">
+            <div class="devices-container" id="devices-container"></div>
+            <button id="add-device-btn" class="add-device-btn">+</button>
+            <div id="add-device-modal" class="modal" style="display: none;">
                 <div class="modal-content">
-                    <h3>Connected Devices</h3>
-                    <div id="device-list"></div>
-                    <button id="close-devices-modal">Close</button>
+                    <button id="manual-add-device">Manually Add Device</button>
+                    <button id="scan-device">Scan Device</button>
+                    <button id="get-device">Get Device</button>
+                </div>
+            </div>
+            <div id="manual-device-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <form id="manual-device-form">
+                        <div class="form-group">
+                            <label for="model-name">Model Name</label>
+                            <input type="text" id="model-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="serial-number">Serial Number</label>
+                            <input type="text" id="serial-number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imei">IMEI</label>
+                            <input type="text" id="imei" required>
+                        </div>
+                        <button type="submit">Add Device</button>
+                    </form>
+                </div>
+            </div>
+            <div id="confirm-disconnect-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <p>Are you sure you want to disconnect this device?</p>
+                    <button id="confirm-yes">Yes</button>
+                    <button id="confirm-no">No</button>
                 </div>
             </div>
         </section>
