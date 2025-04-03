@@ -33,18 +33,21 @@ function updateUserSection() {
     }
 }
 
-// Update home section based on login state
+// Update home section and navigation visibility
 function updateHomeSection() {
     const notLoggedInDiv = document.getElementById('not-logged-in');
     const loggedInDiv = document.getElementById('logged-in');
+    const navigation = document.getElementById('navigation');
     if (isLoggedIn) {
         notLoggedInDiv.style.display = 'none';
         loggedInDiv.style.display = 'block';
+        navigation.style.display = 'block';
         startBalanceUpdates();
         updateTransactionHistory();
     } else {
         notLoggedInDiv.style.display = 'block';
         loggedInDiv.style.display = 'none';
+        navigation.style.display = 'none';
         stopBalanceUpdates();
     }
 }
@@ -61,7 +64,7 @@ function updateBalances() {
 
 function startBalanceUpdates() {
     if (!balanceInterval) {
-        balanceInterval = setInterval(updateBalances, 500); // Update every 500ms (twice per second)
+        balanceInterval = setInterval(updateBalances, 500);
     }
 }
 
