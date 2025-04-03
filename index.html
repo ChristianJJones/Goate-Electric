@@ -72,4 +72,205 @@
                 </div>
                 <div class="form-group">
                     <label for="signup-city">City</label>
-                    <input type="text" id="signup
+                    <input type="text" id="signup-city" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-zip">Zip Code</label>
+                    <input type="text" id="signup-zip" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-dob">Date of Birth (MM/DD/YYYY)</label>
+                    <input type="text" id="signup-dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-age">Age</label>
+                    <input type="text" id="signup-age" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-ssn">Last 4 of SSN</label>
+                    <input type="text" id="signup-ssn" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-dependents">Number of Dependents</label>
+                    <input type="text" id="signup-dependents" required>
+                </div>
+                <div class="form-group">
+                    <label>Security Questions (Select and Answer at Least 3)</label>
+                    <div id="security-questions"></div>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+            <form id="login-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="login-id">Email, Username, or Phone Number</label>
+                    <input type="text" id="login-id" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <div class="form-group forgot-password">
+                    <a href="#" id="forgot-password">Forgot Password?</a>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <section id="home" class="page">
+            <div id="not-logged-in">
+                <h2>WELCOME TO GOATE ELECTRIC</h2>
+                <p>where you can access digital utilities that make everyday life easier. You can use Zeropoint to wirelessly charge your devices on-the-go and Wireless Connect to use internet wherever life leads.</p>
+            </div>
+            <div id="logged-in" style="display: none;">
+                <div class="balances">
+                    <div class="balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
+                    <div class="balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
+                    <div class="balance"><h3>Wireless Connect Balance</h3><p id="wireless-balance">0</p></div>
+                </div>
+                <div class="button-section">
+                    <div class="left-buttons">
+                        <button>Buy Zeropoint</button>
+                        <button>Sell Zeropoint</button>
+                        <button>Consume Zeropoint</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button>Buy Wireless Connect</button>
+                        <button>Sell Wireless Connect</button>
+                        <button>Consume Wireless Connect</button>
+                    </div>
+                </div>
+                <div class="transfer"><button>Transfer</button></div>
+                <div class="transaction-history">
+                    <h3>Transaction History</h3>
+                    <ul id="transaction-list"></ul>
+                </div>
+            </div>
+        </section>
+        <section id="zeropoint" class="page hidden" style="display: none;">
+            <h2>Zeropoint</h2>
+            <p>Information about Zeropoint.</p>
+        </section>
+        <section id="wireless-connect" class="page hidden" style="display: none;">
+            <h2>Wireless Connect</h2>
+            <p>Information about Wireless Connect.</p>
+        </section>
+        <section id="earn" class="page hidden" style="display: none;">
+            <h2>Earn</h2>
+            <p>Ways to earn with Goate Electric.</p>
+        </section>
+        <section id="settings" class="page hidden" style="display: none;">
+            <h2>Settings</h2>
+            <div class="settings-container">
+                <div class="settings-modal">
+                    <h3>User KYC / AML Info</h3>
+                    <div id="kyc-info">
+                        <p><strong>Name:</strong> <span id="kyc-name"></span></p>
+                        <p><strong>Birthday:</strong> <span id="kyc-dob"></span></p>
+                        <p><strong>Address:</strong> <span id="kyc-address"></span></p>
+                        <p><strong>Last 4 of SSN:</strong> <span id="kyc-ssn">****</span> <button id="toggle-ssn">Show</button></p>
+                    </div>
+                </div>
+                <div class="settings-modal">
+                    <h3>Account Settings</h3>
+                    <form id="account-settings-form">
+                        <div class="form-group">
+                            <label for="change-password">Change Password</label>
+                            <input type="password" id="change-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="change-address">Change Address</label>
+                            <input type="text" id="change-address">
+                        </div>
+                        <div class="form-group">
+                            <label for="change-username">Change Username</label>
+                            <input type="text" id="change-username">
+                        </div>
+                        <div class="form-group">
+                            <label for="change-email-phone">Change Email/Phone</label>
+                            <input type="text" id="change-email-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-email-phone">Add Email/Phone</label>
+                            <input type="text" id="add-email-phone">
+                        </div>
+                        <button type="submit">Update</button>
+                    </form>
+                </div>
+                <div class="settings-modal">
+                    <h3>Bank Account Settings</h3>
+                    <div id="bank-settings">
+                        <button id="connect-plaid">Connect Bank Account with Plaid</button>
+                        <form id="manual-debit-form">
+                            <div class="form-group">
+                                <label for="debit-number">Debit Card Number</label>
+                                <input type="text" id="debit-number" maxlength="16">
+                            </div>
+                            <div class="form-group">
+                                <label for="debit-expiry">Expiration Date (MM/YY)</label>
+                                <input type="text" id="debit-expiry" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="debit-cvc">CVC</label>
+                                <input type="text" id="debit-cvc" maxlength="3">
+                            </div>
+                            <button type="submit">Add Debit Card</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="settings-modal">
+                    <h3>Goate Electric Card</h3>
+                    <div id="card-settings">
+                        <button id="order-card" style="display: block;">Order Card</button>
+                        <div id="card-info" style="display: none;">
+                            <p><strong>Card Number:</strong> <span id="card-number">**** **** **** ****</span> <button id="toggle-card">Show</button></p>
+                            <p><strong>CVC:</strong> <span id="card-cvc">***</span></p>
+                            <p><strong>Expiration Date:</strong> <span id="card-expiry">**/**</span></p>
+                            <div class="spending-options">
+                                <p><strong>Spending Options:</strong></p>
+                                <p>Default: $USD Balance</p>
+                                <div>
+                                    <label>Spend from $ZPE Balance:</label>
+                                    <button class="toggle-btn" id="zpe-yes">Yes</button>
+                                    <button class="toggle-btn active" id="zpe-no">No</button>
+                                </div>
+                                <div>
+                                    <label>Spend from $WC Balance:</label>
+                                    <button class="toggle-btn" id="wc-yes">Yes</button>
+                                    <button class="toggle-btn active" id="wc-no">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="manage-devices" class="page hidden" style="display: none;">
+            <h2>Manage Devices</h2>
+            <div id="devices-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Connected Devices</h3>
+                    <div id="device-list"></div>
+                    <button id="close-devices-modal">Close</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-left">
+            <p>THE LAMBDUCK, INC.</p>
+            <p>Goate Electric</p>
+            <p>@thelambduckinc</p>
+        </div>
+        <div class="footer-right">
+            <p>Founder & CEO</p>
+            <p>Christian Jones</p>
+            <p>@cjo3nes</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
