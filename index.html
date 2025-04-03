@@ -1,1 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goate Electric</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="banner">
+            <div class="logo">
+                <img src="logo.png" alt="Goate Electric Logo">
+            </div>
+            <div class="title">
+                <h1>Goate Electric</h1>
+            </div>
+            <div class="user-section" id="user-section">
+                <button id="signup-login">Signup/Login</button>
+            </div>
+        </div>
+        <nav class="navigation">
+            <ul>
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
+    <main>
+        <section id="home" class="page">
+            <div id="not-logged-in">
+                <h2>Welcome to Goate Electric</h2>
+                <p>Please signup or login to access your account.</p>
+            </div>
+            <div id="logged-in" style="display: none;">
+                <div class="balances">
+                    <div class="balance">
+                        <h3>Zeropoint Balance</h3>
+                        <p id="zeropoint-balance">0</p>
+                    </div>
+                    <div class="balance">
+                        <h3>USD Balance</h3>
+                        <p id="usd-balance">0</p>
+                    </div>
+                    <div class="balance">
+                        <h3>Wireless Connect Balance</h3>
+                        <p id="wireless-balance">0</p>
+                    </div>
+                </div>
+                <div class="button-section">
+                    <div class="left-buttons">
+                        <button>Buy Zeropoint</button>
+                        <button>Sell Zeropoint</button>
+                        <button>Consume Zeropoint</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button>Buy Wireless Connect</button>
+                        <button>Sell Wireless Connect</button>
+                        <button>Consume Wireless Connect</button>
+                    </div>
+                </div>
+                <div class="transfer">
+                    <button>Transfer</button>
+                </div>
+                <div class="transaction-history">
+                    <h3>Transaction History</h3>
+                    <ul id="transaction-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="page hidden">
+            <h2>About Us</h2>
+            <p>Learn more about Goate Electric.</p>
+        </section>
+
+        <section id="contact" class="page hidden">
+            <h2>Contact Us</h2>
+            <p>Get in touch with us!</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Goate Electric</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
