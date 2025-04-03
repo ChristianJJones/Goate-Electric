@@ -1,4 +1,4 @@
-/* General styles */
+/* General styles for all screen sizes */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -18,7 +18,7 @@ header {
 }
 
 .logo img {
-    height: 50px; /* Adjust as needed */
+    height: 50px; /* Default size for computers */
 }
 
 .title {
@@ -28,7 +28,7 @@ header {
 
 .title h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 24px; /* Default size for computers */
 }
 
 .user-section {
@@ -52,11 +52,12 @@ header {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    justify-content: center;
 }
 
 .navigation li {
-    display: inline;
-    margin: 0 15px;
+    margin: 0 15px; /* Default spacing for computers */
 }
 
 .navigation a {
@@ -65,20 +66,10 @@ header {
 }
 
 /* Main content */
-.page {
-    padding: 20px;
+main {
+    padding: 20px; /* Default padding for computers */
 }
 
-.hidden {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.page:not(.hidden) {
-    opacity: 1;
-}
-
-/* Logged-in section */
 .balances {
     display: flex;
     justify-content: space-around;
@@ -100,8 +91,7 @@ header {
     gap: 10px;
 }
 
-.transfer button {
-    width: 100%;
+button {
     padding: 10px;
     background-color: #007bff;
     color: white;
@@ -109,11 +99,7 @@ header {
     cursor: pointer;
 }
 
-.transaction-history ul {
-    list-style: none;
-    padding: 0;
-}
-
+/* Footer */
 footer {
     display: flex;
     justify-content: space-between;
@@ -129,9 +115,58 @@ footer {
     flex-direction: column;
 }
 
+/* Media Queries for Responsiveness */
+
+/* Mobile: Up to 600px */
 @media (max-width: 600px) {
+    /* Banner */
+    .banner {
+        flex-direction: column; /* Stack vertically */
+        align-items: center;
+    }
+    .logo img {
+        height: 30px; /* Smaller logo for mobile */
+    }
+    .title h1 {
+        font-size: 18px; /* Smaller title for mobile */
+    }
+    .user-section {
+        margin-top: 10px; /* Add spacing */
+    }
+
+    /* Navigation */
+    .navigation ul {
+        flex-direction: column; /* Stack vertically */
+        align-items: center;
+    }
+    .navigation li {
+        margin: 10px 0; /* Vertical spacing */
+    }
+
+    /* Main content */
+    main {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+    .balances {
+        flex-direction: column; /* Stack balances vertically */
+        align-items: center;
+    }
+    .balance {
+        margin-bottom: 20px; /* Space between stacked items */
+    }
+    .button-section {
+        flex-direction: column; /* Stack button groups */
+        align-items: center;
+    }
+    .left-buttons, .right-buttons {
+        flex-direction: column; /* Stack buttons within groups */
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* Footer */
     footer {
-        flex-direction: column;
+        flex-direction: column; /* Stack vertically */
         align-items: center;
     }
     .footer-left, .footer-right {
@@ -140,4 +175,21 @@ footer {
     }
 }
 
+/* Tablet: 601px to 1024px */
+@media (min-width: 601px) and (max-width: 1024px) {
+    /* Navigation */
+    .navigation li {
+        margin: 0 10px; /* Slightly reduced spacing */
+    }
+
+    /* Main content */
+    .balances {
+        font-size: 14px; /* Smaller text for better fit */
+    }
+    .button-section button {
+        font-size: 14px; /* Smaller buttons */
+    }
 }
+
+/* Computers: Above 1024px */
+/* Default styles above apply, no additional changes needed */
