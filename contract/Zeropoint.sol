@@ -1,102 +1,69 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./openzeppelin/ERC20.sol";
-import "./openzeppelin/ERC20Burnable.sol";
-import "./openzeppelin/Ownable.sol";
-import { connectDevice, deviceConnected, deviceInformation, batteryLevel } from "./DeviceConnect.sol";
-import { onlyOwner } from "../.env";
-import { buyZeropoint, sellZeropoint, consumeZeropoint, transfer, transactionLog, privateOwner1, privateOwner2 } from "./Util.sol";
-
-mapping(chain => mapping(uint256 Zeropoint) => mapping(device => mapping(deviceInformation) ) => zeropointConsumedToDevice;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Zeropoint is ERC20, ERC20Burnable, Ownable {
-    constructor(address initialOwner)
-        ERC20("Zeropoint", "ZPE")
-        Ownable(initialOwner)
+    uint256 public constant PRICE_PER_ZPE = 0.10 * 10**18; // $0.10 in wei (assuming 18 decimals for USD)
+    
+    // Track USD balances (assuming a separate USD stablecoin integration)
+    mapping(address => uint256) public usdBalance;
+    mapping(address => uint256) public zeropointConsumedToDevice;
+
+    constructor(address initialOwner) 
+        ERC20("Zeropoint", "ZPE") 
+        Ownable(initialOwner) 
     {
-        _mint(msg.sender, 1000000000 * 3 ** decimals());
+        _mint(initialOwner, 1_000_000_000 * 10**decimals()); // 1 billion ZPE with 3 decimals
+    }
+
+    function decimals() public view virtual override returns (uint8) {
+        return 3; // ZPE has 3 decimals as per your design
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
-      require(onlyOwner);
         _mint(to, amount);
     }
 
-    function buyZeropoint( msg.sender who, uint256 USD(amount) usingToBuy, uint256 Zeropoint(amount) zeropointBought ) {  
-      require(msg.sender[USDbalance]);
-      require(msg.sender[ZeropointBalance]);
-      require(privateOwner[USDbalance2]);
-msg.sender(buyZeropoint) = msg.sender(USDbalance) - uint256( amountUSDBuyingZeropointWith);
-if msg.sender(USDbalance) < uint256( amount USD) then return error,
-else if msg.sender(USDbalance) >= uint256( amount USD) then return swapUSDToZeropoint;
-swapUSDToZeropoint = msg.sender(uint256[amountUSDBuyingZeropointWith]) % zeropointPriceInUSD;
-zeropointPriceInUSD = $0.10USD;
-if msg.sender(uint256[amountUSDBuyingZeropointWith]) = $5USD; then $5USD % $0.10 = 50 Zeropoint;
-50 Zeropoint = uint256(amountZeropointBought);
-msg.sender(USDbalance) - msg.sender(amountUSDBuyingZeropointWith) = msg.sender(USDbalance);
-msg.sender(ZeropointBalance) + msg.sender(amountZeropointBought) = msg.sender(ZeropointBalance);
-privateOwner(USDbalance2) + msg.sender(amountUSDBuyingZeropointWith) = privateOwner(USDbalance2);
-         _buyZeropoint( who, usingToBuy, zeropointBought);
+    function buyZeropoint(uint256 usdAmount) external {
+        require(usdBalance[msg.sender] >= usdAmount, "Insufficient USD balance");
+        uint256 zpeAmount = (usdAmount * 10**decimals()) / PRICE_PER_ZPE; // Convert USD to ZPE
+        usdBalance[msg.sender] -= usdAmount;
+        usdBalance[owner()] += usdAmount; // Transfer USD to owner
+        _mint(msg.sender, zpeAmount);
+        emit TransactionLog(msg.sender, "Buy", usdAmount, zpeAmount);
+    }
 
+    function sellZeropoint(uint256 zpeAmount) external {
+        require(balanceOf(msg.sender) >= zpeAmount, "Insufficient ZPE balance");
+        uint256 usdAmount = (zpeAmount * PRICE_PER_ZPE) / 10**decimals();
+        require(usdBalance[owner()] >= usdAmount, "Owner lacks USD to pay");
+        _burn(msg.sender, zpeAmount);
+        usdBalance[msg.sender] += usdAmount;
+        usdBalance[owner()] -= usdAmount;
+        emit TransactionLog(msg.sender, "Sell", usdAmount, zpeAmount);
+    }
 
+    function consumeZeropoint(uint256 amount, address device) external {
+        require(balanceOf(msg.sender) >= amount, "Insufficient ZPE balance");
+        require(amount > 0, "Amount must be greater than 0");
+        _burn(msg.sender, amount);
+        zeropointConsumedToDevice[device] += amount;
+        emit TransactionLog(msg.sender, "Consume", 0, amount);
+    }
+
+    function transferZeropoint(address to, uint256 amount) external {
+        require(balanceOf(msg.sender) >= amount, "Insufficient ZPE balance");
+        _transfer(msg.sender, to, amount);
+        emit TransactionLog(msg.sender, "Transfer", 0, amount);
+    }
+
+    // Placeholder for USD deposit (integrate with a stablecoin in practice)
+    function depositUSD(uint256 amount) external onlyOwner {
+        usdBalance[msg.sender] += amount;
+    }
+
+    event TransactionLog(address indexed user, string action, uint256 usdAmount, uint256 zpeAmount);
 }
-
-    function sellZeropoint( msg.sender who, uint256 Zeropoint(amount) zeropointSold, uint256 USD(amount) usdReturned ) {
-      require(msg.sender[USDbalance]);
-      require(msg.sender[ZeropointBalance]);
-      require(privateOwner[USDbalance2]);
-msg.sender(sellZeropoint) = msg.sender(ZeropointBalance) - uint256( amountZeropointSelling);
-if msg.sender(ZeropointBalance) < uint256(amountZeropointSelling) then return error,
-else if msg.sender(USDbalance) >= uint256(amountZeropointSelling) then return swapZeropointToUSD;
-swapZeropointToUSD = msg.sender(amountZeropointSelling) * zeropointPriceInUSD;
-zeropointPriceInUSD = $0.10USD;
-if msg.sender(uint256[amountZeropointSelling]) = 50 Zeropoint; then 50 Zeropoint * $0.10 = $5 USD;
-$5 USD = uint256(amountZeropointSoldInUSD);
-msg.sender(ZeropointBalance) - msg.sender(amountZeropointSelling) = msg.sender(ZeropointBalance);
-msg.sender(USDbalance) + msg.sender(amountZeropointSoldInUSD) = msg.sender(USDbalance);
-privateOwner(USDbalance2) - msg.sender(amountZeropointSoldInUSD) = privateOwner(USDbalance2); 
-         _sellZeropoint(who, zeropointSold, usdReturned);
-
-}
-
-   function consumeZeropoint( address from, uint256 amount, deviceConnected batteryLevel deviceTo) public msg.sender {
-      require(msg.sender[USDbalance]);
-      require(msg.sender[ZeropointBalance]);
-      require(deviceConnected);
-      require(deviceConnected[deviceInformation]);
-      require(deviceConnected[batteryLevel]);
-      require(ERC20Burnable);
-      require(privateOwner[USDbalance2]);
-      require(privateOwner[USDbalance1]);
-msg.sender(consumeZeropoint) = msg.sender(uint256[amountZeropointToConsume]) + msg.sender(deviceConnected);
-if msg.sender(ZeropointBalance) < amountZeropointToConsume then return error,
-else if msg.sender(ZeropointBalance) >= amountZeropointToConsume then return msg.sender(deviceConnected[ batteryLevel + amountZeropointToConsume]);
-if msg.sender(deviceConnected[ baterryLevel]) > 98% then return error , " Battery Percentage is too high.",
-else if msg.sender(deviceConnected[ baterryLevel]) < 98% then consumeZeropoint returns ZeropointConsumed;
-msg.sender(deviceConnected[ batteryLevel + amountZeropointToConsume]) = deviceConnected(balance);
-deviceConnected(balance) !> 98%;
-msg.sender(amountZeropointToConsume) * $0.10USD = msg.sender(amountZeropointToConsumeInUSD);
-privateOwner(USDbalance2) - msg.sender(amountZeropointToConsumeInUSD) = privateOwner(USDbalance2) ;
-privateOwner(USDbalance1) + msg.sender(amountZeropointToConsumeInUSD) = privateOwner(USDbalance1) ;  
-                               _consumeZeropoint(from, amount, deviceTo);
-
-}
-
-function transferZeropoint( address from, uint256 Zeropoint(amount), address to) public msg.sender {
-require(msg.sender == profileLoggedInto);
-require(msg.sender[ZeropointBalance]);
-require(recipient[ZeropointBalance]);
-msg.sender(transfer) = uint256( amountZeropointToBeTransferred) + recipient;
-recipient = username || emailAddress || phoneNumber;
-if msg.sender( ZeropointBalance ) < ( amountZeropointToBeTransferred) then return error,
-else if msg.sender( ZeropointBalance ) >= ( amountZeropointToBeTransferred) then ( amountZeropointToBeTransferred) returns ( amountZeropointTransferred);
-msg.sender( ZeropointBalance ) - msg.sender( amountZeropointTransferred ) = msg.sender( ZeropointBalance );
-recipient( ZeropointBalance ) + msg.sender( amountZeropointTransferred ) = recipient( ZeropointBalance );  
-                               _transfer(from, amount, to)
-
-
-}
-
-
-}
-
