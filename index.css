@@ -1,14 +1,19 @@
+html {
+    scroll-behavior: smooth;
+}
 /* Reset and base styles */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: Avenir-Roman, sans-serif;
     background: #000000; /* Black background for the entire page */
     color: #FFD700; /* Gold text for all body content */
+
+    font-family: Avenir-Roman, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 /* Banner styling */
@@ -171,3 +176,4 @@ nav a:hover {
 #device-slot-yes:hover, #device-slot-no:hover {
     background: #E6C200; /* Darker gold on hover */
 }
+
