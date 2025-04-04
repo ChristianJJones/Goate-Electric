@@ -1,73 +1,46 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import { consumeZeropoint, transfer, transactionLog } from "./Zeropoint.sol";
-import { consumeZeropointWifi, zeropointWifiConsumedToDevice, transfer, transactionLog } from  "./ZeropointWifi.sol";
-import { connectDevice , deviceConnected, deviceInformation, accountBalances } from "./Util.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-// chain to device
-mapping(chain) => mapping(device => mapping(deviceInformation) ) => deviceConnected;
+// DeviceConnect manages Goate Electric device connections (Zeropoint and ZeropointWifi modems)
+contract DeviceConnect is Ownable {
+    struct Device {
+        string deviceId;    // Unique identifier (e.g., serial number or IMEI)
+        address owner;      // Device owner’s wallet address
+        bool isActive;      // Connection status
+        uint256 chainId;    // Blockchain network (1-7)
+    }
 
-//chain to Zeropoint to device
-mapping(chain => mapping(uint256 Zeropoint) => mapping(device => mapping(deviceInformation) ) => zeropointConsumedToDevice;
+    // Mapping of device IDs to their details
+    mapping(string => Device) public devices;
+    // Mapping of user addresses to their list of device IDs
+    mapping(address => string[]) public userDevices;
 
-//chain to ZeropointWifi to device
-mapping(chain => mapping(uint256 ZeropointWifi) => mapping(device => mapping(deviceInformation) ) => zeropointwifiConsumedToDevice;
+    event DeviceConnected(string deviceId, address owner, uint256 chainId);
+    event DeviceDisconnected(string deviceId, address owner);
 
+    constructor(address initialOwner) Ownable(initialOwner) {}
 
-contract DeviceConnect (public virtual view returns) {
+    // Connect a device to a specific chain (e.g., Ethereum, Bitcoin)
+    function connectDevice(string memory deviceId, uint256 chainId) external {
+        require(devices[deviceId].owner == address(0) || devices[deviceId].owner == msg.sender, "Device already owned");
+        require(chainId >= 1 && chainId <= 7, "Invalid chain ID"); // Supports chains 1-7
 
-function connectDevice(msg.sender, instilledInteroperabilityNode, deviceInformation) {
-msg.sender(connectDevice) = get("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering" );
-deviceImage = mapping(Settings < About Phone < Image) then return "img";
-modelName = mapping(Settings < About Phone < Model Name) then return "string";
-productName = mapping(Settings < About Phone < Product Name ) then return "string";
-serialNumber = mapping(Settings < About Phone < Serial Number) then return uint256(number);
-IMEI = mapping(Settings < About Phone < IMEI) then return uint256(number);
-batteryStatus = mapping(Settings < About Phone < Battery Information < Battery Status) then return "string";
-batteryLevel = mapping(Settings < About Phone < Battery Level) then return uint256(number[percent]);
-batteryCapacity = mapping(Settings < About Phone < Battery Capacity) then return uint256(number);
-ipAddress = mapping(Settings < About Phone < Status Information < IP Address) then return "string" && uint256(number);
-phoneWifiMACAddress = mapping(Settings < About Phone < Status Information < Phone Wi-Fi MAC Address) then return "string" && uint256(number);
-phoneNumber = mapping(Settings < About Phone < Phone Number) then return uint256(number);
-Wi-Fi = mapping(Settings < Connections < Wi-Fi < Current network) then return "string &| uint256(number);
-APN = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < APN) then return "string";
-MCC = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < MCC) then return 3 digit uint256(number);
-MNC = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < MNC) then return 3 digit uint256(number);
-APN Type = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < APN Type) then return "string";
-APN Protocol = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < APN Protocol) then return "string" && uint256(number);
-APN roaming protocol = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < APN roaming protocol) then return "string" && uint256(number);
-Turn APN On/Off= mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < Turn APN On/Off) then return "string", require(Turn APN On/Off) == On;
-Mobile Network Operator Value = mapping(Settings < Connections < Mobile Networks < Access Point Names < Edit Access Point < Mobile virtual network operator value) then return "string";
-Bluetooth Tethering = mapping(Settings < Connections < Mobile Hotspot and Tethering < Bluetooth tethering) then return ( on || off); 
-return deviceInformation = ("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering");
-if msg.sender(connectDevice) != get("modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering" ) then return error && revert,
-else if msg.sender(connectDevice) == get("deviceImage", "modelName", " productName", "serialNumber", "IMEI", "batteryStatus", "batteryLevel", "batteryCapacity", "ipAddress", "phoneWifiMACAddress", "phoneNumber", "Wi-Fi", "APN", "MCC", "MNC", "APN Type", "APN Protocol", "APN roaming protocol", "Turn APN On/Off", "Mobile Network Operator Value", "Bluetooth Tethering") then return deviceConnected; 
+        devices[deviceId] = Device(deviceId, msg.sender, true, chainId);
+        userDevices[msg.sender].push(deviceId);
+        emit DeviceConnected(deviceId, msg.sender, chainId);
+    }
 
-return deviceManagerInformation {
-                      "deviceImage";
-                        "modelName"
-                          "IMEI";
-                        "ipAddress";
-"batteryStatus";                     "Wi-fi";        
-"batteryLevel";                    
+    // Disconnect a device (only by owner)
+    function disconnectDevice(string memory deviceId) external {
+        require(devices[deviceId].owner == msg.sender, "Not device owner");
+        devices[deviceId].isActive = false;
+        emit DeviceDisconnected(deviceId, msg.sender);
+    }
 
-
-return TheLambduckModem {
- "modelName";
-"batteryStatus";    
-"batteryLevel";
-"Wi-fi"; 
-"BlueToothTethering";
-"ipAddress";
- 
-
-}
-
-
-
-
-}
-}
-
-
+    // Get all devices owned by a user
+    function getUserDevices(address user) external view returns (string[] memory) {
+        return userDevices[user];
+    }
 }
