@@ -4,8 +4,9 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
+// InstilledInteroperability powers Goate Electric’s cross-chain ecosystem
 contract InstilledInteroperability {
-    // Chain IDs
+    // Chain IDs for Goate Electric’s supported networks
     uint256 constant ETHEREUM_CHAIN = 1;
     uint256 constant BINANCE_CHAIN = 2;
     uint256 constant POLYGON_CHAIN = 3;
@@ -14,30 +15,30 @@ contract InstilledInteroperability {
     uint256 constant CRONOS_CHAIN = 6;
     uint256 constant BITCOIN_CHAIN = 7;
 
-    // Mediator and USD token
-    address public mediatorAccount;
-    IERC20 public usdToken;
-    AggregatorV3Interface public priceFeed;
+    // Mediator and USD token configuration
+    address public mediatorAccount;           // Goate Electric’s mediator wallet
+    IERC20 public usdToken;                   // USDC contract address
+    AggregatorV3Interface public priceFeed;   // Chainlink price feed (e.g., ETH/USD)
 
-    // USD Mediator Tracking
+    // Mediator balance tracking
     struct MediatorBalance {
-        uint256 totalUSD;
-        uint256 publicUSD;
-        int256 capitalOrDebt;
+        uint256 totalUSD;      // Total USD held by mediator
+        uint256 publicUSD;     // Publicly available USD
+        int256 capitalOrDebt;  // Capital surplus or debt
     }
     MediatorBalance public mediatorBalance;
 
-    // Token Asset Struct
+    // Token asset definition
     struct TokenAsset {
         string tokenAssetName;
         string tokenAssetSymbol;
         uint8 tokenAssetDecimal;
-        address tokenAssetContractAddress; // EVM address; non-EVM uses address(0)
+        address tokenAssetContractAddress;
         uint256 chainId;
         string chainExplorerUrl;
     }
 
-    // Blockchain Struct
+    // Blockchain definition
     struct Blockchain {
         string chainName;
         uint256 chainId;
@@ -46,25 +47,25 @@ contract InstilledInteroperability {
         string chainExplorerUrl;
     }
 
-    // Node Network Struct
+    // Node network definition
     struct Node {
         address nodeAddress;
         uint256 chainId;
         bool active;
     }
 
-    // Mappings
+    // Mappings for Goate Electric’s ecosystem
     mapping(uint256 => Blockchain) public verifiedBlockchains;
     mapping(uint256 => mapping(string => TokenAsset)) public verifiedTokenAssets;
     mapping(bytes32 => bool) public usedSignatures;
     mapping(address => Node) public networkNodes;
     address[] public nodeAddresses;
 
-    // Rewards Distribution
-    address[] public cj03nesAccounts;
-    uint256 public reserve;
+    // Reward distribution for Goate Electric mining
+    address[] public cj03nesAccounts;  // Accounts receiving 80% of rewards
+    uint256 public reserve;            // 15% reserve pool
 
-    // Events
+    // Events for tracking Goate Electric operations
     event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient);
     event GhostTransfer(address from, address to, string tokenSymbol, uint256 amount);
     event MediatorUpdate(uint256 totalUSD, uint256 publicUSD, int256 capitalOrDebt);
@@ -104,7 +105,7 @@ contract InstilledInteroperability {
         verifiedTokenAssets[POLYGON_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, 0xYourZPEAddressPolygon, 3, "https://polygonscan.com");
         verifiedTokenAssets[POLYGON_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, 0xYourZPWAddressPolygon, 3, "https://polygonscan.com");
 
-        // Stellar (default chain)
+        // Stellar
         verifiedBlockchains[STELLAR_CHAIN] = Blockchain("Stellar Mainnet", 4, new string[](1), "XLM", "https://stellar.expert/explorer/public");
         verifiedBlockchains[STELLAR_CHAIN].chainRpcUrls[0] = "https://horizon.stellar.org";
         verifiedTokenAssets[STELLAR_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 7, address(0), 4, "https://stellar.expert/explorer/public");
@@ -132,12 +133,12 @@ contract InstilledInteroperability {
 
         // Bitcoin
         verifiedBlockchains[BITCOIN_CHAIN] = Blockchain("Bitcoin Mainnet", 7, new string[](1), "BTC", "https://blockchain.info");
-        verifiedBlockchains[BITCOIN_CHAIN].chainRpcUrls[0] = "https://bitcoin-mainnet-rpc.example.com"; // Replace with real RPC
+        verifiedBlockchains[BITCOIN_CHAIN].chainRpcUrls[0] = "https://bitcoin-mainnet-rpc.example.com";
         verifiedTokenAssets[BITCOIN_CHAIN]["BTC"] = TokenAsset("Bitcoin", "BTC", 8, address(0), 7, "https://blockchain.info");
         verifiedTokenAssets[BITCOIN_CHAIN]["BTC-LN"] = TokenAsset("Bitcoin Lightning", "BTC-LN", 8, address(0), 7, "https://1ml.com");
     }
 
-    // Add Node to Network
+    // Add a node to Goate Electric’s network
     function addNode(address nodeAddress, uint256 chainId) external {
         require(verifiedBlockchains[chainId].chainId != 0, "Chain not supported");
         require(!networkNodes[nodeAddress].active, "Node already added");
@@ -146,14 +147,14 @@ contract InstilledInteroperability {
         emit NodeAdded(nodeAddress, chainId);
     }
 
-    // Set cj03nes Accounts
+    // Set cj03nes accounts for reward distribution
     function setCj03nesAccounts(address[] memory accounts) external {
         require(msg.sender == mediatorAccount, "Only mediator can set");
         require(accounts.length <= 5, "Max 5 accounts");
         cj03nesAccounts = accounts;
     }
 
-    // Distribute Mining Rewards
+    // Distribute mining rewards (80% cj03nes, 5% mediator, 15% reserve)
     function distributeRewards() external payable {
         uint256 amount = msg.value;
         uint256 cj03nesShare = (amount * 80) / 100;
@@ -170,7 +171,7 @@ contract InstilledInteroperability {
         emit RewardsDistributed(amount, cj03nesShare, mediatorShare, reserveShare);
     }
 
-    // Cross-Chain Transfer
+    // Perform a cross-chain transfer for Goate Electric assets
     function crossChainTransfer(
         uint256 fromChain,
         uint256 toChain,
@@ -188,7 +189,7 @@ contract InstilledInteroperability {
         emit CrossChainTransfer(fromChain, toChain, tokenSymbol, amount, recipient);
     }
 
-    // Ghost Transfer
+    // Ghost transfer (off-chain signed transaction)
     function ghostTransfer(string memory tokenSymbol, uint256 amount, address recipient, bytes memory signature) external {
         TokenAsset memory token = verifiedTokenAssets[block.chainid][tokenSymbol];
         bytes32 message = keccak256(abi.encodePacked(tokenSymbol, amount, recipient, block.chainid));
@@ -204,7 +205,7 @@ contract InstilledInteroperability {
         return ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message)), v, r, s) == signer;
     }
 
-    // Mediator Balance Update
+    // Internal function to update mediator balance
     function updateMediatorBalance(uint256 amount, bool isDeposit) internal {
         if (isDeposit) {
             mediatorBalance.totalUSD += amount;
@@ -219,9 +220,13 @@ contract InstilledInteroperability {
         emit MediatorUpdate(mediatorBalance.totalUSD, mediatorBalance.publicUSD, mediatorBalance.capitalOrDebt);
     }
 
-    // Withdraw from Mediator
+    // Withdraw from mediator (restricted to mediator account)
     function withdrawFromMediator(uint256 amount, string memory tokenSymbol, address recipient) external {
         require(msg.sender == mediatorAccount, "Only mediator can withdraw");
         updateMediatorBalance(amount, false);
+        TokenAsset memory token = verifiedTokenAssets[block.chainid][tokenSymbol];
+        if (token.tokenAssetContractAddress != address(0)) {
+            IERC20(token.tokenAssetContractAddress).transfer(recipient, amount);
+        }
     }
 }
