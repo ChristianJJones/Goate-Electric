@@ -1,7 +1,7 @@
 # Goate-Electric
 THE LAMBDUCK, INC. - Goate Electric: digital utilities
 
-1) add the custom background image gray with flying goats
+1) add the custom background image gray with flying goats, $ZPE logo, and $ZPW logo
 2) npm install @openzeppelin/contracts @chainlink/contracts
 3) npx hardhat compile
 4)npx hardhat run scripts/deploy.js --network mainnet
