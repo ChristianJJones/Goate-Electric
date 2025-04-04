@@ -185,3 +185,34 @@ nav a {
     background: #E6C200; /* Darker gold on hover */
 }
 
+.earn-section {
+    background: #000000; /* Black background consistent with theme */
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(255, 215, 0, 0.2); /* Subtle gold shadow */
+}
+
+.earn-section h3 {
+    color: #FFD700; /* Gold text for headings */
+    margin-bottom: 10px;
+}
+
+.earn-section p {
+    color: #FFD700; /* Gold text for descriptions */
+    margin-bottom: 15px;
+}
+
+.earn-button {
+    padding: 10px 20px;
+    background: #FFD700; /* Gold background for buttons */
+    color: #000000; /* Black text for contrast */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* Remove underline for button links */
+}
+
+.earn-button:hover {
+    background: #E6C200; /* Darker gold on hover */
+}
