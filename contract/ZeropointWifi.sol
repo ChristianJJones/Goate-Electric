@@ -1,47 +1,27 @@
-pragma solidity ^0.8;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract ZeropointWifi is ERC20, ERC20Burnable, Ownable, ERC20Permit {
-    constructor(address initialOwner)
-        ERC20("ZeropointWifi", "ZPE")
-        Ownable(initialOwner)
-        ERC20Permit("ZeropointWifi")
-    {
-        _mint(msg.sender, 150000000000 * 2 ** decimals());
+// ZeropointWifi ($ZPW) token for Goate Electric's unlimited WiFi subscription
+contract ZeropointWifi is ERC20, Ownable {
+    constructor(address initialOwner) ERC20("ZeropointWifi", "ZPW") Ownable(initialOwner) {
+        _mint(initialOwner, 1000000 * 10**2); // Initial supply: 1M $ZPW with 2 decimals
     }
 
-    function mint(address to, uint256 amount) public onlyOwner {
+    // Override decimals to 2, reflecting $ZPW's precision (pegged to $5)
+    function decimals() public view virtual override returns (uint8) {
+        return 2;
+    }
+
+    // Mint new $ZPW tokens (restricted to owner, e.g., Goate Electric admin)
+    function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
 
-
-function buy {
-     (require == msg.sender(balance) );
-     (require == verifiedTokenAssets);
-ZeropointWifi price = $20 a month;
-ZeropointWifi price = immutable;
-
-if msg.sender(balance) < amountWantingToBuy then return error(" Insufficient Funds "),
-else if msg.sender(balance) > amountWantingToBuy then return amountZeropointWifiBought;
-
-msg.sender(balance) - amountZeropointWifiBought = msg.sender(newBalance);
-cj03nes(balance) + amountZeropointWifiBought = cj03nes(newBalance);
-
-}
-
-
-
-function consume {
-     (require == msg.sender(balance) );
-     (require == connectedDevice);
-if msg.sender(balance) < zeropointWifiPrice then return error("Insufficient Funds"),
-else if msg.sender(balance) >= zeropoointWifiPrice then return wifiConnected;
-
-msg.sender(balance) - wifiConnected = msg.sender(newBalance);
-msg.sender(deviceConnected[Wi-Fi] + deviceCharged = msg.sender(deviceConnected[newWi-fiConnection]);   }
-
+    // Burn $ZPW tokens (users can burn their own tokens)
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
 }
