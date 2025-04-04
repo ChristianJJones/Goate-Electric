@@ -5,13 +5,13 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-contract WirelessConnect is ERC20, ERC20Burnable, Ownable, ERC20Permit {
+contract ZeropointWifi is ERC20, ERC20Burnable, Ownable, ERC20Permit {
     constructor(address initialOwner)
-        ERC20("WifiConnect", "WC")
+        ERC20("ZeropointWifi", "ZPE")
         Ownable(initialOwner)
-        ERC20Permit("WifiConnect")
+        ERC20Permit("ZeropointWifi")
     {
-        _mint(msg.sender, 150000000000 * 10 ** decimals());
+        _mint(msg.sender, 150000000000 * 3 ** decimals());
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
