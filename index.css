@@ -1,102 +1,173 @@
-/* General styles */
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-header { background-color: #f4f4f4; padding: 10px 20px; }
-.banner { display: flex; justify-content: space-between; align-items: center; }
-.logo img { height: 50px; }
-.title { flex: 1; text-align: center; }
-.title h1 { margin: 0; font-size: 24px; }
-.user-section { text-align: right; }
-.user-info { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
-.navigation { text-align: center; margin-top: 10px; }
-.navigation ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; }
-.navigation li { margin: 0 15px; }
-.navigation a { text-decoration: none; color: #333; }
-main { padding: 20px; }
-.page { transition: opacity 0.3s ease; }
-.hidden { opacity: 0; }
-.page:not(.hidden) { opacity: 1; }
-#not-logged-in { text-align: center; }
-#not-logged-in h2 { font-size: 28px; margin-bottom: 10px; }
-#not-logged-in p { font-size: 16px; max-width: 600px; margin: 0 auto; }
-.balances { display: flex; justify-content: space-around; margin-bottom: 20px; }
-.balance { text-align: center; }
-.button-section { display: flex; justify-content: space-between; margin-bottom: 20px; }
-.left-buttons, .right-buttons { display: flex; gap: 10px; }
-.transfer button, .settings-modal button, .auth-form button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-.transaction-history ul { list-style: none; padding: 0; }
-footer { display: flex; justify-content: space-between; padding: 20px; background-color: #f4f4f4; position: fixed; bottom: 0; width: 100%; }
-.footer-left, .footer-right { display: flex; flex-direction: column; }
-
-/* Modal and Form Styles */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; }
-.modal-content { background: white; padding: 20px; border-radius: 5px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
-.tabs { display: flex; margin-bottom: 20px; }
-.tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; background: #ddd; border: none; }
-.tab.active { background: #bbb; }
-#signup-tab.active { background: #e0e0e0; }
-.auth-form { display: block; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; }
-.form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
-.form-group.error input { border: 2px solid red; }
-.forgot-password { font-size: 12px; }
-
-/* Settings Page */
-.settings-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
-.settings-modal { background: #f9f9f9; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-.settings-modal h3 { margin-top: 0; }
-#kyc-info p, #card-info p { margin: 10px 0; }
-#toggle-ssn, #toggle-card { padding: 5px 10px; font-size: 12px; background-color: #666; }
-.spending-options { margin-top: 15px; }
-.toggle-btn { padding: 5px 10px; border: none; cursor: pointer; }
-.toggle-btn.active#zpe-yes, .toggle-btn.active#wc-yes { background-color: green; color: white; }
-.toggle-btn.active#zpe-no, .toggle-btn.active#wc-no { background-color: red; color: white; }
-.toggle-btn:not(.active) { background-color: gray; color: white; }
-
-/* Manage Devices */
-.devices-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
-.device-modal { background: #f9f9f9; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); position: relative; }
-.device-modal h3 { margin: 0 0 10px; }
-.device-info p { margin: 5px 0; }
-.slider-group { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
-.slider-btn { padding: 5px 10px; border: none; cursor: pointer; }
-.slider-btn.on.active { background-color: green; color: white; }
-.slider-btn.off.active { background-color: red; color: white; }
-.slider-btn:not(.active) { background-color: gray; color: white; }
-.device-stats p { margin: 5px 0; }
-#disconnect-device { position: absolute; top: 10px; right: 10px; padding: 5px 10px; background-color: #dc3545; color: white; border: none; cursor: pointer; }
-#add-device-btn { position: fixed; bottom: 60px; right: 20px; width: 40px; height: 40px; font-size: 24px; background-color: #007bff; color: white; border: none; border-radius: 50%; cursor: pointer; }
-#add-device-modal .modal-content button, #confirm-disconnect-modal .modal-content button { display: block; margin: 10px 0; }
-#manual-device-modal .modal-content { max-width: 400px; }
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    .banner { flex-direction: column; align-items: center; }
-    .logo img { height: 30px; }
-    .title h1 { font-size: 18px; }
-    .user-section { margin-top: 10px; }
-    .navigation ul { flex-direction: column; align-items: center; }
-    .navigation li { margin: 10px 0; }
-    main { padding: 10px; }
-    .balances { flex-direction: column; align-items: center; }
-    .balance { margin-bottom: 20px; }
-    .button-section { flex-direction: column; align-items: center; }
-    .left-buttons, .right-buttons { flex-direction: column; align-items: center; margin-bottom: 20px; }
-    footer { flex-direction: column; align-items: center; }
-    .footer-left, .footer-right { text-align: center; margin-bottom: 10px; }
-    #not-logged-in h2 { font-size: 20px; }
-    #not-logged-in p { font-size: 14px; }
-    .settings-container { grid-template-columns: 1fr; }
-    .devices-container { grid-template-columns: 1fr; }
-    .modal-content { width: 95%; }
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
-@media (min-width: 601px) and (max-width: 1024px) {
-    .navigation li { margin: 0 10px; }
-    .balances { font-size: 14px; }
-    .button-section button { font-size: 14px; }
-    .settings-container { grid-template-columns: 1fr 1fr; }
-    .devices-container { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #000000; /* Black background for the entire page */
+    color: #FFD700; /* Gold text for all body content */
 }
-@media (min-width: 1025px) {
-    .devices-container { grid-template-columns: repeat(5, 1fr); }
+
+/* Banner styling */
+header {
+    background: #000000; /* Black background for the banner */
+    padding: 20px;
+    text-align: center;
+}
+
+/* Logo styling */
+.logo {
+    width: 200px; /* Adjust size as needed */
+    height: auto;
+    display: block;
+    margin: 0 auto 10px; /* Center the logo with some spacing below */
+}
+
+/* Navigation styling */
+nav {
+    background: #000000; /* Black background for nav */
+    padding: 10px;
+}
+
+nav a {
+    color: #FFD700; /* Gold text for nav links */
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Page content */
+.page {
+    display: none;
+    padding: 20px;
+    color: #FFD700; /* Gold text for all page content */
+}
+
+.page.active {
+    display: block;
+}
+
+.user-section {
+    margin-bottom: 20px;
+}
+
+.balances p {
+    margin: 5px 0;
+}
+
+.right-buttons button {
+    margin: 5px;
+    padding: 10px;
+    background: #FFD700; /* Gold background for buttons */
+    color: #000000; /* Black text on buttons for contrast */
+    border: none;
+    cursor: pointer;
+}
+
+.right-buttons button:hover {
+    background: #E6C200; /* Slightly darker gold on hover */
+}
+
+/* Transaction history */
+.transaction-history {
+    margin-top: 20px;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Darker overlay for contrast */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #000000; /* Black background for modals */
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    color: #FFD700; /* Gold text in modals */
+}
+
+/* Device card styling */
+.device-card {
+    background: #000000; /* Black background for device cards */
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(255, 215, 0, 0.2); /* Subtle gold shadow */
+    color: #FFD700; /* Gold text in device cards */
+}
+
+.device-info p {
+    margin: 5px 0;
+}
+
+.slider-group {
+    margin: 10px 0;
+}
+
+.slider-btn {
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    background: #FFD700; /* Gold background for sliders */
+    color: #000000; /* Black text for contrast */
+}
+
+.slider-btn.on.active {
+    background: #28a745; /* Green for 'on' */
+    color: #FFFFFF;
+}
+
+.slider-btn.off.active {
+    background: #dc3545; /* Red for 'off' */
+    color: #FFFFFF;
+}
+
+/* Device stats */
+.device-stats p {
+    margin: 5px 0;
+}
+
+.disconnect-device {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: #FFD700; /* Gold background for disconnect button */
+    color: #000000; /* Black text */
+    border: none;
+    cursor: pointer;
+}
+
+.disconnect-device:hover {
+    background: #E6C200; /* Darker gold on hover */
+}
+
+/* Device slot modal */
+#device-slot-modal .modal-content {
+    text-align: center;
+}
+
+#device-slot-yes, #device-slot-no {
+    margin: 10px;
+    padding: 10px 20px;
+    background: #FFD700; /* Gold background for slot buttons */
+    color: #000000; /* Black text */
+    border: none;
+    cursor: pointer;
+}
+
+#device-slot-yes:hover, #device-slot-no:hover {
+    background: #E6C200; /* Darker gold on hover */
 }
