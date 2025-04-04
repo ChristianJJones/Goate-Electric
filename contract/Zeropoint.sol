@@ -11,10 +11,10 @@ mapping(chain => mapping(uint256 Zeropoint) => mapping(device => mapping(deviceI
 
 contract Zeropoint is ERC20, ERC20Burnable, Ownable {
     constructor(address initialOwner)
-        ERC20("Zeropoint", "ZP")
+        ERC20("Zeropoint", "ZPE")
         Ownable(initialOwner)
     {
-        _mint(msg.sender, 1000000000 * 10 ** decimals());
+        _mint(msg.sender, 1000000000 * 3 ** decimals());
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
