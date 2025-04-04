@@ -11,7 +11,7 @@ contract ZeropointWifi is ERC20, ERC20Burnable, Ownable, ERC20Permit {
         Ownable(initialOwner)
         ERC20Permit("ZeropointWifi")
     {
-        _mint(msg.sender, 150000000000 * 3 ** decimals());
+        _mint(msg.sender, 150000000000 * 2 ** decimals());
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
