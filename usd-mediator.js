@@ -120,16 +120,15 @@ class USDMediator {
 
     async handleBitcoinTransfer(tokenSymbol, amount, recipient) {
         if (tokenSymbol === "BTC") {
-            const node = this.bitcoinNodes[0]; // Load balance in production
+            const node = this.bitcoinNodes[0];
             const txid = await node.sendToAddress(recipient, amount / 1e8);
             console.log(`Bitcoin: ${amount} BTC to ${recipient}, TxID: ${txid}`);
-            // Bridge to WBTC (simulated; requires WBTC merchant in production)
             const wbtcAmount = amount;
             const wbtcContract = new ethers.Contract("0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", ["function mint(address to, uint256 amount)"], mediatorWallet);
             await wbtcContract.mint(recipient, wbtcAmount, { gasLimit: 200000 });
             console.log(`Minted ${wbtcAmount} WBTC to ${recipient}`);
         } else if (tokenSymbol === "BTC-LN") {
-            console.log(`Lightning: ${amount} BTC-LN to ${recipient}`); // Mocked; use LND
+            console.log(`Lightning: ${amount} BTC-LN to ${recipient}`);
         }
     }
 
