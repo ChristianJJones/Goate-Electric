@@ -2,216 +2,175 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"; // Chainlink price feeds
-import "./Zeropoint.sol"; // Assuming Zeropoint.sol is in the same directory
-
-// Interfaces for DEXes (simplified)
-interface IUniswapV2Router {
-    function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
-}
-interface IOneInch {
-    function swap(address fromToken, address toToken, uint256 amount, uint256 minReturn, bytes calldata data) external returns (uint256);
-}
-interface IPancakeSwapRouter {
-    function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
-}
-interface ICurvePool {
-    function exchange(int128 i, int128 j, uint256 dx, uint256 min_dy) external returns (uint256);
-}
-interface IBalancerVault {
-    function swap(bytes32 poolId, address tokenIn, address tokenOut, uint256 amountIn, uint256 minAmountOut) external returns (uint256);
-}
-// Placeholder for Aquarius (assuming a generic DEX interface)
-interface IAquaRouter {
-    function swap(address fromToken, address toToken, uint256 amountIn, uint256 minAmountOut) external returns (uint256);
-}
-
-// LayerZero and Wormhole interfaces (simplified)
-interface ILayerZeroEndpoint {
-    function send(uint16 dstChainId, bytes calldata remoteAndLocalAddresses, bytes calldata payload, address payable refundAddress, address zroPaymentAddress, bytes calldata adapterParams) external payable;
-}
-interface IWormhole {
-    function publishMessage(uint32 nonce, bytes memory payload, uint8 consistencyLevel) external returns (uint64 sequence);
-}
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract InstilledInteroperability {
-    // Chain identifiers
+    // Chain IDs
     uint256 constant ETHEREUM_CHAIN = 1;
     uint256 constant BINANCE_CHAIN = 2;
     uint256 constant POLYGON_CHAIN = 3;
     uint256 constant STELLAR_CHAIN = 4;
+    uint256 constant SOLANA_CHAIN = 5;
+    uint256 constant CRONOS_CHAIN = 6;
+    uint256 constant BITCOIN_CHAIN = 7;
 
-    // Structs
+    // Mediator and USD token
+    address public mediatorAccount;
+    IERC20 public usdToken;
+    AggregatorV3Interface public priceFeed;
+
+    // USD Mediator Tracking
+    struct MediatorBalance {
+        uint256 totalUSD;
+        uint256 publicUSD;
+        int256 capitalOrDebt;
+    }
+    MediatorBalance public mediatorBalance;
+
+    // Token Asset Struct
     struct TokenAsset {
         string tokenAssetName;
-        uint8 tokenAssetDecimal;
         string tokenAssetSymbol;
-        address tokenAssetContractAddress; // EVM address; Stellar uses asset codes
+        uint8 tokenAssetDecimal;
+        address tokenAssetContractAddress; // EVM address; non-EVM uses address(0)
+        uint256 chainId;
+        string chainExplorerUrl;
     }
 
+    // Blockchain Struct
     struct Blockchain {
         string chainName;
         uint256 chainId;
         string[] chainRpcUrls;
         string chainCurrency;
+        string chainExplorerUrl;
     }
 
-    // Mediator account (USD anchor/bank simulation)
-    address public mediatorAccount; // Holds USD (e.g., USDC) for bridging
-    IERC20 public usdToken; // USDC or similar stablecoin
-
-    // Chainlink price feed
-    AggregatorV3Interface public priceFeed; // e.g., ETH/USD or token/USD
-
-    // DEX contract addresses (replace with actual addresses)
-    IUniswapV2Router public uniswapRouter = IUniswapV2Router(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D); // Ethereum
-    IOneInch public oneInchRouter = IOneInch(0x1111111254EEB25477B68fb85Ed929f73A960582); // 1inch v5
-    IPancakeSwapRouter public pancakeSwapRouter = IPancakeSwapRouter(0x10ED43C718714eb63d5aA57B78B54704E256024E); // BSC
-    ICurvePool public curvePool = ICurvePool(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7); // 3pool on Ethereum
-    IBalancerVault public balancerVault = IBalancerVault(0xBA12222222228d8Ba445958a75a0704d566BF2C8); // Ethereum
-    IAquaRouter public aquaRouter = IAquaRouter(0x...); // Placeholder for Aquarius
-
-    // Cross-chain bridge endpoints
-    ILayerZeroEndpoint public layerZeroEndpoint = ILayerZeroEndpoint(0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675); // Ethereum endpoint
-    IWormhole public wormholeCore = IWormhole(0x98f3c9e6E3b1CfB3a7c6F6bD9e8b8f8e8f8e8f8e); // Placeholder
+    // Node Network Struct
+    struct Node {
+        address nodeAddress;
+        uint256 chainId;
+        bool active;
+    }
 
     // Mappings
     mapping(uint256 => Blockchain) public verifiedBlockchains;
     mapping(uint256 => mapping(string => TokenAsset)) public verifiedTokenAssets;
-    mapping(uint256 => string) public ipfsLedgerHashes; // Stellar IPFS ledger
+    mapping(bytes32 => bool) public usedSignatures;
+    mapping(address => Node) public networkNodes;
+    address[] public nodeAddresses;
+
+    // Rewards Distribution
+    address[] public cj03nesAccounts;
+    uint256 public reserve;
 
     // Events
-    event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient, string ipfsHash);
-    event CrossChainSwap(uint256 fromChain, uint256 toChain, string fromToken, string toToken, uint256 amount, uint256 received);
-    event MediatorUpdate(address indexed mediator, uint256 usdAmount);
-    event LedgerUpdated(uint256 chainId, string newIpfsHash);
+    event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient);
+    event GhostTransfer(address from, address to, string tokenSymbol, uint256 amount);
+    event MediatorUpdate(uint256 totalUSD, uint256 publicUSD, int256 capitalOrDebt);
+    event NodeAdded(address nodeAddress, uint256 chainId);
+    event RewardsDistributed(uint256 totalAmount, uint256 cj03nesShare, uint256 mediatorShare, uint256 reserveShare);
 
     constructor(address _mediatorAccount, address _usdToken, address _priceFeed) {
         mediatorAccount = _mediatorAccount;
         usdToken = IERC20(_usdToken);
         priceFeed = AggregatorV3Interface(_priceFeed);
 
-        // Initialize blockchains and tokens (Ethereum, BSC, Polygon as before)
         // Ethereum
-        verifiedBlockchains[ETHEREUM_CHAIN] = Blockchain("Ethereum", 1, new string[](5), "ETH");
+        verifiedBlockchains[ETHEREUM_CHAIN] = Blockchain("Ethereum", 1, new string[](1), "ETH", "https://etherscan.io");
         verifiedBlockchains[ETHEREUM_CHAIN].chainRpcUrls[0] = "https://eth.llamarpc.com";
-        verifiedTokenAssets[ETHEREUM_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", 6, "USDC", 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-        verifiedTokenAssets[ETHEREUM_CHAIN]["ZPE"] = TokenAsset("Zeropoint", 3, "ZPE", address(0x...));
-        verifiedTokenAssets[ETHEREUM_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", 2, "ZPW", address(0x...));
+        verifiedTokenAssets[ETHEREUM_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 6, 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, 0xYourZPEAddress, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, 0xYourZPWAddress, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["ETH"] = TokenAsset("Ethereum", "ETH", 18, address(0), 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["LINK"] = TokenAsset("Chainlink", "LINK", 18, 0x514910771AF9Ca656af840dff83E8264EcF986CA, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["ARB"] = TokenAsset("Arbitrum", "ARB", 18, 0x912CE59144191C1204E64559FE8253a0e49E6548, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["BTC"] = TokenAsset("Wrapped Bitcoin", "WBTC", 8, 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599, 1, "https://etherscan.io");
+        verifiedTokenAssets[ETHEREUM_CHAIN]["BNB"] = TokenAsset("Binance Coin (BEP2)", "BNB", 18, 0xB8c77482e45F1F44dE1745F52C74426C631bDD52, 1, "https://etherscan.io");
 
         // Binance Smart Chain
-        verifiedBlockchains[BINANCE_CHAIN] = Blockchain("BNB Smart Chain Mainnet", 56, new string[](5), "BNB");
+        verifiedBlockchains[BINANCE_CHAIN] = Blockchain("BNB Smart Chain", 2, new string[](1), "BNB", "https://bscscan.com");
         verifiedBlockchains[BINANCE_CHAIN].chainRpcUrls[0] = "https://rpc.ankr.com/bsc";
-        verifiedTokenAssets[BINANCE_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", 6, "USDC", 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d);
-        verifiedTokenAssets[BINANCE_CHAIN]["ZPE"] = TokenAsset("Zeropoint", 3, "ZPE", address(0x...));
-        verifiedTokenAssets[BINANCE_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", 2, "ZPW", address(0x...));
+        verifiedTokenAssets[BINANCE_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 6, 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d, 2, "https://bscscan.com");
+        verifiedTokenAssets[BINANCE_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, 0xYourZPEAddressBSC, 2, "https://bscscan.com");
+        verifiedTokenAssets[BINANCE_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, 0xYourZPWAddressBSC, 2, "https://bscscan.com");
+        verifiedTokenAssets[BINANCE_CHAIN]["BNB"] = TokenAsset("Binance Coin", "BNB", 18, address(0), 2, "https://bscscan.com");
+        verifiedTokenAssets[BINANCE_CHAIN]["BTC"] = TokenAsset("Bitcoin BEP2", "BTCB", 18, 0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c, 2, "https://bscscan.com");
 
         // Polygon
-        verifiedBlockchains[POLYGON_CHAIN] = Blockchain("Polygon Mainnet", 137, new string[](5), "POL");
+        verifiedBlockchains[POLYGON_CHAIN] = Blockchain("Polygon", 3, new string[](1), "MATIC", "https://polygonscan.com");
         verifiedBlockchains[POLYGON_CHAIN].chainRpcUrls[0] = "https://polygon.llamarpc.com";
-        verifiedTokenAssets[POLYGON_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", 6, "USDC", 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359);
-        verifiedTokenAssets[POLYGON_CHAIN]["ZPE"] = TokenAsset("Zeropoint", 3, "ZPE", address(0x...));
-        verifiedTokenAssets[POLYGON_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", 2, "ZPW", address(0x...));
+        verifiedTokenAssets[POLYGON_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 6, 0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359, 3, "https://polygonscan.com");
+        verifiedTokenAssets[POLYGON_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, 0xYourZPEAddressPolygon, 3, "https://polygonscan.com");
+        verifiedTokenAssets[POLYGON_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, 0xYourZPWAddressPolygon, 3, "https://polygonscan.com");
 
-        // Stellar
-        verifiedBlockchains[STELLAR_CHAIN] = Blockchain("Stellar Mainnet", 4, new string[](3), "XLM");
+        // Stellar (default chain)
+        verifiedBlockchains[STELLAR_CHAIN] = Blockchain("Stellar Mainnet", 4, new string[](1), "XLM", "https://stellar.expert/explorer/public");
         verifiedBlockchains[STELLAR_CHAIN].chainRpcUrls[0] = "https://horizon.stellar.org";
-        verifiedTokenAssets[STELLAR_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", 7, "USDC", address(0));
-        verifiedTokenAssets[STELLAR_CHAIN]["ZPE"] = TokenAsset("Zeropoint", 3, "ZPE", address(0x...));
-        verifiedTokenAssets[STELLAR_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", 2, "ZPW", address(0x...));
-        ipfsLedgerHashes[STELLAR_CHAIN] = "QmInitialStellarLedgerHash";
+        verifiedTokenAssets[STELLAR_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 7, address(0), 4, "https://stellar.expert/explorer/public");
+        verifiedTokenAssets[STELLAR_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, address(0), 4, "https://stellar.expert/explorer/public");
+        verifiedTokenAssets[STELLAR_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, address(0), 4, "https://stellar.expert/explorer/public");
+        verifiedTokenAssets[STELLAR_CHAIN]["XLM"] = TokenAsset("Stellar Lumens", "XLM", 7, address(0), 4, "https://stellar.expert/explorer/public");
+        verifiedTokenAssets[STELLAR_CHAIN]["BTC"] = TokenAsset("Bitcoin (Anchored)", "BTC", 7, address(0), 4, "https://stellar.expert/explorer/public");
+
+        // Solana
+        verifiedBlockchains[SOLANA_CHAIN] = Blockchain("Solana Mainnet", 5, new string[](1), "SOL", "https://solscan.io");
+        verifiedBlockchains[SOLANA_CHAIN].chainRpcUrls[0] = "https://api.mainnet-beta.solana.com";
+        verifiedTokenAssets[SOLANA_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 6, address(0), 5, "https://solscan.io");
+        verifiedTokenAssets[SOLANA_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, address(0), 5, "https://solscan.io");
+        verifiedTokenAssets[SOLANA_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, address(0), 5, "https://solscan.io");
+        verifiedTokenAssets[SOLANA_CHAIN]["SOL"] = TokenAsset("Solana", "SOL", 9, address(0), 5, "https://solscan.io");
+        verifiedTokenAssets[SOLANA_CHAIN]["BTC"] = TokenAsset("Wrapped Bitcoin", "WBTC", 6, address(0), 5, "https://solscan.io");
+
+        // Cronos
+        verifiedBlockchains[CRONOS_CHAIN] = Blockchain("Cronos Mainnet", 6, new string[](1), "CRO", "https://cronoscan.com");
+        verifiedBlockchains[CRONOS_CHAIN].chainRpcUrls[0] = "https://evm.cronos.org";
+        verifiedTokenAssets[CRONOS_CHAIN]["USDC"] = TokenAsset("United States Dollar Coin", "USDC", 6, 0x66c0dD67fB6b0f25B417aA81304D4627dE96a392, 6, "https://cronoscan.com");
+        verifiedTokenAssets[CRONOS_CHAIN]["ZPE"] = TokenAsset("Zeropoint", "ZPE", 3, 0xYourZPEAddressCronos, 6, "https://cronoscan.com");
+        verifiedTokenAssets[CRONOS_CHAIN]["ZPW"] = TokenAsset("ZeropointWifi", "ZPW", 2, 0xYourZPWAddressCronos, 6, "https://cronoscan.com");
+        verifiedTokenAssets[CRONOS_CHAIN]["CRO"] = TokenAsset("Cronos", "CRO", 18, 0x5C7F8A570d578ed84E63fdFA7b1eE72dEae1AE23, 6, "https://cronoscan.com");
+
+        // Bitcoin
+        verifiedBlockchains[BITCOIN_CHAIN] = Blockchain("Bitcoin Mainnet", 7, new string[](1), "BTC", "https://blockchain.info");
+        verifiedBlockchains[BITCOIN_CHAIN].chainRpcUrls[0] = "https://bitcoin-mainnet-rpc.example.com"; // Replace with real RPC
+        verifiedTokenAssets[BITCOIN_CHAIN]["BTC"] = TokenAsset("Bitcoin", "BTC", 8, address(0), 7, "https://blockchain.info");
+        verifiedTokenAssets[BITCOIN_CHAIN]["BTC-LN"] = TokenAsset("Bitcoin Lightning", "BTC-LN", 8, address(0), 7, "https://1ml.com");
     }
 
-    // Get best price from DEXes
-    function getBestPrice(
-        uint256 chainId,
-        address fromToken,
-        address toToken,
-        uint256 amountIn
-    ) internal returns (address bestDex, uint256 bestAmountOut, uint256 bestFee) {
-        uint256[] memory amounts;
-        uint256 minAmountOut = 0;
-        bestFee = type(uint256).max; // Start with max fee to find minimum
-
-        // Uniswap (Ethereum)
-        if (chainId == ETHEREUM_CHAIN) {
-            address[] memory path = new address[](2);
-            path[0] = fromToken;
-            path[1] = toToken;
-            amounts = uniswapRouter.swapExactTokensForTokens(amountIn, 0, path, address(this), block.timestamp + 300);
-            if (amounts[1] > minAmountOut) {
-                minAmountOut = amounts[1];
-                bestDex = address(uniswapRouter);
-                bestFee = estimateGasFee(chainId, 200000); // Rough gas estimate
-            }
-        }
-
-        // 1inch (Ethereum)
-        if (chainId == ETHEREUM_CHAIN) {
-            bytes memory oneInchData = abi.encodeWithSignature("swap(address,address,uint256)", fromToken, toToken, amountIn);
-            uint256 oneInchOut = oneInchRouter.swap(fromToken, toToken, amountIn, 0, oneInchData);
-            if (oneInchOut > minAmountOut) {
-                minAmountOut = oneInchOut;
-                bestDex = address(oneInchRouter);
-                bestFee = estimateGasFee(chainId, 250000);
-            }
-        }
-
-        // PancakeSwap (BSC)
-        if (chainId == BINANCE_CHAIN) {
-            address[] memory path = new address[](2);
-            path[0] = fromToken;
-            path[1] = toToken;
-            amounts = pancakeSwapRouter.swapExactTokensForTokens(amountIn, 0, path, address(this), block.timestamp + 300);
-            if (amounts[1] > minAmountOut) {
-                minAmountOut = amounts[1];
-                bestDex = address(pancakeSwapRouter);
-                bestFee = estimateGasFee(chainId, 180000);
-            }
-        }
-
-        // Curve (Ethereum)
-        if (chainId == ETHEREUM_CHAIN && fromToken == address(usdToken)) {
-            uint256 curveOut = curvePool.exchange(0, 1, amountIn, 0); // Assuming USDC to another stablecoin
-            if (curveOut > minAmountOut) {
-                minAmountOut = curveOut;
-                bestDex = address(curvePool);
-                bestFee = estimateGasFee(chainId, 150000);
-            }
-        }
-
-        // Balancer (Ethereum)
-        if (chainId == ETHEREUM_CHAIN) {
-            bytes32 poolId = 0x...; // Replace with actual pool ID
-            uint256 balancerOut = balancerVault.swap(poolId, fromToken, toToken, amountIn, 0);
-            if (balancerOut > minAmountOut) {
-                minAmountOut = balancerOut;
-                bestDex = address(balancerVault);
-                bestFee = estimateGasFee(chainId, 220000);
-            }
-        }
-
-        // Aqua (Placeholder)
-        if (chainId == ETHEREUM_CHAIN) {
-            uint256 aquaOut = aquaRouter.swap(fromToken, toToken, amountIn, 0);
-            if (aquaOut > minAmountOut) {
-                minAmountOut = aquaOut;
-                bestDex = address(aquaRouter);
-                bestFee = estimateGasFee(chainId, 200000);
-            }
-        }
-
-        return (bestDex, minAmountOut, bestFee);
+    // Add Node to Network
+    function addNode(address nodeAddress, uint256 chainId) external {
+        require(verifiedBlockchains[chainId].chainId != 0, "Chain not supported");
+        require(!networkNodes[nodeAddress].active, "Node already added");
+        networkNodes[nodeAddress] = Node(nodeAddress, chainId, true);
+        nodeAddresses.push(nodeAddress);
+        emit NodeAdded(nodeAddress, chainId);
     }
 
-    // Estimate gas fee (simplified)
-    function estimateGasFee(uint256 chainId, uint256 gasUnits) internal view returns (uint256) {
-        (, int256 price,,,) = priceFeed.latestRoundData(); // Chainlink ETH/USD price
-        uint256 gasPrice = tx.gasprice; // Current gas price in wei
-        return (gasUnits * gasPrice * uint256(price)) / 10**18; // Convert to USD
+    // Set cj03nes Accounts
+    function setCj03nesAccounts(address[] memory accounts) external {
+        require(msg.sender == mediatorAccount, "Only mediator can set");
+        require(accounts.length <= 5, "Max 5 accounts");
+        cj03nesAccounts = accounts;
     }
 
-    // Cross-chain transfer with mediator
+    // Distribute Mining Rewards
+    function distributeRewards() external payable {
+        uint256 amount = msg.value;
+        uint256 cj03nesShare = (amount * 80) / 100;
+        uint256 mediatorShare = (amount * 5) / 100;
+        uint256 reserveShare = (amount * 15) / 100;
+        uint256 perCj03nes = cj03nesAccounts.length > 0 ? cj03nesShare / cj03nesAccounts.length : 0;
+
+        for (uint256 i = 0; i < cj03nesAccounts.length; i++) {
+            payable(cj03nesAccounts[i]).transfer(perCj03nes);
+        }
+        payable(mediatorAccount).transfer(mediatorShare);
+        reserve += reserveShare;
+
+        emit RewardsDistributed(amount, cj03nesShare, mediatorShare, reserveShare);
+    }
+
+    // Cross-Chain Transfer
     function crossChainTransfer(
         uint256 fromChain,
         uint256 toChain,
@@ -219,86 +178,50 @@ contract InstilledInteroperability {
         uint256 amount,
         address recipient
     ) external payable {
-        TokenAsset memory fromToken = verifiedTokenAssets[fromChain][tokenSymbol];
-        require(fromToken.tokenAssetContractAddress != address(0) || fromChain == STELLAR_CHAIN, "Token not supported");
+        TokenAsset memory token = verifiedTokenAssets[fromChain][tokenSymbol];
+        require(token.chainId != 0, "Token not supported");
 
-        // Step 1: Transfer token to mediator
-        if (fromChain != STELLAR_CHAIN) {
-            IERC20(fromToken.tokenAssetContractAddress).transferFrom(msg.sender, mediatorAccount, amount);
+        if (fromChain != STELLAR_CHAIN && fromChain != SOLANA_CHAIN && fromChain != BITCOIN_CHAIN) {
+            IERC20(token.tokenAssetContractAddress).transferFrom(msg.sender, mediatorAccount, amount);
         }
+        updateMediatorBalance(amount, true);
+        emit CrossChainTransfer(fromChain, toChain, tokenSymbol, amount, recipient);
+    }
 
-        // Step 2: Sell to USD on source chain
-        (address bestDex, uint256 usdAmount,) = getBestPrice(fromChain, fromToken.tokenAssetContractAddress, address(usdToken), amount);
-        require(bestDex != address(0), "No suitable DEX found");
-        // Execute swap (simplified; actual call depends on DEX)
-        IERC20(fromToken.tokenAssetContractAddress).approve(bestDex, amount);
-        // Call appropriate DEX function here (e.g., uniswapRouter.swapExactTokensForTokens)
+    // Ghost Transfer
+    function ghostTransfer(string memory tokenSymbol, uint256 amount, address recipient, bytes memory signature) external {
+        TokenAsset memory token = verifiedTokenAssets[block.chainid][tokenSymbol];
+        bytes32 message = keccak256(abi.encodePacked(tokenSymbol, amount, recipient, block.chainid));
+        require(!usedSignatures[message], "Signature already used");
+        require(verifySignature(message, signature, msg.sender), "Invalid signature");
+        usedSignatures[message] = true;
+        emit GhostTransfer(msg.sender, recipient, tokenSymbol, amount);
+    }
 
-        // Step 3: Bridge USD to target chain
-        if (toChain == STELLAR_CHAIN) {
-            // Use LayerZero or Wormhole to signal Stellar anchor
-            bytes memory payload = abi.encode(tokenSymbol, usdAmount, recipient);
-            layerZeroEndpoint.send{value: msg.value}(4, abi.encodePacked(mediatorAccount, recipient), payload, payable(msg.sender), address(0), bytes(""));
-            emit CrossChainTransfer(fromChain, toChain, "USDC", usdAmount, recipient, ipfsLedgerHashes[STELLAR_CHAIN]);
+    function verifySignature(bytes32 message, bytes memory signature, address signer) internal pure returns (bool) {
+        bytes32 r; bytes32 s; uint8 v;
+        assembly { r := mload(add(signature, 32)) s := mload(add(signature, 64)) v := byte(0, mload(add(signature, 96))) }
+        return ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message)), v, r, s) == signer;
+    }
+
+    // Mediator Balance Update
+    function updateMediatorBalance(uint256 amount, bool isDeposit) internal {
+        if (isDeposit) {
+            mediatorBalance.totalUSD += amount;
+            mediatorBalance.publicUSD += (amount * 95) / 100;
+            mediatorBalance.capitalOrDebt = int256(mediatorBalance.totalUSD) - int256(mediatorBalance.publicUSD);
         } else {
-            // EVM-to-EVM bridge
-            usdToken.transferFrom(mediatorAccount, address(this), usdAmount);
-            bytes memory payload = abi.encode(tokenSymbol, usdAmount, recipient);
-            wormholeCore.publishMessage(0, payload, 1); // Consistency level 1
+            require(mediatorBalance.publicUSD >= amount, "Insufficient public USD");
+            mediatorBalance.totalUSD -= amount;
+            mediatorBalance.publicUSD -= amount;
+            mediatorBalance.capitalOrDebt = int256(mediatorBalance.totalUSD) - int256(mediatorBalance.publicUSD);
         }
-
-        // Step 4: Buy target token on destination chain (off-chain for Stellar)
-        emit MediatorUpdate(mediatorAccount, usdAmount);
+        emit MediatorUpdate(mediatorBalance.totalUSD, mediatorBalance.publicUSD, mediatorBalance.capitalOrDebt);
     }
 
-    // Cross-chain swap with mediator
-    function crossChainSwap(
-        uint256 fromChain,
-        uint256 toChain,
-        string memory fromTokenSymbol,
-        string memory toTokenSymbol,
-        uint256 amount
-    ) external payable {
-        TokenAsset memory fromToken = verifiedTokenAssets[fromChain][fromTokenSymbol];
-        TokenAsset memory toToken = verifiedTokenAssets[toChain][toTokenSymbol];
-        require(fromToken.tokenAssetContractAddress != address(0) || fromChain == STELLAR_CHAIN, "From token not supported");
-        require(toToken.tokenAssetContractAddress != address(0) || toChain == STELLAR_CHAIN, "To token not supported");
-
-        // Step 1: Transfer to mediator
-        if (fromChain != STELLAR_CHAIN) {
-            IERC20(fromToken.tokenAssetContractAddress).transferFrom(msg.sender, mediatorAccount, amount);
-        }
-
-        // Step 2: Sell to USD
-        (address bestDexFrom, uint256 usdAmount,) = getBestPrice(fromChain, fromToken.tokenAssetContractAddress, address(usdToken), amount);
-        require(bestDexFrom != address(0), "No suitable DEX found");
-        IERC20(fromToken.tokenAssetContractAddress).approve(bestDexFrom, amount);
-        // Execute swap to USD
-
-        // Step 3: Bridge USD
-        if (toChain == STELLAR_CHAIN) {
-            bytes memory payload = abi.encode(toTokenSymbol, usdAmount, msg.sender);
-            layerZeroEndpoint.send{value: msg.value}(4, abi.encodePacked(mediatorAccount, msg.sender), payload, payable(msg.sender), address(0), bytes(""));
-        } else {
-            usdToken.transferFrom(mediatorAccount, address(this), usdAmount);
-            bytes memory payload = abi.encode(toTokenSymbol, usdAmount, msg.sender);
-            wormholeCore.publishMessage(0, payload, 1);
-        }
-
-        // Step 4: Buy target token (off-chain for Stellar)
-        emit CrossChainSwap(fromChain, toChain, fromTokenSymbol, toTokenSymbol, amount, usdAmount);
-    }
-
-    // Update IPFS hash (called by oracle or anchor)
-    function updateStellarLedgerHash(string memory newHash) external {
-        // Restrict to authorized caller (e.g., Chainlink oracle) in production
-        ipfsLedgerHashes[STELLAR_CHAIN] = newHash;
-        emit LedgerUpdated(STELLAR_CHAIN, newHash);
-    }
-
-    // Receive bridged USD (called by bridge endpoint)
-    function receiveUSD(uint256 amount, string memory targetToken, address recipient) external {
-        require(msg.sender == address(wormholeCore) || msg.sender == address(layerZeroEndpoint), "Unauthorized");
-        usdToken.transfer(recipient, amount); // For EVM chains; Stellar handled off-chain
+    // Withdraw from Mediator
+    function withdrawFromMediator(uint256 amount, string memory tokenSymbol, address recipient) external {
+        require(msg.sender == mediatorAccount, "Only mediator can withdraw");
+        updateMediatorBalance(amount, false);
     }
 }
