@@ -33,8 +33,19 @@ header {
 
 /* Navigation styling */
 nav {
+    position: fixeed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #090b13;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: #000000; /* Black background for nav */
-    padding: 10px;
+    padding: 0 36px;
+    letter-spacing: 16px;
+    z-index: 3;
 }
 
 nav a {
@@ -43,9 +54,6 @@ nav a {
     margin: 0 15px;
 }
 
-nav a:hover {
-    text-decoration: underline;
-}
 
 /* Page content */
 .page {
