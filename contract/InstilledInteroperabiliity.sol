@@ -31,7 +31,14 @@ ethVerifiedTokenAssets ={
         tokenAssetName = Zeropoint;
         tokenAssetDecimal = 3;
         tokenAssetSymbol = ZPE;
-        tokenAssetContractAddress = ZeropointContractAddress;
+        tokenAssetContractAddress = ZeropointContractAddress; ],
+    ZeropointWifi = [
+        tokenAssetName = ZeropointWifi;
+        tokenAssetDecimal = 2;
+        tokenAssetSymbol = ZPW;
+        tokenAssetContractAddress = ZeropointWifiContractAddress; ],
+
+],
 
 ],
         
@@ -64,7 +71,12 @@ bnbVerifiedTokenAssets ={
         tokenAssetName = Zeropoint;
         tokenAssetDecimal = 3;
         tokenAssetSymbol = ZPE;
-        tokenAssetContractAddress = ZeropointContractAddress;
+        tokenAssetContractAddress = ZeropointContractAddress; ],
+    ZeropointWifi = [
+        tokenAssetName = ZeropointWifi;
+        tokenAssetDecimal = 2;
+        tokenAssetSymbol = ZPW;
+        tokenAssetContractAddress = ZeropointWifiContractAddress; ],
         }
     }
 
@@ -93,7 +105,12 @@ polVerifiedTokenAssets ={
         tokenAssetName = Zeropoint;
         tokenAssetDecimal = 3;
         tokenAssetSymbol = ZPE;
-        tokenAssetContractAddress = ZeropointContractAddress;
+        tokenAssetContractAddress = ZeropointContractAddress; ],
+    ZeropointWifi = [
+        tokenAssetName = ZeropointWifi;
+        tokenAssetDecimal = 2;
+        tokenAssetSymbol = ZPW;
+        tokenAssetContractAddress = ZeropointWifiContractAddress; ],
     }    } 
 }
 
