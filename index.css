@@ -75,3 +75,8 @@ button:hover { background: #E6C200; }
 .slider-btn { padding: 5px 10px; background: #FFD700; color: #000000; border: none; border-radius: 4px; cursor: pointer; }
 .slider-btn.active { background: #28a745; color: #FFFFFF; }
 .slider-btn.off.active { background: #dc3545; }
+
+.earn-container { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+#ad-transaction-history { margin-top: 20px; text-align: center; }
+#history-list { list-style: none; padding: 0; }
+#history-list li { background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 4px; }
