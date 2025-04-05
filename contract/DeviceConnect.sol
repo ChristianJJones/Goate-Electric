@@ -2,45 +2,75 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./InstilledInteroperability.sol";
 
-// DeviceConnect manages Goate Electric device connections (Zeropoint and ZeropointWifi modems)
 contract DeviceConnect is Ownable {
+    InstilledInteroperability public interoperability;
+    uint256 public constant FREE_MODALS = 5;
+    uint256 public constant MODAL_COST = 1 * 10**6; // $1 in USDC (6 decimals)
+    address public revenueRecipient;
+
     struct Device {
-        string deviceId;    // Unique identifier (e.g., serial number or IMEI)
-        address owner;      // Device owner’s wallet address
-        bool isActive;      // Connection status
-        uint256 chainId;    // Blockchain network (1-7)
+        string deviceId;
+        bool isActive;
+        uint256 modalCount;
+    }
+    mapping(address => Device[]) public userDevices;
+    mapping(string => bool) public deviceExists;
+
+    constructor(address _interoperability, address initialOwner) Ownable(initialOwner) {
+        interoperability = InstilledInteroperability(_interoperability);
     }
 
-    // Mapping of device IDs to their details
-    mapping(string => Device) public devices;
-    // Mapping of user addresses to their list of device IDs
-    mapping(address => string[]) public userDevices;
-
-    event DeviceConnected(string deviceId, address owner, uint256 chainId);
-    event DeviceDisconnected(string deviceId, address owner);
-
-    constructor(address initialOwner) Ownable(initialOwner) {}
-
-    // Connect a device to a specific chain (e.g., Ethereum, Bitcoin)
-    function connectDevice(string memory deviceId, uint256 chainId) external {
-        require(devices[deviceId].owner == address(0) || devices[deviceId].owner == msg.sender, "Device already owned");
-        require(chainId >= 1 && chainId <= 7, "Invalid chain ID"); // Supports chains 1-7
-
-        devices[deviceId] = Device(deviceId, msg.sender, true, chainId);
-        userDevices[msg.sender].push(deviceId);
-        emit DeviceConnected(deviceId, msg.sender, chainId);
+    function setRevenueRecipient(address recipient) external onlyOwner {
+        revenueRecipient = recipient;
     }
 
-    // Disconnect a device (only by owner)
+    function addDevice(string memory deviceId) external {
+        require(!deviceExists[deviceId], "Device already exists");
+        userDevices[msg.sender].push(Device(deviceId, true, 0));
+        deviceExists[deviceId] = true;
+    }
+
     function disconnectDevice(string memory deviceId) external {
-        require(devices[deviceId].owner == msg.sender, "Not device owner");
-        devices[deviceId].isActive = false;
-        emit DeviceDisconnected(deviceId, msg.sender);
+        Device[] storage devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId)) && devices[i].isActive) {
+                devices[i].isActive = false;
+                return;
+            }
+        }
+        revert("Device not found or already disconnected");
     }
 
-    // Get all devices owned by a user
-    function getUserDevices(address user) external view returns (string[] memory) {
+    function useModal(string memory deviceId) external {
+        Device[] storage devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId)) && devices[i].isActive) {
+                if (devices[i].modalCount < FREE_MODALS) {
+                    devices[i].modalCount++;
+                } else {
+                    require(revenueRecipient != address(0), "Revenue recipient not set");
+                    interoperability.crossChainTransfer(1, 1, "USDC", MODAL_COST, revenueRecipient);
+                    devices[i].modalCount++;
+                }
+                return;
+            }
+        }
+        revert("Active device not found");
+    }
+
+    function getUserDevices(address user) external view returns (Device[] memory) {
         return userDevices[user];
+    }
+
+    function isDeviceActive(string memory deviceId) external view returns (bool) {
+        Device[] memory devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId))) {
+                return devices[i].isActive;
+            }
+        }
+        return false;
     }
 }
