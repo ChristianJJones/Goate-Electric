@@ -11,10 +11,12 @@ contract HomeTeamBets {
     address public owner;
     uint256 public totalRevenue; // 20% revenue pool
 
+    enum BetType { Win, Lose, Tie } // Explicitly define Win, Lose, Tie
+
     struct Bet {
         address bettor;
         uint256 amount; // USDC amount bet
-        bool win; // True = bet on win, False = bet on lose/tie
+        BetType betType; // Win, Lose, or Tie
         bool overtime; // True = bet on overtime, False = no overtime
         uint256 timestamp;
     }
@@ -26,7 +28,7 @@ contract HomeTeamBets {
         bool isActive; // True until game starts
         uint256 totalPool; // Total USDC bet
         bool completed; // True when game ends and results are set
-        bool homeTeamWon; // Game result
+        BetType result; // Win, Lose, or Tie for home team
         bool hadOvertime; // Game result
         mapping(address => Bet) bets; // One bet per user per game
         address[] bettors; // List of bettors
@@ -39,9 +41,9 @@ contract HomeTeamBets {
     AggregatorV3Interface public oracle; // Chainlink oracle for game results
     uint256 public gameCount;
 
-    event BetPlaced(address indexed bettor, uint256 gameId, uint256 amount, bool win, bool overtime, uint256 timestamp);
+    event BetPlaced(address indexed bettor, uint256 gameId, uint256 amount, BetType betType, bool overtime, uint256 timestamp);
     event GameStarted(uint256 gameId, uint256 startTime);
-    event GameCompleted(uint256 gameId, bool homeTeamWon, bool hadOvertime);
+    event GameCompleted(uint256 gameId, BetType result, bool hadOvertime);
     event WinningsDistributed(address indexed winner, uint256 gameId, uint256 amount);
 
     constructor(address _interoperability, address _usdcToken, address _oracle) {
@@ -64,8 +66,8 @@ contract HomeTeamBets {
         gameCount++;
     }
 
-    // Place a bet (win/lose + overtime yes/no)
-    function placeBet(uint256 _gameId, uint256 _amount, bool _win, bool _overtime) external {
+    // Place a bet (win, lose, or tie + overtime yes/no)
+    function placeBet(uint256 _gameId, uint256 _amount, BetType _betType, bool _overtime) external {
         Game storage game = games[_gameId];
         require(game.isActive, "Betting closed or game not found");
         require(block.timestamp < game.startTime - 5 minutes, "Betting closes 5 mins before start");
@@ -76,15 +78,15 @@ contract HomeTeamBets {
         require(usdcToken.transferFrom(msg.sender, address(this), _amount), "USDC transfer failed");
 
         // Record bet
-        game.bets[msg.sender] = Bet(msg.sender, _amount, _win, _overtime, block.timestamp);
+        game.bets[msg.sender] = Bet(msg.sender, _amount, _betType, _overtime, block.timestamp);
         game.bettors.push(msg.sender);
         game.totalPool += _amount;
         hasBet[msg.sender][_gameId] = true;
 
         // Add to transaction history
-        transactionHistory[msg.sender].push(Bet(msg.sender, _amount, _win, _overtime, block.timestamp));
+        transactionHistory[msg.sender].push(Bet(msg.sender, _amount, _betType, _overtime, block.timestamp));
 
-        emit BetPlaced(msg.sender, _gameId, _amount, _win, _overtime, block.timestamp);
+        emit BetPlaced(msg.sender, _gameId, _amount, _betType, _overtime, block.timestamp);
     }
 
     // Called when game starts (no more bets)
@@ -97,17 +99,17 @@ contract HomeTeamBets {
     }
 
     // Oracle updates game result (simplified for demo; use Chainlink in production)
-    function completeGame(uint256 _gameId, bool _homeTeamWon, bool _hadOvertime) external {
+    function completeGame(uint256 _gameId, BetType _result, bool _hadOvertime) external {
         require(msg.sender == owner, "Only owner can complete game"); // Replace with oracle in production
         Game storage game = games[_gameId];
         require(!game.isActive && !game.completed, "Game not started or already completed");
 
         game.completed = true;
-        game.homeTeamWon = _homeTeamWon;
+        game.result = _result;
         game.hadOvertime = _hadOvertime;
 
         distributeWinnings(_gameId);
-        emit GameCompleted(_gameId, _homeTeamWon, _hadOvertime);
+        emit GameCompleted(_gameId, _result, _hadOvertime);
     }
 
     // Distribute winnings pro-rata (80% to winners, 20% to revenue)
@@ -125,7 +127,7 @@ contract HomeTeamBets {
         for (uint256 i = 0; i < game.bettors.length; i++) {
             address bettor = game.bettors[i];
             Bet memory bet = game.bets[bettor];
-            bool wonMain = (bet.win == game.homeTeamWon) || (!bet.win && !game.homeTeamWon); // Win or lose/tie
+            bool wonMain = bet.betType == game.result; // Match win, lose, or tie
             bool wonOvertime = bet.overtime == game.hadOvertime;
 
             if (wonMain && wonOvertime) {
@@ -141,7 +143,7 @@ contract HomeTeamBets {
             Bet memory bet = game.bets[winner];
             uint256 winnerShare = (bet.amount * winnerPool) / totalWinningWeight;
             interoperability.crossChainTransfer(1, 1, "USDC", winnerShare, winner);
-            transactionHistory[winner].push(Bet(winner, winnerShare, bet.win, bet.overtime, block.timestamp));
+            transactionHistory[winner].push(Bet(winner, winnerShare, bet.betType, bet.overtime, block.timestamp));
             emit WinningsDistributed(winner, _gameId, winnerShare);
         }
     }
