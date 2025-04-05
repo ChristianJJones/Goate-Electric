@@ -24,6 +24,7 @@ nav a:hover { background: #1a1a1a; }
 .zpe-balance { position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; }
 .zpw-balance { position: absolute; bottom: 0; left: 25%; transform: translateX(-50%); text-align: center; }
 .zpp-balance { position: absolute; bottom: 0; right: 25%; transform: translateX(50%); text-align: center; }
+.gyst-balance { position: absolute; top: 25%; right: 0; transform: translateX(-50%); text-align: center; }
 
 .payment-container { margin: 20px auto; text-align: center; }
 .payment-dropdown { 
@@ -87,3 +88,6 @@ button:hover { background: #E6C200; }
 #bet-transaction-history { margin-top: 20px; text-align: center; }
 #bet-history-list { list-style: none; padding: 0; }
 #bet-history-list li { background: #1a1a1a; padding: 10px; margin: 5px 0; border-radius: 4px; }
+
+#game-modes { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+#game-container { width: 100%; height: 600px; border: 1px solid #FFD700; }
