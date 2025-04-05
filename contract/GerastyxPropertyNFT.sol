@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract GerastyxPropertyNFT is ERC721, Ownable {
     uint256 public constant TOTAL_SUPPLY = 1_000_000_000;
     uint256 public tokenCounter;
-    mapping(uint256 => uint256) public propertyValues; // USD value in wei
+    mapping(uint256 => uint256) public propertyValues;
 
     constructor() ERC721("GerastyxPropertyNFT", "GPNFT") Ownable(msg.sender) {
         initializeProperties();
@@ -16,7 +16,7 @@ contract GerastyxPropertyNFT is ERC721, Ownable {
     function initializeProperties() internal {
         propertyValues[1] = 100e18; // Duck Crossing
         propertyValues[2] = 110e18; // Duck Coast
-        // Add all 25 properties with their USD values
+        // Add all 25 properties
     }
 
     function mint(address to, uint256 tokenId) external onlyOwner {
