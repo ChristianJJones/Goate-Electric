@@ -1,6 +1,5 @@
 const ethers = require('ethers');
 const { StellarSdk } = require('stellar-sdk');
-const { Connection, Keypair, Transaction, TOKEN_PROGRAM_ID } = require('@solana/web3.js');
 const IPFS = require('ipfs-http-client');
 
 class USDMediator {
@@ -21,12 +20,12 @@ class USDMediator {
         this.tokenMap = {
             1: { "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "ZPE": "0xYourZPEAddress", "ZPW": "0xYourZPWAddress", "ZPP": "0xYourZPPAddress" },
             4: { "XLM": StellarSdk.Asset.native(), "USDC": new StellarSdk.Asset("USDC", "YourIssuer"), "ZPE": new StellarSdk.Asset("ZPE", "YourIssuer"), "ZPW": new StellarSdk.Asset("ZPW", "YourIssuer"), "ZPP": new StellarSdk.Asset("ZPP", "YourIssuer") },
-            // Add other chains
         };
         this.ipfs = IPFS.create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
         this.provider = new ethers.providers.Web3Provider(window.ethereum);
         this.signer = this.provider.getSigner();
         this.contract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, this.signer);
+        this.adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, this.signer);
         this.revenueDistribution = { cj03nes: "0xYourCj03nesAddress", reserves: "0xYourReservesAddress", mediator: "0xYourMediatorAddress" };
         this.listenForEvents();
     }
@@ -37,7 +36,6 @@ class USDMediator {
             fetch(`${this.providers.banxa}/quote?token=${tokenSymbol}&amount=${amount}`).then(res => res.json()).then(data => data.priceInUSD),
             this.providers.uniswap.getAmountsOut(ethers.utils.parseUnits(amount.toString(), 6), ["0xTokenAddress", "0xUSDCAddress"]).then(([_, out]) => ethers.utils.formatUnits(out, 6)),
             fetch(`${this.providers.oneInch}/${chainId}/quote?fromToken=${tokenSymbol}&toToken=USDC&amount=${amount}`).then(res => res.json()).then(data => data.toTokenAmount),
-            // Add other DEXs similarly
         ]);
         return prices.reduce((sum, price) => sum + parseFloat(price), 0) / prices.length;
     }
@@ -73,8 +71,49 @@ class USDMediator {
         await this.updateIPFS(amount, "Node Rewards");
     }
 
+    async getAdRevenue(adType, amount) {
+        let revenue;
+        switch (adType) {
+            case "Google":
+                revenue = await this.fetchGoogleAdRevenue(amount);
+                break;
+            case "Pi":
+                revenue = await this.fetchPiAdRevenue(amount);
+                break;
+            case "YouTube":
+                revenue = await this.fetchYouTubeAdRevenue(amount);
+                break;
+            default:
+                throw new Error("Unknown ad type");
+        }
+        return ethers.utils.parseUnits(revenue.toString(), 6); // USDC has 6 decimals
+    }
+
+    async handleAdWatch(adType, userAddress) {
+        const amount = await this.getAdRevenue(adType, 1); // 1 view
+        const tx = await this.adWatchContract.watchAd(adType, amount, { from: this.signer._address });
+        await tx.wait();
+        await this.updateIPFS(amount, `Ad Watch (${adType})`);
+        console.log(`Ad watched: ${adType}, Amount: ${ethers.utils.formatUnits(amount, 6)} USDC`);
+    }
+
+    async fetchGoogleAdRevenue(amount) {
+        // Placeholder: Replace with Google Ads API
+        return 0.01; // $0.01 per view
+    }
+
+    async fetchPiAdRevenue(amount) {
+        // Placeholder: Replace with Pi Network SDK
+        return 0.005; // $0.005 per view
+    }
+
+    async fetchYouTubeAdRevenue(amount) {
+        // Placeholder: Replace with YouTube Ads API
+        return 0.02; // $0.02 per view
+    }
+
     async updateIPFS(amount, type) {
-        const data = { type, amount, timestamp: Date.now() };
+        const data = { type, amount: ethers.utils.formatUnits(amount, 6), timestamp: Date.now() };
         const { cid } = await this.ipfs.add(JSON.stringify(data));
         console.log(`IPFS Updated: ${cid}`);
     }
