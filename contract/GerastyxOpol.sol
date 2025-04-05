@@ -40,13 +40,14 @@ contract GerastyxOpol is VRFConsumerBase {
         bool isActive;
         uint256[] boardRow1;
         uint256[] boardRow2;
+        uint256 pausedTime;
     }
 
     mapping(uint256 => GameSession) public sessions;
     uint256 public sessionCount;
     mapping(bytes32 => uint256) public requestIdToSession;
 
-    uint256 public constant BOARD_SIZE = 40; // Example: 20 spaces per row
+    uint256 public constant BOARD_SIZE = 40;
     uint256 public constant TURN_DURATION = 15 seconds;
     uint256 public constant SESSION_DURATION = 60 minutes;
 
@@ -82,24 +83,22 @@ contract GerastyxOpol is VRFConsumerBase {
     }
 
     function initializeBoard() internal {
-        // Define board layout (example)
         uint256[] memory row1 = new uint256[](BOARD_SIZE / 2);
         uint256[] memory row2 = new uint256[](BOARD_SIZE / 2);
         row1[0] = uint256(SpaceType.GO); row2[0] = uint256(SpaceType.JAIL);
-        // Add properties, luck/karma cards, etc., based on your layout
-        // This is a simplified example; expand as needed
+        row1[5] = uint256(SpaceType.PROPERTY); row2[5] = uint256(SpaceType.PROPERTY); // Example properties
+        // Expand with full board layout
     }
 
     function startSession(GameMode mode, uint256 entryFee) external payable {
         require(sessions[sessionCount].isActive == false, "Session already active");
         if (mode == GameMode.FreePlay) {
             require(msg.value == 0, "Free play requires ad watch");
-            // Trigger ad watch logic via USDMediator
             usdMediator.handleAdWatch("GameStart", msg.sender);
         } else {
-            uint256 requiredFee = mode == GameMode.Reasonable ? 1e6 : mode == GameMode.Gambling ? 5e6 : 20e6; // USDC in 6 decimals
+            uint256 requiredFee = mode == GameMode.Reasonable ? 1e6 : mode == GameMode.Gambling ? 5e6 : 20e6;
             require(usdcToken.transferFrom(msg.sender, address(this), requiredFee), "Payment failed");
-            usdMediator.distributeRevenue(requiredFee);
+            usdMediator.handleGerastyxOpolTransaction(sessionCount, requiredFee, "EntryFee");
         }
 
         GameSession storage session = sessions[sessionCount];
@@ -107,6 +106,8 @@ contract GerastyxOpol is VRFConsumerBase {
         session.players.push(msg.sender);
         session.startTime = block.timestamp;
         session.isActive = true;
+        session.boardRow1 = new uint256[](BOARD_SIZE / 2);
+        session.boardRow2 = new uint256[](BOARD_SIZE / 2);
         emit SessionStarted(sessionCount, mode);
         sessionCount++;
     }
@@ -115,7 +116,13 @@ contract GerastyxOpol is VRFConsumerBase {
         GameSession storage session = sessions[sessionId];
         require(session.isActive && session.players.length < 8, "Session full or inactive");
         require(block.timestamp < session.startTime + TURN_DURATION, "Too late to join");
-        // Same payment logic as startSession
+        if (session.mode == GameMode.FreePlay) {
+            usdMediator.handleAdWatch("GameStart", msg.sender);
+        } else {
+            uint256 requiredFee = session.mode == GameMode.Reasonable ? 1e6 : session.mode == GameMode.Gambling ? 5e6 : 20e6;
+            require(usdcToken.transferFrom(msg.sender, address(this), requiredFee), "Payment failed");
+            usdMediator.handleGerastyxOpolTransaction(sessionId, requiredFee, "EntryFee");
+        }
         session.players.push(msg.sender);
     }
 
@@ -132,7 +139,7 @@ contract GerastyxOpol is VRFConsumerBase {
         require(session.isActive && session.players[session.currentTurn] == msg.sender, "Not your turn");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK");
         bytes32 requestId = requestRandomness(keyHash, fee);
-        requestIdToSession[requestId] = sessionId + 1e18; // Offset to distinguish from dice
+        requestIdToSession[requestId] = sessionId + 1e18;
     }
 
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
@@ -140,12 +147,12 @@ contract GerastyxOpol is VRFConsumerBase {
         GameSession storage session = sessions[sessionId % 1e18];
         Player storage player = session.playerData[msg.sender];
         
-        if (sessionId < 1e18) { // Dice roll
+        if (sessionId < 1e18) {
             uint256 roll = (randomness % 6) + 1;
             movePlayer(sessionId, roll);
             emit DiceRolled(msg.sender, sessionId, roll);
-        } else { // Coin flip
-            bool isHeads = randomness % 2 == 0; // Heads (left) or Tails (right)
+        } else {
+            bool isHeads = randomness % 2 == 0;
             player.positionRow1 = isHeads ? player.positionRow1 : player.positionRow2;
             emit CoinFlipped(msg.sender, sessionId % 1e18, isHeads);
         }
@@ -158,7 +165,7 @@ contract GerastyxOpol is VRFConsumerBase {
         uint256 newPos = (player.positionRow1 + steps) % (BOARD_SIZE / 2);
         if (newPos < player.positionRow1) {
             player.hasCompletedLap = true;
-            uint256 paycheck = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 5e6 : session.mode == GameMode.Gambling ? 20e6 : 100e6;
+            uint256 paycheck = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 5e18 : session.mode == GameMode.Gambling ? 20e18 : 100e18;
             greyStax.mint(msg.sender, paycheck);
         }
         player.positionRow1 = newPos;
@@ -169,12 +176,12 @@ contract GerastyxOpol is VRFConsumerBase {
         GameSession storage session = sessions[sessionId];
         SpaceType space = SpaceType(session.boardRow1[position]);
         if (space == SpaceType.PROPERTY) {
-            uint256 propertyId = position; // Simplified mapping
+            uint256 propertyId = position;
             if (propertyNFT.ownerOf(propertyId) != address(0) && propertyNFT.ownerOf(propertyId) != msg.sender) {
                 uint256 rent = calculateRent(sessionId, propertyId);
                 payRent(sessionId, propertyId, rent);
             }
-        } // Add logic for other space types
+        }
     }
 
     function buyProperty(uint256 sessionId, uint256 propertyId) external {
@@ -186,7 +193,7 @@ contract GerastyxOpol is VRFConsumerBase {
             usdMediator.handleAdWatch("PropertyPurchase", msg.sender);
         } else {
             require(greyStax.transferFrom(msg.sender, address(this), price), "Payment failed");
-            usdMediator.distributeRevenue(price);
+            usdMediator.handleGerastyxOpolTransaction(sessionId, price, "PropertyPurchase");
         }
         propertyNFT.safeTransferFrom(address(this), msg.sender, propertyId);
         player.propertiesOwned[propertyId] = 0;
@@ -203,13 +210,19 @@ contract GerastyxOpol is VRFConsumerBase {
     function payRent(uint256 sessionId, uint256 propertyId, uint256 rent) internal {
         Player storage player = sessions[sessionId].playerData[msg.sender];
         address owner = propertyNFT.ownerOf(propertyId);
-        require(greyStax.transferFrom(msg.sender, owner, rent), "Rent payment failed");
-        usdMediator.distributeRevenue(rent);
+        if (player.balance < rent) {
+            session.pausedTime = block.timestamp;
+            // Frontend handles sell/leave logic
+        } else {
+            require(greyStax.transferFrom(msg.sender, owner, rent), "Rent payment failed");
+            usdMediator.handleGerastyxOpolTransaction(sessionId, rent, "RentPayment");
+        }
     }
 
     function getPropertyPrice(GameMode mode, uint256 propertyId) internal pure returns (uint256) {
-        // Implement pricing logic based on mode and propertyId
-        // Example: return mode == GameMode.Reasonable ? 1e6 : mode == GameMode.Gambling ? 10e6 : 50e6;
+        if (propertyId == 1) return mode == GameMode.FreePlay ? 0 : mode == GameMode.Reasonable ? 1e18 : mode == GameMode.Gambling ? 10e18 : 50e18;
+        // Add full pricing logic for all 25 properties
+        return 0;
     }
 
     function nextTurn(uint256 sessionId) internal {
@@ -223,15 +236,19 @@ contract GerastyxOpol is VRFConsumerBase {
     function endSession(uint256 sessionId) internal {
         GameSession storage session = sessions[sessionId];
         session.isActive = false;
-        address winner = session.players[0]; // Simplified; determine actual winner
+        address winner = session.players[0];
         uint256 appraisal = calculateAppraisal(sessionId, winner);
-        uint256 payout = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 1e6 : session.mode == GameMode.Gambling ? 10e6 : 25e6;
+        uint256 payout = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 1e18 : session.mode == GameMode.Gambling ? 10e18 : 25e18;
         greyStax.mint(winner, appraisal + payout);
         emit SessionEnded(sessionId, winner);
     }
 
     function calculateAppraisal(uint256 sessionId, address player) internal returns (uint256) {
         // Sum up value of properties, houses, hotels, cards
-        return 0; // Placeholder
+        return 0;
+    }
+
+    function distributeToNFTHolders(uint256 amount) external {
+        // Distribute 1% to NFT holders
     }
 }
