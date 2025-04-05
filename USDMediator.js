@@ -26,6 +26,9 @@ class USDMediator {
         this.signer = this.provider.getSigner();
         this.contract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, this.signer);
         this.adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, this.signer);
+        this.homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, this.signer);
+        this.chainlinkOracleAddress = "0xYourChainlinkOracleAddress"; // Replace with actual Chainlink oracle address
+        this.chainlinkJobId = "your-job-id-uuid"; // Replace with actual Chainlink job ID for sports data
         this.revenueDistribution = { cj03nes: "0xYourCj03nesAddress", reserves: "0xYourReservesAddress", mediator: "0xYourMediatorAddress" };
         this.listenForEvents();
     }
@@ -74,47 +77,69 @@ class USDMediator {
     async getAdRevenue(adType, amount) {
         let revenue;
         switch (adType) {
-            case "Google":
-                revenue = await this.fetchGoogleAdRevenue(amount);
-                break;
-            case "Pi":
-                revenue = await this.fetchPiAdRevenue(amount);
-                break;
-            case "YouTube":
-                revenue = await this.fetchYouTubeAdRevenue(amount);
-                break;
-            default:
-                throw new Error("Unknown ad type");
+            case "Google": revenue = await this.fetchGoogleAdRevenue(amount); break;
+            case "Pi": revenue = await this.fetchPiAdRevenue(amount); break;
+            case "YouTube": revenue = await this.fetchYouTubeAdRevenue(amount); break;
+            default: throw new Error("Unknown ad type");
         }
-        return ethers.utils.parseUnits(revenue.toString(), 6); // USDC has 6 decimals
+        return ethers.utils.parseUnits(revenue.toString(), 6);
     }
 
     async handleAdWatch(adType, userAddress) {
-        const amount = await this.getAdRevenue(adType, 1); // 1 view
+        const amount = await this.getAdRevenue(adType, 1);
         const tx = await this.adWatchContract.watchAd(adType, amount, { from: this.signer._address });
         await tx.wait();
         await this.updateIPFS(amount, `Ad Watch (${adType})`);
         console.log(`Ad watched: ${adType}, Amount: ${ethers.utils.formatUnits(amount, 6)} USDC`);
     }
 
-    async fetchGoogleAdRevenue(amount) {
-        // Placeholder: Replace with Google Ads API
-        return 0.01; // $0.01 per view
+    async fetchGoogleAdRevenue(amount) { return 0.01; } // Placeholder
+    async fetchPiAdRevenue(amount) { return 0.005; } // Placeholder
+    async fetchYouTubeAdRevenue(amount) { return 0.02; } // Placeholder
+
+    async getGameResults(gameId) {
+        const game = await this.homeTeamBetsContract.games(gameId);
+        const homeTeam = game.homeTeam;
+        const awayTeam = game.awayTeam;
+        const gameStartTime = game.startTime;
+
+        const oracleContract = new ethers.Contract(
+            this.chainlinkOracleAddress,
+            [
+                "function requestGameResult(string memory homeTeam, string memory awayTeam, uint256 startTime) public returns (bytes32 requestId)",
+                "event GameResultReceived(bytes32 indexed requestId, uint256 result, bool hadOvertime)"
+            ],
+            this.signer
+        );
+
+        const tx = await oracleContract.requestGameResult(homeTeam, awayTeam, gameStartTime, {
+            value: ethers.utils.parseEther("0.1") // LINK payment
+        });
+        const receipt = await tx.wait();
+        const requestId = receipt.logs[0].topics[1];
+
+        return new Promise((resolve) => {
+            oracleContract.once("GameResultReceived", (reqId, result, hadOvertime) => {
+                if (reqId === requestId) {
+                    resolve({
+                        result: result.toNumber(), // 0 = Win, 1 = Lose, 2 = Tie
+                        hadOvertime: hadOvertime
+                    });
+                }
+            });
+        });
     }
 
-    async fetchPiAdRevenue(amount) {
-        // Placeholder: Replace with Pi Network SDK
-        return 0.005; // $0.005 per view
+    async completeGame(gameId) {
+        const { result, hadOvertime } = await this.getGameResults(gameId);
+        const tx = await this.homeTeamBetsContract.completeGame(gameId, result, hadOvertime);
+        await tx.wait();
+        await this.updateIPFS({ gameId, result, hadOvertime }, "Game Completed");
     }
 
-    async fetchYouTubeAdRevenue(amount) {
-        // Placeholder: Replace with YouTube Ads API
-        return 0.02; // $0.02 per view
-    }
-
-    async updateIPFS(amount, type) {
-        const data = { type, amount: ethers.utils.formatUnits(amount, 6), timestamp: Date.now() };
-        const { cid } = await this.ipfs.add(JSON.stringify(data));
+    async updateIPFS(data, type) {
+        const content = JSON.stringify({ type, data, timestamp: Date.now() });
+        const { cid } = await this.ipfs.add(content);
         console.log(`IPFS Updated: ${cid}`);
     }
 
@@ -124,6 +149,12 @@ class USDMediator {
         });
         this.contract.on("RewardsDistributed", (total, cj03nes, mediator, reserve) => {
             console.log(`Rewards: Total=${total}, cj03nes=${cj03nes}, Mediator=${mediator}, Reserve=${reserve}`);
+        });
+        this.homeTeamBetsContract.on("BetPlaced", (bettor, gameId, amount, betType, overtime, timestamp) => {
+            console.log(`Bet placed: ${bettor} on Game ${gameId} for ${amount} USDC - Type: ${betType}`);
+        });
+        this.homeTeamBetsContract.on("WinningsDistributed", (winner, gameId, amount) => {
+            console.log(`Winnings: ${winner} received ${amount} USDC for Game ${gameId}`);
         });
     }
 }
