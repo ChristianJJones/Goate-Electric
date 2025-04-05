@@ -28,6 +28,7 @@
                 <li><a href="#settings" class="nav-link">Settings</a></li>
                 <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li>
                 <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li>
+                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li>
             </ul>
         </nav>
     </header>
@@ -113,6 +114,7 @@
                     <div class="balance zpe-balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
                     <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
                     <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div>
+                    <div class="balance gyst-balance"><h3>GreyStax Balance</h3><p id="gyst-balance">0</p></div>
                 </div>
                 <div class="payment-container">
                     <select id="payment-asset" class="payment-dropdown">
@@ -120,6 +122,7 @@
                         <option value="ZPE">$ZPE</option>
                         <option value="ZPW">$ZPW</option>
                         <option value="ZPP">$ZPP</option>
+                        <option value="GySt">$GySt</option>
                     </select>
                     <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
                 </div>
@@ -207,6 +210,17 @@
                 <h3>Transaction History</h3>
                 <ul id="bet-history-list"></ul>
             </div>
+        </section>
+        <section id="gerastyxopol" class="page hidden">
+            <h2>GerastyxOpol</h2>
+            <p>Play a blockchain-based Monopoly game!</p>
+            <div id="game-modes">
+                <button id="free-play">Free Play</button>
+                <button id="reasonable">Reasonable</button>
+                <button id="gambling">Gambling</button>
+                <button id="rich">Rich</button>
+            </div>
+            <div id="game-container"></div>
         </section>
     </main>
 
