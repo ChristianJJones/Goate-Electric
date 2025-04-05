@@ -1,4 +1,4 @@
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = new ethers.providers.Web3Provider(window at).ethereum);
 const signer = provider.getSigner();
 const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer);
 const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer);
@@ -24,16 +24,24 @@ async function loadDevices() {
     container.innerHTML = devices.map(device => `
         <div class="device-card">
             <span>${device.deviceId} (Modals: ${device.modalCount})</span>
-            <span>${device.isActive ? 'Active' : 'Inactive'}</span>
-            <button onclick="disconnectDevice('${device.deviceId}')">${device.isActive ? 'Disconnect' : 'Disconnected'}</button>
+            <div class="slider-group">
+                <button class="slider-btn on ${device.isActive ? 'active' : ''}" data-device="${device.deviceId}">On</button>
+                <button class="slider-btn off ${!device.isActive ? 'active' : ''}" data-device="${device.deviceId}">Off</button>
+            </div>
         </div>
     `).join('');
-}
-
-async function disconnectDevice(deviceId) {
-    const tx = await deviceContract.disconnectDevice(deviceId);
-    await tx.wait();
-    loadDevices();
+    document.querySelectorAll('.slider-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const deviceId = btn.dataset.device;
+            const isOn = btn.classList.contains('on');
+            if (isOn && !btn.classList.contains('active')) {
+                await deviceContract.addDevice(deviceId); // Re-activate if possible
+            } else if (!isOn && btn.classList.contains('active')) {
+                await deviceContract.disconnectDevice(deviceId);
+            }
+            loadDevices();
+        });
+    });
 }
 
 function updateUI() {
@@ -57,12 +65,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('auth-modal').style.display = 'flex';
     });
 
+    document.getElementById('signup-tab').addEventListener('click', () => {
+        document.getElementById('signup-tab').classList.add('active');
+        document.getElementById('login-tab').classList.remove('active');
+        document.getElementById('signup-form').style.display = 'block';
+        document.getElementById('login-form').style.display = 'none';
+    });
+
+    document.getElementById('login-tab').addEventListener('click', () => {
+        document.getElementById('login-tab').classList.add('active');
+        document.getElementById('signup-tab').classList.remove('active');
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('signup-form').style.display = 'none';
+    });
+
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('login-id').value;
         const password = document.getElementById('login-password').value;
         if (db.users[id]?.password === password) {
-            currentUser = id;
+            currentUser = db.users[id].username;
             isLoggedIn = true;
             updateUI();
             document.getElementById('auth-modal').style.display = 'none';
@@ -72,8 +94,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('signup-email-phone').value;
-        db.users[email] = { password: document.getElementById('signup-password').value, assets: {} };
-        currentUser = email;
+        const username = document.getElementById('signup-username').value;
+        db.users[email] = {
+            username,
+            password: document.getElementById('signup-password').value,
+            assets: {},
+            security: {
+                q1: document.getElementById('security-question-1').value,
+                a1: document.getElementById('security-answer-1').value,
+                q2: document.getElementById('security-question-2').value,
+                a2: document.getElementById('security-answer-2').value,
+                q3: document.getElementById('security-question-3').value,
+                a3: document.getElementById('security-answer-3').value
+            }
+        };
+        currentUser = username;
         isLoggedIn = true;
         updateUI();
         document.getElementById('auth-modal').style.display = 'none';
@@ -86,16 +121,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('consume-zpe').addEventListener('click', async () => {
-        const tx = await zpeContract.consumeForService(1000); // Example amount
+        const amount = document.getElementById('payment-amount').value;
+        const tx = await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
         await tx.wait();
-        await mediator.handleConsumption(1, "ZPE", 1000);
+        await mediator.handleConsumption(1, "ZPE", ethers.utils.parseUnits(amount || "1", 3));
         updateBalances();
     });
 
     document.getElementById('consume-zpw').addEventListener('click', async () => {
-        const tx = await zpwContract.consumeForService(100); // Example amount
+        const amount = document.getElementById('payment-amount').value;
+        const tx = await zpwContract.consumeForService(ethers.utils.parseUnits(amount || "1", 2));
         await tx.wait();
-        await mediator.handleConsumption(1, "ZPW", 100);
+        await mediator.handleConsumption(1, "ZPW", ethers.utils.parseUnits(amount || "1", 2));
         updateBalances();
     });
 
@@ -123,12 +160,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('bank-to-goate').addEventListener('click', async () => {
-        // Placeholder for bank deposit logic (e.g., via MoonPay/Banxa)
         alert("Bank to Goate Electric deposit initiated");
     });
 
     document.getElementById('goate-to-bank').addEventListener('click', async () => {
-        // Placeholder for bank withdrawal logic
         alert("Goate Electric to Bank withdrawal initiated");
     });
 
@@ -140,7 +175,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    // Populate swap dropdowns
     const tokens = ["USDC", "ZPE", "ZPW", "ZPP"];
     ["from-asset", "to-asset"].forEach(id => {
         const select = document.getElementById(id);
