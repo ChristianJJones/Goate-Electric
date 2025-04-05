@@ -6,6 +6,7 @@ const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer);
 const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceABI, signer);
 const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer);
 const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer);
+const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer);
 const mediator = new USDMediator();
 let currentUser, isLoggedIn = false;
 const db = { users: {}, devices: {} };
@@ -56,7 +57,6 @@ async function loadTransactionHistory() {
 
 async function watchAd(adType) {
     try {
-        // Display ad (simplified placeholder)
         const adContainer = document.createElement("div");
         adContainer.style.position = "fixed";
         adContainer.style.top = "0";
@@ -71,17 +71,70 @@ async function watchAd(adType) {
         adContainer.innerHTML = `<p>Watching ${adType} Ad... (30s)</p>`;
         document.body.appendChild(adContainer);
 
-        // Wait for ad to finish
         await new Promise(resolve => setTimeout(resolve, 30000));
         document.body.removeChild(adContainer);
 
-        // Call mediator to handle ad revenue
         await mediator.handleAdWatch(adType, await signer.getAddress());
         updateBalances();
         loadTransactionHistory();
     } catch (error) {
         console.error("Error watching ad:", error);
     }
+}
+
+async function loadGames() {
+    const gameCount = await homeTeamBetsContract.gameCount();
+    const gamesList = document.getElementById('games-list');
+    gamesList.innerHTML = '';
+
+    for (let i = 0; i < gameCount; i++) {
+        const game = await homeTeamBetsContract.games(i);
+        if (!game.completed) {
+            gamesList.innerHTML += `
+                <div class="game-card">
+                    <h3>${game.homeTeam} vs ${game.awayTeam}</h3>
+                    <p>Starts: ${new Date(game.startTime * 1000).toLocaleString()}</p>
+                    <p>Total Pool: ${ethers.utils.formatUnits(game.totalPool, 6)} USDC</p>
+                    <select id="bet-type-${i}">
+                        <option value="0">Win</option>
+                        <option value="1">Lose</option>
+                        <option value="2">Tie</option>
+                    </select>
+                    <select id="overtime-${i}">
+                        <option value="yes">Overtime Yes</option>
+                        <option value="no">Overtime No</option>
+                    </select>
+                    <input type="number" id="bet-amount-${i}" placeholder="Amount (USDC)" step="0.01">
+                    <button onclick="placeBet(${i})" ${!game.isActive ? 'disabled' : ''}>Place Bet</button>
+                </div>
+            `;
+        }
+    }
+}
+
+async function placeBet(gameId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
+    const betType = parseInt(document.getElementById(`bet-type-${gameId}`).value);
+    const overtime = document.getElementById(`overtime-${gameId}`).value === "yes";
+
+    const tx = await usdcContract.approve(homeTeamBetsContract.address, amount);
+    await tx.wait();
+    const betTx = await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
+    await betTx.wait();
+
+    updateBalances();
+    loadBetHistory();
+    loadGames();
+}
+
+async function loadBetHistory() {
+    const userAddress = await signer.getAddress();
+    const history = await homeTeamBetsContract.getTransactionHistory(userAddress);
+    const historyList = document.getElementById('bet-history-list');
+    historyList.innerHTML = history.map(bet => {
+        const betTypeStr = bet.betType === 0 ? 'Win' : bet.betType === 1 ? 'Lose' : 'Tie';
+        return `<li>${ethers.utils.formatUnits(bet.amount, 6)} USDC - ${betTypeStr} - Overtime: ${bet.overtime ? 'Yes' : 'No'} - ${new Date(bet.timestamp * 1000).toLocaleString()}</li>`;
+    }).join('');
 }
 
 function updateUI() {
@@ -96,6 +149,7 @@ function updateUI() {
         updateBalances();
         loadDevices();
         loadTransactionHistory();
+        loadBetHistory();
     }
 }
 
@@ -219,6 +273,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.querySelector(link.getAttribute('href')).classList.add('active');
             if (link.getAttribute('href') === '#earn' && isLoggedIn) {
                 loadTransactionHistory();
+            } else if (link.getAttribute('href') === '#hometeambets' && isLoggedIn) {
+                loadGames();
+                loadBetHistory();
             }
         });
     });
