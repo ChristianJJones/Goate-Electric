@@ -18,7 +18,7 @@ class USDMediator {
             changelly: 'https://api.changelly.com'
         };
         this.tokenMap = {
-            1: { "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "ZPE": "0xYourZPEAddress", "ZPW": "0xYourZPWAddress", "ZPP": "0xYourZPPAddress" },
+            1: { "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "ZPE": "0xYourZPEAddress", "ZPW": "0xYourZPWAddress", "ZPP": "0xYourZPPAddress", "GySt": "0xYourGreyStaxAddress" },
             4: { "XLM": StellarSdk.Asset.native(), "USDC": new StellarSdk.Asset("USDC", "YourIssuer"), "ZPE": new StellarSdk.Asset("ZPE", "YourIssuer"), "ZPW": new StellarSdk.Asset("ZPW", "YourIssuer"), "ZPP": new StellarSdk.Asset("ZPP", "YourIssuer") },
         };
         this.ipfs = IPFS.create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -27,8 +27,9 @@ class USDMediator {
         this.contract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, this.signer);
         this.adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, this.signer);
         this.homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, this.signer);
-        this.chainlinkOracleAddress = "0xYourChainlinkOracleAddress"; // Replace with actual Chainlink oracle address
-        this.chainlinkJobId = "your-job-id-uuid"; // Replace with actual Chainlink job ID for sports data
+        this.gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, this.signer);
+        this.chainlinkOracleAddress = "0xYourChainlinkOracleAddress";
+        this.chainlinkJobId = "your-job-id-uuid";
         this.revenueDistribution = { cj03nes: "0xYourCj03nesAddress", reserves: "0xYourReservesAddress", mediator: "0xYourMediatorAddress" };
         this.listenForEvents();
     }
@@ -80,6 +81,7 @@ class USDMediator {
             case "Google": revenue = await this.fetchGoogleAdRevenue(amount); break;
             case "Pi": revenue = await this.fetchPiAdRevenue(amount); break;
             case "YouTube": revenue = await this.fetchYouTubeAdRevenue(amount); break;
+            case "GameStart": case "PropertyPurchase": revenue = 0.01; break; // Placeholder for GerastyxOpol
             default: throw new Error("Unknown ad type");
         }
         return ethers.utils.parseUnits(revenue.toString(), 6);
@@ -89,13 +91,36 @@ class USDMediator {
         const amount = await this.getAdRevenue(adType, 1);
         const tx = await this.adWatchContract.watchAd(adType, amount, { from: this.signer._address });
         await tx.wait();
+        if (adType === "GameStart" || adType === "PropertyPurchase") {
+            await this.distributeGerastyxRevenue(amount);
+        } else {
+            await this.distributeRevenue(amount);
+        }
         await this.updateIPFS(amount, `Ad Watch (${adType})`);
         console.log(`Ad watched: ${adType}, Amount: ${ethers.utils.formatUnits(amount, 6)} USDC`);
     }
 
-    async fetchGoogleAdRevenue(amount) { return 0.01; } // Placeholder
-    async fetchPiAdRevenue(amount) { return 0.005; } // Placeholder
-    async fetchYouTubeAdRevenue(amount) { return 0.02; } // Placeholder
+    async fetchGoogleAdRevenue(amount) { return 0.01; }
+    async fetchPiAdRevenue(amount) { return 0.005; }
+    async fetchYouTubeAdRevenue(amount) { return 0.02; }
+
+    async distributeGerastyxRevenue(amount) {
+        const mediatorAmount = amount * 0.02;
+        const revenueAmount = amount * 0.02;
+        const nftHoldersAmount = amount * 0.01;
+        const txPromises = [
+            this.signer.sendTransaction({ to: this.revenueDistribution.mediator, value: ethers.utils.parseEther(mediatorAmount.toString()) }),
+            this.signer.sendTransaction({ to: this.revenueDistribution.reserves, value: ethers.utils.parseEther(revenueAmount.toString()) }),
+            this.gerastyxOpolContract.distributeToNFTHolders(nftHoldersAmount)
+        ];
+        await Promise.all(txPromises);
+    }
+
+    async handleGerastyxOpolTransaction(sessionId, amount, type) {
+        const price = await this.getConsensusPrice("USDC", amount, 1);
+        await this.distributeGerastyxRevenue(price);
+        await this.updateIPFS({ sessionId, amount, type }, "GerastyxOpol Transaction");
+    }
 
     async getGameResults(gameId) {
         const game = await this.homeTeamBetsContract.games(gameId);
@@ -105,26 +130,18 @@ class USDMediator {
 
         const oracleContract = new ethers.Contract(
             this.chainlinkOracleAddress,
-            [
-                "function requestGameResult(string memory homeTeam, string memory awayTeam, uint256 startTime) public returns (bytes32 requestId)",
-                "event GameResultReceived(bytes32 indexed requestId, uint256 result, bool hadOvertime)"
-            ],
+            ["function requestGameResult(string memory homeTeam, string memory awayTeam, uint256 startTime) public returns (bytes32 requestId)", "event GameResultReceived(bytes32 indexed requestId, uint256 result, bool hadOvertime)"],
             this.signer
         );
 
-        const tx = await oracleContract.requestGameResult(homeTeam, awayTeam, gameStartTime, {
-            value: ethers.utils.parseEther("0.1") // LINK payment
-        });
+        const tx = await oracleContract.requestGameResult(homeTeam, awayTeam, gameStartTime, { value: ethers.utils.parseEther("0.1") });
         const receipt = await tx.wait();
         const requestId = receipt.logs[0].topics[1];
 
         return new Promise((resolve) => {
             oracleContract.once("GameResultReceived", (reqId, result, hadOvertime) => {
                 if (reqId === requestId) {
-                    resolve({
-                        result: result.toNumber(), // 0 = Win, 1 = Lose, 2 = Tie
-                        hadOvertime: hadOvertime
-                    });
+                    resolve({ result: result.toNumber(), hadOvertime });
                 }
             });
         });
@@ -155,6 +172,12 @@ class USDMediator {
         });
         this.homeTeamBetsContract.on("WinningsDistributed", (winner, gameId, amount) => {
             console.log(`Winnings: ${winner} received ${amount} USDC for Game ${gameId}`);
+        });
+        this.gerastyxOpolContract.on("DiceRolled", (player, sessionId, roll) => {
+            console.log(`Dice rolled: ${player} in Session ${sessionId} - Roll: ${roll}`);
+        });
+        this.gerastyxOpolContract.on("PropertyBought", (player, sessionId, propertyId) => {
+            console.log(`Property bought: ${player} in Session ${sessionId} - Property: ${propertyId}`);
         });
     }
 }
