@@ -1,11 +1,4 @@
-
 <!DOCTYPE html>
-
-<script src="index.css">        
-<script src="usd-mediator.js">
-<script src="index.js">            
-
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,12 +9,8 @@
 <body>
     <header>
         <div class="banner">
-            <div class="logo">
-                <img src="GoateElectricLogo.jpg" alt="Goate Electric Logo">
-            </div>
-            <div class="title">
-                <h1>Goate Electric</h1>
-            </div>
+            <div class="logo"><img src="GoateElectricLogo.jpg" alt="Goate Electric Logo"></div>
+            <div class="title"><h1>Goate Electric</h1></div>
             <div class="user-section" id="user-section">
                 <button id="signup-login">Signup/Login</button>
                 <span id="user-email" style="display: none;"></span>
@@ -75,40 +64,25 @@
                     <input type="text" id="signup-last-name" required>
                 </div>
                 <div class="form-group">
-                    <label for="signup-address">Physical Address</label>
-                    <input type="text" id="signup-address" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-state">State</label>
-                    <input type="text" id="signup-state" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-city">City</label>
-                    <input type="text" id="signup-city" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-zip">Zip Code</label>
-                    <input type="text" id="signup-zip" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-dob">Date of Birth (MM/DD/YYYY)</label>
-                    <input type="text" id="signup-dob" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-age">Age</label>
-                    <input type="text" id="signup-age" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-ssn">Last 4 of SSN</label>
-                    <input type="text" id="signup-ssn" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-dependents">Number of Dependents</label>
-                    <input type="text" id="signup-dependents" required>
-                </div>
-                <div class="form-group">
-                    <label>Security Questions (Select and Answer at Least 3)</label>
-                    <div id="security-questions"></div>
+                    <label>Security Questions (Select and Answer 3)</label>
+                    <select id="security-question-1">
+                        <option value="q1">What’s your childhood pet’s name?</option>
+                        <option value="q2">What’s your favorite movie?</option>
+                        <option value="q3">Where were you born?</option>
+                    </select>
+                    <input type="text" id="security-answer-1" required>
+                    <select id="security-question-2">
+                        <option value="q1">What’s your childhood pet’s name?</option>
+                        <option value="q2">What’s your favorite movie?</option>
+                        <option value="q3">Where were you born?</option>
+                    </select>
+                    <input type="text" id="security-answer-2" required>
+                    <select id="security-question-3">
+                        <option value="q1">What’s your childhood pet’s name?</option>
+                        <option value="q2">What’s your favorite movie?</option>
+                        <option value="q3">Where were you born?</option>
+                    </select>
+                    <input type="text" id="security-answer-3" required>
                 </div>
                 <button type="submit">Submit</button>
             </form>
@@ -121,21 +95,8 @@
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" required>
                 </div>
-                <div class="form-group forgot-password">
-                    <a href="#" id="forgot-password">Forgot Password?</a>
-                </div>
                 <button type="submit">Submit</button>
             </form>
-        </div>
-    </div>
-
-    <!-- Transaction Confirmation Modal -->
-    <div id="tx-confirm-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <p id="tx-details"></p>
-            <input type="password" id="tx-pin" placeholder="Enter PIN">
-            <button id="tx-confirm">Confirm</button>
-            <button onclick="document.getElementById('tx-confirm-modal').style.display = 'none'">Cancel</button>
         </div>
     </div>
 
@@ -143,60 +104,34 @@
         <section id="home" class="page active">
             <div id="not-logged-in">
                 <h2>WELCOME TO GOATE ELECTRIC</h2>
-                <p>where you can access digital utilities that make everyday life easier. You can use Zeropoint to wirelessly charge your devices on-the-go and ZeropointWifi to use internet wherever life leads.</p>
+                <p>Access digital utilities that make everyday life easier.</p>
             </div>
             <div id="logged-in" style="display: none;">
-                <div class="balances">
-                    <div class="balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
-                    <div class="balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
-                    <div class="balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
+                <div class="balances-container">
+                    <div class="balance usd-balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
+                    <div class="balance zpe-balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
+                    <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
+                    <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div>
+                </div>
+                <div class="payment-container">
+                    <select id="payment-asset" class="payment-dropdown">
+                        <option value="USDC">USDC</option>
+                        <option value="ZPE">$ZPE</option>
+                        <option value="ZPW">$ZPW</option>
+                        <option value="ZPP">$ZPP</option>
+                    </select>
+                    <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
                 </div>
                 <div class="button-section">
-                    <div class="left-buttons">
-                        <button>Buy Zeropoint</button>
-                        <button>Sell Zeropoint</button>
-                        <button>Consume Zeropoint</button>
-                    </div>
-                    <div class="right-buttons">
-                        <button>Buy ZeropointWifi</button>
-                        <button>Sell ZeropointWifi</button>
-                        <button>Consume ZeropointWifi</button>
-                    </div>
-                </div>
-                <div class="transfer"><button>Transfer</button></div>
-                <div class="transaction-history">
-                    <h3>Transaction History</h3>
-                    <ul id="transaction-list"></ul>
+                    <button id="consume-zpe">Consume $ZPE</button>
+                    <button id="consume-zpw">Consume $ZPW</button>
+                    <button id="subscribe-zpp">Subscribe $ZPP ($5)</button>
                 </div>
             </div>
         </section>
-        <section id="zeropoint" class="page hidden">
-            <h2>Zeropoint</h2>
-            <p>Zeropoint is a digital energy that can wirelessly charge digital electronics and a digital asset that can be used as an asset in different places. Zeropoint is a stablecoin pegged to $0.10 per $ZPE. And wherever you go you can always access your phone, even if the battery already went to sleep.</p>
-        </section>
-        <section id="zeropointwifi" class="page hidden">
-            <h2>ZeropointWifi</h2>
-            <p>ZeropointWifi is a digital utility and digital asset, just like Zeropoint; except each $ZPW is a stablecoin pegged to $5 equalling a monthly subscription of unlimited wifi.</p>
-        </section>
-        <section id="earn" class="page hidden">
-            <h2>Earn</h2>
-            <p>Earn with Goate Electric is a couple of apps that you can use to make money without actually "paying" for anything. You won't make a fortune, but why not game & hodl; you never know...</p>
-            <div class="earn-section">
-                <h3>Pi Network</h3>
-                <p>Pi Network is a cryptocurrency you can mine on your phone without draining your battery. Join a community-driven project aiming to make crypto accessible to everyone.</p>
-                <a href="https://minepi.com/cj03nes" target="_blank"><button class="earn-button">Join Pi Network</button></a>
-            </div>
-            <div class="earn-section">
-                <h3>ZBD Wallet</h3>
-                <p>ZBD Wallet lets you earn Bitcoin rewards through gaming, surveys, and social activities. A fun way to stack sats while enjoying your downtime.</p>
-                <a href="https://zbd.link/hcHi/invite?af_sub1=5KA19L" target="_blank"><button class="earn-button">Get ZBD Wallet</button></a>
-            </div>
-            <div class="earn-section">
-                <h3>FreeCash</h3>
-                <p>FreeCash offers cash and crypto rewards for completing tasks, playing games, and testing apps. A versatile platform to earn extra income on your terms.</p>
-                <a href="https://freecash.com" target="_blank"><button class="earn-button">Start with FreeCash</button></a>
-            </div>
-        </section>
+        <section id="zeropoint" class="page hidden"><h2>Zeropoint</h2><p>Wireless charging utility, pegged to $0.10.</p></section>
+        <section id="zeropointwifi" class="page hidden"><h2>ZeropointWifi</h2><p>Unlimited WiFi, pegged to $5.</p></section>
+        <section id="earn" class="page hidden"><h2>Earn</h2><p>Earn rewards with our apps.</p></section>
         <section id="swap" class="page hidden">
             <h2>Swap Assets</h2>
             <div id="swap-container">
@@ -205,16 +140,16 @@
                 <select id="to-asset"></select>
                 <select id="to-chain"></select>
                 <button id="swap-button">Swap</button>
-                <p id="swap-status">Status: Idle</p>
             </div>
         </section>
-        <section id="portfolio" class="page hidden">
-            <h2>Portfolio</h2>
-            <ul id="portfolio-list"></ul>
-        </section>
+        <section id="portfolio" class="page hidden"><h2>Portfolio</h2><ul id="portfolio-list"></ul></section>
         <section id="settings" class="page hidden">
             <h2>Settings</h2>
             <div class="settings-container">
+                <div class="bank-actions">
+                    <button id="bank-to-goate">Bank to Goate Electric (Deposit)</button>
+                    <button id="goate-to-bank">Goate Electric to Bank (Withdraw)</button>
+                </div>
                 <div class="settings-modal">
                     <h3>User KYC / AML Info</h3>
                     <div id="kyc-info">
@@ -231,115 +166,31 @@
                             <label for="change-password">Change Password</label>
                             <input type="password" id="change-password">
                         </div>
-                        <div class="form-group">
-                            <label for="change-address">Change Address</label>
-                            <input type="text" id="change-address">
-                        </div>
-                        <div class="form-group">
-                            <label for="change-username">Change Username</label>
-                            <input type="text" id="change-username">
-                        </div>
-                        <div class="form-group">
-                            <label for="change-email-phone">Change Email/Phone</label>
-                            <input type="text" id="change-email-phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="add-email-phone">Add Email/Phone</label>
-                            <input type="text" id="add-email-phone">
-                        </div>
                         <button type="submit">Update</button>
                     </form>
                 </div>
                 <div class="settings-modal">
                     <h3>Bank Account Settings</h3>
-                    <div id="bank-settings">
-                        <button id="connect-plaid">Connect Bank Account with Plaid</button>
-                        <form id="manual-debit-form">
-                            <div class="form-group">
-                                <label for="debit-number">Debit Card Number</label>
-                                <input type="text" id="debit-number" maxlength="16">
-                            </div>
-                            <div class="form-group">
-                                <label for="debit-expiry">Expiration Date (MM/YY)</label>
-                                <input type="text" id="debit-expiry" maxlength="5">
-                            </div>
-                            <div class="form-group">
-                                <label for="debit-cvc">CVC</label>
-                                <input type="text" id="debit-cvc" maxlength="3">
-                            </div>
-                            <button type="submit">Add Debit Card</button>
-                        </form>
-                    </div>
+                    <button id="connect-plaid">Connect Bank Account with Plaid</button>
                 </div>
                 <div class="settings-modal">
                     <h3>Goate Electric Card</h3>
-                    <div id="card-settings">
-                        <button id="order-card" style="display: block;">Order Card</button>
-                        <div id="card-info" style="display: none;">
-                            <p><strong>Card Number:</strong> <span id="card-number">**** **** **** ****</span> <button id="toggle-card">Show</button></p>
-                            <p><strong>CVC:</strong> <span id="card-cvc">***</span></p>
-                            <p><strong>Expiration Date:</strong> <span id="card-expiry">**/**</span></p>
-                            <div class="spending-options">
-                                <p><strong>Spending Options:</strong></p>
-                                <p>Default: $USD Balance</p>
-                                <div>
-                                    <label>Spend from $ZPE Balance:</label>
-                                    <button class="toggle-btn" id="zpe-yes">Yes</button>
-                                    <button class="toggle-btn active" id="zpe-no">No</button>
-                                </div>
-                                <div>
-                                    <label>Spend from $ZPW Balance:</label>
-                                    <button class="toggle-btn" id="zpw-yes">Yes</button>
-                                    <button class="toggle-btn active" id="zpw-no">No</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button id="order-card">Order Card</button>
                 </div>
             </div>
         </section>
         <section id="manage-devices" class="page hidden">
             <h2>Manage Devices</h2>
-            <div class="devices-container" id="devices-container"></div>
-            <button id="add-device-btn" class="add-device-btn">+</button>
-            <div id="add-device-modal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <button id="manual-add-device">Manually Add Device</button>
-                    <button id="scan-device">Scan Device</button>
-                    <button id="get-device">Get Device</button>
-                </div>
-            </div>
-            <div id="manual-device-modal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <form id="manual-device-form">
-                        <div class="form-group">
-                            <label for="model-name">Model Name</label>
-                            <input type="text" id="model-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="serial-number">Serial Number</label>
-                            <input type="text" id="serial-number" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="imei">IMEI</label>
-                            <input type="text" id="imei" required>
-                        </div>
-                        <button type="submit">Add Device</button>
-                    </form>
-                </div>
-            </div>
-            <div id="confirm-disconnect-modal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <p>Are you sure you want to disconnect this device?</p>
-                    <button id="confirm-yes">Yes</button>
-                    <button id="confirm-no">No</button>
-                </div>
-            </div>
+            <div id="devices-container"></div>
+            <input id="device-id" placeholder="Device ID" />
+            <button id="add-device">Add Device</button>
+            <button id="use-modal">Use Modal</button>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script>    
+    <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script>
+    <script src="usd-mediator.js"></script>
+    <script src="index.js"></script>
 </body>
-</script> </script> </script>
 </html>
