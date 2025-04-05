@@ -1,77 +1,62 @@
-pragma solidity ^0.8;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-import "instilledInteroperability.sol";
-import "Zeropoint.sol";
-import "ZeropointWifi.sol"; 
+import "./InstilledInteroperability.sol";
 
-contract theLambduckCard {
+contract TheLambduckCard {
+    InstilledInteroperability public interoperability;
+    uint256 public constant DAILY_SPENDING_LIMIT = 10_000_000_000 * 10**18;
 
-// KYC / AML & SettingsInfo
-first name + last name : string;
-user[address] : string;
-keccak256[card number] : hex num;
-card number[cvc] :  [ (random num1), (random num2)], (random num3) ]= (000 : 999);
-address[card balance] = random uint256 num;
-__________________________________________
-// Card Settings & Error Handling
+    struct User {
+        string firstName;
+        string lastName;
+        bytes32 cardNumberHash;
+        uint256[3] cvc;
+        uint256 balance; // USDC balance
+    }
+    mapping(address => User) public users;
+    mapping(bytes32 => address) public cardNumberToUser;
 
-// select ecosystem accepted assets & tokens
-require(verifiedTokenAssets);
-if (uint256) !verifiedTokenAsset then return error("Asset is not available in the ecosystem at this time");
+    constructor(address _interoperability) {
+        interoperability = InstilledInteroperability(_interoperability);
+    }
 
-// map errors & send them to the right spot
-if msg.sender[address] receive (uint256 vefifiedTokenAsset["Ethereum", "USDT"]) to msg.sender[address] , then push[balance] += usdt[address];
+    function registerUser(string memory firstName, string memory lastName) external {
+        require(bytes(users[msg.sender].firstName).length == 0, "User already registered");
+        uint256[3] memory cvc = [
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 1))) % 1000,
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 2))) % 1000,
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 3))) % 1000
+        ];
+        bytes32 cardNumberHash = keccak256(abi.encodePacked(msg.sender, block.timestamp));
+        users[msg.sender] = User(firstName, lastName, cardNumberHash, cvc, 0);
+        cardNumberToUser[cardNumberHash] = msg.sender;
+    }
 
+    modifier onlyVerifiedToken(uint256 chainId, string memory tokenSymbol) {
+        (, , , address tokenAddress, ,) = interoperability.verifiedTokenAssets(chainId, tokenSymbol);
+        require(tokenAddress != address(0), "Asset not available");
+        _;
+    }
 
-type of withdraw limit transactions = {
+    function buyWithCard(address merchant, uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        require(users[msg.sender].balance >= amount, "Insufficient balance");
+        require(amount <= DAILY_SPENDING_LIMIT, "Exceeds daily limit");
+        users[msg.sender].balance -= amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, merchant);
+    }
 
-// zp to fiat
-1. [ zp[uint256 balance] => fiat[uint256 balance]  ];
+    function withdrawToCard(uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        users[msg.sender].balance += amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, address(this));
+    }
 
-// zp to other crypto
-2. [ zp[uint256 balance] => crypto[uint256 balance]  ];
-
-// zpw to fiat
-3. [ zpw[uint256 balance] => fiat[uint256 balance]  ];
-
-// zpw to other crypto
-4. [ zpw[uint256 balance] => crypto[uint256 balance]  ];
-}
-
-daily spending limit inUSD = $10,000,000,000;
-
-type of spending limit transactions = {
-
-// p2p
-1. [  card[balance] transferTo msg.recipient[balance];
-
-// zp to fiat
-2. [ card[balance] withdrawFromATM fiat[balance];
-
-// zp for goods & services
-3. [ card[balance] transferTo merchant[balance];
-
-// zp for crypto
-4. [ card[balance] transferTo crypto[balance];
-
-}
-
-__________________________________________
-
-function buyWithCard (msg.sender address, address merchant,uint256 amountSpending) {}
-
-function withdrawToCard ( msg.sender address, card address, uint256 amountAddingFromWalletToCard) {}
-
-function withdrawFromCard ( card address, msg.sender address, uint256 amountAddingFromCardToWallet) {}
-
-function connectToBank ( card address, bankCredentials, cardToBankConnection) {}
-
-function addMoneyFromExternalBankToCard ( bankCredentials, card address, amountAddingFromBankToCard ) {}
-
-function addMoneyFromCardToExternalBank ( cardAddress, bankCredentials, amountAddingFromCardToExternalBank ) {}
-
-function getCreditScore ( bankCredentials, loanOptions, creditScore) {}
-
-
-
+    function withdrawFromCard(address recipient, uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        require(users[msg.sender].balance >= amount, "Insufficient balance");
+        users[msg.sender].balance -= amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, recipient);
+    }
 }
