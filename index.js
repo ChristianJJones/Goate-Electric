@@ -1,10 +1,11 @@
-const provider = new ethers.providers.Web3Provider(window at).ethereum);
+const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
 const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer);
 const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer);
 const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer);
 const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceABI, signer);
 const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer);
+const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer);
 const mediator = new USDMediator();
 let currentUser, isLoggedIn = false;
 const db = { users: {}, devices: {} };
@@ -35,13 +36,52 @@ async function loadDevices() {
             const deviceId = btn.dataset.device;
             const isOn = btn.classList.contains('on');
             if (isOn && !btn.classList.contains('active')) {
-                await deviceContract.addDevice(deviceId); // Re-activate if possible
+                await deviceContract.addDevice(deviceId);
             } else if (!isOn && btn.classList.contains('active')) {
                 await deviceContract.disconnectDevice(deviceId);
             }
             loadDevices();
         });
     });
+}
+
+async function loadTransactionHistory() {
+    const userAddress = await signer.getAddress();
+    const history = await adWatchContract.getTransactionHistory(userAddress);
+    const historyList = document.getElementById('history-list');
+    historyList.innerHTML = history.map(tx => `
+        <li>${tx.adType} - ${ethers.utils.formatUnits(tx.payout, 6)} USDC - ${new Date(tx.timestamp * 1000).toLocaleString()}</li>
+    `).join('');
+}
+
+async function watchAd(adType) {
+    try {
+        // Display ad (simplified placeholder)
+        const adContainer = document.createElement("div");
+        adContainer.style.position = "fixed";
+        adContainer.style.top = "0";
+        adContainer.style.left = "0";
+        adContainer.style.width = "100vw";
+        adContainer.style.height = "100vh";
+        adContainer.style.background = "black";
+        adContainer.style.color = "#FFD700";
+        adContainer.style.display = "flex";
+        adContainer.style.justifyContent = "center";
+        adContainer.style.alignItems = "center";
+        adContainer.innerHTML = `<p>Watching ${adType} Ad... (30s)</p>`;
+        document.body.appendChild(adContainer);
+
+        // Wait for ad to finish
+        await new Promise(resolve => setTimeout(resolve, 30000));
+        document.body.removeChild(adContainer);
+
+        // Call mediator to handle ad revenue
+        await mediator.handleAdWatch(adType, await signer.getAddress());
+        updateBalances();
+        loadTransactionHistory();
+    } catch (error) {
+        console.error("Error watching ad:", error);
+    }
 }
 
 function updateUI() {
@@ -55,6 +95,7 @@ function updateUI() {
         document.getElementById('user-email').textContent = currentUser;
         updateBalances();
         loadDevices();
+        loadTransactionHistory();
     }
 }
 
@@ -167,11 +208,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert("Goate Electric to Bank withdrawal initiated");
     });
 
+    document.getElementById('watch-google-ad').addEventListener('click', () => watchAd("Google"));
+    document.getElementById('watch-pi-ad').addEventListener('click', () => watchAd("Pi"));
+    document.getElementById('watch-youtube-ad').addEventListener('click', () => watchAd("YouTube"));
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelector(link.getAttribute('href')).classList.add('active');
+            if (link.getAttribute('href') === '#earn' && isLoggedIn) {
+                loadTransactionHistory();
+            }
         });
     });
 
