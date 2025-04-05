@@ -1,8 +1,10 @@
 pragma solidity ^0.8;
 
 import "instilledInteroperability.sol";
+import "Zeropoint.sol";
+import "ZeropointWifi.sol"; 
 
-contract debitCard {
+contract theLambduckCard {
 
 // KYC / AML & SettingsInfo
 first name + last name : string;
@@ -18,37 +20,38 @@ require(verifiedTokenAssets);
 if (uint256) !verifiedTokenAsset then return error("Asset is not available in the ecosystem at this time");
 
 // map errors & send them to the right spot
-if msg.sender[address] receive (uint256 vefifiedTokenAsset["Ethereum", "USDT"]) to pi[address] , then push[balance] += usdt[address];
+if msg.sender[address] receive (uint256 vefifiedTokenAsset["Ethereum", "USDT"]) to msg.sender[address] , then push[balance] += usdt[address];
 
-// withdraw & spending limits
-
-daily withdraw limit inUSD = $250,000;
-daily withdraw limit inPi =  $250,000 ÷ $314,159.26 = twoHundredAndFiftyThousandDollarsInPi;
 
 type of withdraw limit transactions = {
 
-// pi to fiat
-1. [ pi[uint256 balance] => fiat[uint256 balance]  ];
+// zp to fiat
+1. [ zp[uint256 balance] => fiat[uint256 balance]  ];
 
-// pi to other crypto
-2. [ pi[uint256 balance] => crypto[uint256 balance]  ];
+// zp to other crypto
+2. [ zp[uint256 balance] => crypto[uint256 balance]  ];
+
+// zpw to fiat
+3. [ zpw[uint256 balance] => fiat[uint256 balance]  ];
+
+// zpw to other crypto
+4. [ zpw[uint256 balance] => crypto[uint256 balance]  ];
 }
 
-daily spending limit inUSD = $100,000,000
-daily spending limit inPi = $100,000,000 ÷ $314,159.26 = oneHundredMillionDollarsInPi;
+daily spending limit inUSD = $10,000,000,000;
 
 type of spending limit transactions = {
 
 // p2p
 1. [  card[balance] transferTo msg.recipient[balance];
 
-// pi to fiat
+// zp to fiat
 2. [ card[balance] withdrawFromATM fiat[balance];
 
-// pi for goods & services
+// zp for goods & services
 3. [ card[balance] transferTo merchant[balance];
 
-// pi for crypto
+// zp for crypto
 4. [ card[balance] transferTo crypto[balance];
 
 }
@@ -71,3 +74,4 @@ function getCreditScore ( bankCredentials, loanOptions, creditScore) {}
 
 
 
+}
