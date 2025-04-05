@@ -7,6 +7,8 @@ const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceA
 const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer);
 const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer);
 const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer);
+const gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, signer);
+const greyStaxContract = new ethers.Contract("0xYourGreyStaxAddress", greyStaxABI, signer);
 const mediator = new USDMediator();
 let currentUser, isLoggedIn = false;
 const db = { users: {}, devices: {} };
@@ -17,6 +19,7 @@ async function updateBalances() {
     document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2);
     document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2);
     document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
+    document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18);
 }
 
 async function loadDevices() {
@@ -135,6 +138,23 @@ async function loadBetHistory() {
         const betTypeStr = bet.betType === 0 ? 'Win' : bet.betType === 1 ? 'Lose' : 'Tie';
         return `<li>${ethers.utils.formatUnits(bet.amount, 6)} USDC - ${betTypeStr} - Overtime: ${bet.overtime ? 'Yes' : 'No'} - ${new Date(bet.timestamp * 1000).toLocaleString()}</li>`;
     }).join('');
+}
+
+async function startGame(mode) {
+    const sessionId = await gerastyxOpolContract.sessionCount();
+    if (mode === "FreePlay") {
+        await gerastyxOpolContract.startSession(0, { value: 0 });
+    } else {
+        const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
+        await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
+        await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
+    }
+    loadGame(sessionId);
+}
+
+function loadGame(sessionId) {
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
 }
 
 function updateUI() {
@@ -266,6 +286,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('watch-pi-ad').addEventListener('click', () => watchAd("Pi"));
     document.getElementById('watch-youtube-ad').addEventListener('click', () => watchAd("YouTube"));
 
+    document.getElementById('free-play').addEventListener('click', () => startGame("FreePlay"));
+    document.getElementById('reasonable').addEventListener('click', () => startGame("Reasonable"));
+    document.getElementById('gambling').addEventListener('click', () => startGame("Gambling"));
+    document.getElementById('rich').addEventListener('click', () => startGame("Rich"));
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -276,11 +301,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else if (link.getAttribute('href') === '#hometeambets' && isLoggedIn) {
                 loadGames();
                 loadBetHistory();
+            } else if (link.getAttribute('href') === '#gerastyxopol' && isLoggedIn) {
+                loadGame(await gerastyxOpolContract.sessionCount() - 1);
             }
         });
     });
 
-    const tokens = ["USDC", "ZPE", "ZPW", "ZPP"];
+    const tokens = ["USDC", "ZPE", "ZPW", "ZPP", "GySt"];
     ["from-asset", "to-asset"].forEach(id => {
         const select = document.getElementById(id);
         tokens.forEach(token => select.innerHTML += `<option value="${token}">${token}</option>`);
