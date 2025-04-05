@@ -7,38 +7,38 @@ import "./InstilledInteroperability.sol";
 
 contract HomeTeamBets {
     InstilledInteroperability public interoperability;
-    IERC20 public usdcToken; // USDC contract
+    IERC20 public usdcToken;
     address public owner;
-    uint256 public totalRevenue; // 20% revenue pool
+    uint256 public totalRevenue;
 
-    enum BetType { Win, Lose, Tie } // Explicitly define Win, Lose, Tie
+    enum BetType { Win, Lose, Tie }
 
     struct Bet {
         address bettor;
-        uint256 amount; // USDC amount bet
-        BetType betType; // Win, Lose, or Tie
-        bool overtime; // True = bet on overtime, False = no overtime
+        uint256 amount;
+        BetType betType;
+        bool overtime;
         uint256 timestamp;
     }
 
     struct Game {
         string homeTeam;
         string awayTeam;
-        uint256 startTime; // Unix timestamp
-        bool isActive; // True until game starts
-        uint256 totalPool; // Total USDC bet
-        bool completed; // True when game ends and results are set
-        BetType result; // Win, Lose, or Tie for home team
-        bool hadOvertime; // Game result
-        mapping(address => Bet) bets; // One bet per user per game
-        address[] bettors; // List of bettors
+        uint256 startTime;
+        bool isActive;
+        uint256 totalPool;
+        bool completed;
+        BetType result;
+        bool hadOvertime;
+        mapping(address => Bet) bets;
+        address[] bettors;
     }
 
-    mapping(uint256 => Game) public games; // Game ID => Game data
-    mapping(address => mapping(uint256 => bool)) public hasBet; // User => Game ID => Has bet?
-    mapping(address => Bet[]) public transactionHistory; // User transaction history
+    mapping(uint256 => Game) public games;
+    mapping(address => mapping(uint256 => bool)) public hasBet;
+    mapping(address => Bet[]) public transactionHistory;
 
-    AggregatorV3Interface public oracle; // Chainlink oracle for game results
+    AggregatorV3Interface public oracle;
     uint256 public gameCount;
 
     event BetPlaced(address indexed bettor, uint256 gameId, uint256 amount, BetType betType, bool overtime, uint256 timestamp);
@@ -49,11 +49,10 @@ contract HomeTeamBets {
     constructor(address _interoperability, address _usdcToken, address _oracle) {
         owner = msg.sender;
         interoperability = InstilledInteroperability(_interoperability);
-        usdcToken = IERC20(_usdcToken); // USDC: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+        usdcToken = IERC20(_usdcToken);
         oracle = AggregatorV3Interface(_oracle);
     }
 
-    // Create a new game betting pool
     function createGame(string memory _homeTeam, string memory _awayTeam, uint256 _startTime) external {
         require(msg.sender == owner, "Only owner can create games");
         require(_startTime > block.timestamp, "Start time must be in the future");
@@ -66,7 +65,6 @@ contract HomeTeamBets {
         gameCount++;
     }
 
-    // Place a bet (win, lose, or tie + overtime yes/no)
     function placeBet(uint256 _gameId, uint256 _amount, BetType _betType, bool _overtime) external {
         Game storage game = games[_gameId];
         require(game.isActive, "Betting closed or game not found");
@@ -74,22 +72,18 @@ contract HomeTeamBets {
         require(!hasBet[msg.sender][_gameId], "One bet per game allowed");
         require(_amount > 0, "Amount must be greater than 0");
 
-        // Transfer USDC to contract
         require(usdcToken.transferFrom(msg.sender, address(this), _amount), "USDC transfer failed");
 
-        // Record bet
         game.bets[msg.sender] = Bet(msg.sender, _amount, _betType, _overtime, block.timestamp);
         game.bettors.push(msg.sender);
         game.totalPool += _amount;
         hasBet[msg.sender][_gameId] = true;
 
-        // Add to transaction history
         transactionHistory[msg.sender].push(Bet(msg.sender, _amount, _betType, _overtime, block.timestamp));
 
         emit BetPlaced(msg.sender, _gameId, _amount, _betType, _overtime, block.timestamp);
     }
 
-    // Called when game starts (no more bets)
     function startGame(uint256 _gameId) external {
         Game storage game = games[_gameId];
         require(block.timestamp >= game.startTime, "Game not started yet");
@@ -98,9 +92,8 @@ contract HomeTeamBets {
         emit GameStarted(_gameId, game.startTime);
     }
 
-    // Oracle updates game result (simplified for demo; use Chainlink in production)
     function completeGame(uint256 _gameId, BetType _result, bool _hadOvertime) external {
-        require(msg.sender == owner, "Only owner can complete game"); // Replace with oracle in production
+        require(msg.sender == owner, "Only owner can complete game");
         Game storage game = games[_gameId];
         require(!game.isActive && !game.completed, "Game not started or already completed");
 
@@ -112,14 +105,12 @@ contract HomeTeamBets {
         emit GameCompleted(_gameId, _result, _hadOvertime);
     }
 
-    // Distribute winnings pro-rata (80% to winners, 20% to revenue)
     function distributeWinnings(uint256 _gameId) internal {
         Game storage game = games[_gameId];
         uint256 revenueShare = (game.totalPool * 20) / 100;
         uint256 winnerPool = game.totalPool - revenueShare;
         totalRevenue += revenueShare;
 
-        // Calculate total winning weight
         uint256 totalWinningWeight = 0;
         address[] memory winners = new address[](game.bettors.length);
         uint256 winnerCount = 0;
@@ -127,7 +118,7 @@ contract HomeTeamBets {
         for (uint256 i = 0; i < game.bettors.length; i++) {
             address bettor = game.bettors[i];
             Bet memory bet = game.bets[bettor];
-            bool wonMain = bet.betType == game.result; // Match win, lose, or tie
+            bool wonMain = bet.betType == game.result;
             bool wonOvertime = bet.overtime == game.hadOvertime;
 
             if (wonMain && wonOvertime) {
@@ -137,7 +128,6 @@ contract HomeTeamBets {
             }
         }
 
-        // Distribute winnings
         for (uint256 i = 0; i < winnerCount; i++) {
             address winner = winners[i];
             Bet memory bet = game.bets[winner];
@@ -148,7 +138,6 @@ contract HomeTeamBets {
         }
     }
 
-    // Withdraw revenue (20%)
     function withdrawRevenue() external {
         require(msg.sender == owner, "Only owner can withdraw");
         uint256 amount = totalRevenue;
@@ -156,7 +145,6 @@ contract HomeTeamBets {
         interoperability.crossChainTransfer(1, 1, "USDC", amount, interoperability.mediatorAccount());
     }
 
-    // Get user's transaction history
     function getTransactionHistory(address user) external view returns (Bet[] memory) {
         return transactionHistory[user];
     }
