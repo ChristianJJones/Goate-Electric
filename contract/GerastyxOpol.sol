@@ -26,7 +26,7 @@ contract GerastyxOpol is VRFConsumerBase {
         uint256 balance;
         bool hasCompletedLap;
         uint256 jailedTurns;
-        mapping(uint256 => uint256) propertiesOwned; // propertyId => houseCount (5 = hotel)
+        mapping(uint256 => uint256) propertiesOwned;
         uint256[] luckCards;
         uint256[] karmaCards;
     }
@@ -86,8 +86,7 @@ contract GerastyxOpol is VRFConsumerBase {
         uint256[] memory row1 = new uint256[](BOARD_SIZE / 2);
         uint256[] memory row2 = new uint256[](BOARD_SIZE / 2);
         row1[0] = uint256(SpaceType.GO); row2[0] = uint256(SpaceType.JAIL);
-        row1[5] = uint256(SpaceType.PROPERTY); row2[5] = uint256(SpaceType.PROPERTY); // Example properties
-        // Expand with full board layout
+        row1[5] = uint256(SpaceType.PROPERTY); row2[5] = uint256(SpaceType.PROPERTY);
     }
 
     function startSession(GameMode mode, uint256 entryFee) external payable {
@@ -147,108 +146,5 @@ contract GerastyxOpol is VRFConsumerBase {
         GameSession storage session = sessions[sessionId % 1e18];
         Player storage player = session.playerData[msg.sender];
         
-        if (sessionId < 1e18) {
-            uint256 roll = (randomness % 6) + 1;
-            movePlayer(sessionId, roll);
-            emit DiceRolled(msg.sender, sessionId, roll);
-        } else {
-            bool isHeads = randomness % 2 == 0;
-            player.positionRow1 = isHeads ? player.positionRow1 : player.positionRow2;
-            emit CoinFlipped(msg.sender, sessionId % 1e18, isHeads);
-        }
-        nextTurn(sessionId);
-    }
-
-    function movePlayer(uint256 sessionId, uint256 steps) internal {
-        GameSession storage session = sessions[sessionId];
-        Player storage player = session.playerData[msg.sender];
-        uint256 newPos = (player.positionRow1 + steps) % (BOARD_SIZE / 2);
-        if (newPos < player.positionRow1) {
-            player.hasCompletedLap = true;
-            uint256 paycheck = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 5e18 : session.mode == GameMode.Gambling ? 20e18 : 100e18;
-            greyStax.mint(msg.sender, paycheck);
-        }
-        player.positionRow1 = newPos;
-        handleSpace(sessionId, newPos);
-    }
-
-    function handleSpace(uint256 sessionId, uint256 position) internal {
-        GameSession storage session = sessions[sessionId];
-        SpaceType space = SpaceType(session.boardRow1[position]);
-        if (space == SpaceType.PROPERTY) {
-            uint256 propertyId = position;
-            if (propertyNFT.ownerOf(propertyId) != address(0) && propertyNFT.ownerOf(propertyId) != msg.sender) {
-                uint256 rent = calculateRent(sessionId, propertyId);
-                payRent(sessionId, propertyId, rent);
-            }
-        }
-    }
-
-    function buyProperty(uint256 sessionId, uint256 propertyId) external {
-        GameSession storage session = sessions[sessionId];
-        Player storage player = session.playerData[msg.sender];
-        require(player.hasCompletedLap, "Complete a lap first");
-        uint256 price = getPropertyPrice(session.mode, propertyId);
-        if (session.mode == GameMode.FreePlay) {
-            usdMediator.handleAdWatch("PropertyPurchase", msg.sender);
-        } else {
-            require(greyStax.transferFrom(msg.sender, address(this), price), "Payment failed");
-            usdMediator.handleGerastyxOpolTransaction(sessionId, price, "PropertyPurchase");
-        }
-        propertyNFT.safeTransferFrom(address(this), msg.sender, propertyId);
-        player.propertiesOwned[propertyId] = 0;
-        emit PropertyBought(msg.sender, sessionId, propertyId);
-    }
-
-    function calculateRent(uint256 sessionId, uint256 propertyId) internal view returns (uint256) {
-        GameSession storage session = sessions[sessionId];
-        uint256 basePrice = getPropertyPrice(session.mode, propertyId);
-        uint256 houseCount = sessions[sessionId].playerData[propertyNFT.ownerOf(propertyId)].propertiesOwned[propertyId];
-        return houseCount == 5 ? basePrice / 2 : basePrice / 10 + (houseCount * basePrice / 20);
-    }
-
-    function payRent(uint256 sessionId, uint256 propertyId, uint256 rent) internal {
-        Player storage player = sessions[sessionId].playerData[msg.sender];
-        address owner = propertyNFT.ownerOf(propertyId);
-        if (player.balance < rent) {
-            session.pausedTime = block.timestamp;
-            // Frontend handles sell/leave logic
-        } else {
-            require(greyStax.transferFrom(msg.sender, owner, rent), "Rent payment failed");
-            usdMediator.handleGerastyxOpolTransaction(sessionId, rent, "RentPayment");
-        }
-    }
-
-    function getPropertyPrice(GameMode mode, uint256 propertyId) internal pure returns (uint256) {
-        if (propertyId == 1) return mode == GameMode.FreePlay ? 0 : mode == GameMode.Reasonable ? 1e18 : mode == GameMode.Gambling ? 10e18 : 50e18;
-        // Add full pricing logic for all 25 properties
-        return 0;
-    }
-
-    function nextTurn(uint256 sessionId) internal {
-        GameSession storage session = sessions[sessionId];
-        session.currentTurn = (session.currentTurn + 1) % session.players.length;
-        if (block.timestamp > session.startTime + SESSION_DURATION) {
-            endSession(sessionId);
-        }
-    }
-
-    function endSession(uint256 sessionId) internal {
-        GameSession storage session = sessions[sessionId];
-        session.isActive = false;
-        address winner = session.players[0];
-        uint256 appraisal = calculateAppraisal(sessionId, winner);
-        uint256 payout = session.mode == GameMode.FreePlay ? 0 : session.mode == GameMode.Reasonable ? 1e18 : session.mode == GameMode.Gambling ? 10e18 : 25e18;
-        greyStax.mint(winner, appraisal + payout);
-        emit SessionEnded(sessionId, winner);
-    }
-
-    function calculateAppraisal(uint256 sessionId, address player) internal returns (uint256) {
-        // Sum up value of properties, houses, hotels, cards
-        return 0;
-    }
-
-    function distributeToNFTHolders(uint256 amount) external {
-        // Distribute 1% to NFT holders
     }
 }
