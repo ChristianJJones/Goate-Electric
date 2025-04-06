@@ -15,12 +15,19 @@ class USDMediator {
             pancakeswap: new ethers.Contract('0xPancakeRouter', pancakeABI, new ethers.providers.JsonRpcProvider('https://bsc-dataseed.binance.org')),
             vvs: new ethers.Contract('0xVVSRouter', vvsABI, new ethers.providers.JsonRpcProvider('https://evm.cronos.org')),
             dydx: 'https://api.dydx.exchange',
-            changelly: 'https://api.changelly.com'
+            changelly: 'https://api.changelly.com',
+            alpaca: 'https://api.alpaca.markets',
+            tradier: 'https://api.tradier.com',
+            snaptrade: 'https://api.snaptrade.com',
+            etrade: 'https://api.etrade.com',
+            tradestation: 'https://api.tradestation.com',
+            questrade: 'https://api.questrade.com',
+            plaid: 'https://api.plaid.com'
         };
-        this.tokenMap = {
-            1: { "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "ZPE": "0xYourZPEAddress", "ZPW": "0xYourZPWAddress", "ZPP": "0xYourZPPAddress", "GySt": "0xYourGreyStaxAddress" },
-            4: { "XLM": StellarSdk.Asset.native(), "USDC": new StellarSdk.Asset("USDC", "YourIssuer"), "ZPE": new StellarSdk.Asset("ZPE", "YourIssuer"), "ZPW": new StellarSdk.Asset("ZPW", "YourIssuer"), "ZPP": new StellarSdk.Asset("ZPP", "YourIssuer") },
-        };
+        this.alpacaKey = 'YOUR_ALPACA_KEY';
+        this.alpacaSecret = 'YOUR_ALPACA_SECRET';
+        this.tradierKey = 'YOUR_TRADIER_KEY';
+        this.plaidAccessToken = 'YOUR_PLAID_ACCESS_TOKEN';
         this.ipfs = IPFS.create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
         this.provider = new ethers.providers.Web3Provider(window.ethereum);
         this.signer = this.provider.getSigner();
@@ -29,17 +36,18 @@ class USDMediator {
         this.homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, this.signer);
         this.gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, this.signer);
         this.chainlinkOracleAddress = "0xYourChainlinkOracleAddress";
-        this.chainlinkJobId = "your-job-id-uuid";
         this.revenueDistribution = { cj03nes: "0xYourCj03nesAddress", reserves: "0xYourReservesAddress", mediator: "0xYourMediatorAddress" };
         this.listenForEvents();
     }
 
     async getConsensusPrice(tokenSymbol, amount, chainId) {
         const prices = await Promise.all([
-            fetch(`${this.providers.moonpay}/v3/currencies/${tokenSymbol}/quote?amount=${amount}`).then(res => res.json()).then(data => data.totalAmount),
-            fetch(`${this.providers.banxa}/quote?token=${tokenSymbol}&amount=${amount}`).then(res => res.json()).then(data => data.priceInUSD),
-            this.providers.uniswap.getAmountsOut(ethers.utils.parseUnits(amount.toString(), 6), ["0xTokenAddress", "0xUSDCAddress"]).then(([_, out]) => ethers.utils.formatUnits(out, 6)),
-            fetch(`${this.providers.oneInch}/${chainId}/quote?fromToken=${tokenSymbol}&toToken=USDC&amount=${amount}`).then(res => res.json()).then(data => data.toTokenAmount),
+            fetch(`${this.providers.alpaca}/v2/stocks/${tokenSymbol}/quotes/latest`, {
+                headers: { 'APCA-API-KEY-ID': this.alpacaKey, 'APCA-API-SECRET-KEY': this.alpacaSecret }
+            }).then(res => res.json()).then(data => data.quote.ap),
+            fetch(`${this.providers.tradier}/v1/markets/quotes?symbols=${tokenSymbol}`, {
+                headers: { 'Authorization': `Bearer ${this.tradierKey}` }
+            }).then(res => res.json()).then(data => data.quotes.quote.last)
         ]);
         return prices.reduce((sum, price) => sum + parseFloat(price), 0) / prices.length;
     }
@@ -70,21 +78,58 @@ class USDMediator {
         await this.updateIPFS(price, "Modal Purchase");
     }
 
-    async handleNodeRewards(amount) {
-        await this.contract.distributeRewards({ value: ethers.utils.parseEther(amount.toString()) });
-        await this.updateIPFS(amount, "Node Rewards");
+    async buyStock(stockSymbol, amount) {
+        const price = await this.getConsensusPrice(stockSymbol, amount, 1);
+        await fetch(`${this.providers.alpaca}/v2/orders`, {
+            method: 'POST',
+            headers: {
+                'APCA-API-KEY-ID': this.alpacaKey,
+                'APCA-API-SECRET-KEY': this.alpacaSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: stockSymbol,
+                qty: amount / price,
+                side: 'buy',
+                type: 'market'
+            })
+        });
+        const revenue = amount * 0.05;
+        await this.distributeRevenue(revenue);
     }
 
-    async getAdRevenue(adType, amount) {
-        let revenue;
-        switch (adType) {
-            case "Google": revenue = await this.fetchGoogleAdRevenue(amount); break;
-            case "Pi": revenue = await this.fetchPiAdRevenue(amount); break;
-            case "YouTube": revenue = await this.fetchYouTubeAdRevenue(amount); break;
-            case "GameStart": case "PropertyPurchase": revenue = 0.01; break; // Placeholder for GerastyxOpol
-            default: throw new Error("Unknown ad type");
-        }
-        return ethers.utils.parseUnits(revenue.toString(), 6);
+    async sellStock(stockSymbol, amount, toAsset, recipient) {
+        const price = await this.getConsensusPrice(stockSymbol, amount, 1);
+        await fetch(`${this.providers.alpaca}/v2/orders`, {
+            method: 'POST',
+            headers: {
+                'APCA-API-KEY-ID': this.alpacaKey,
+                'APCA-API-SECRET-KEY': this.alpacaSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: stockSymbol,
+                qty: amount / price,
+                side: 'sell',
+                type: 'market'
+            })
+        });
+        const usdAmount = price * 0.95;
+        await this.distributeRevenue(price * 0.05);
+        await this.contract.crossChainTransfer(1, 1, toAsset, usdAmount, recipient);
+    }
+
+    async getCreditScore(userAddress) {
+        const response = await fetch(`${this.providers.plaid}/credit/details`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.plaidAccessToken}`
+            },
+            body: JSON.stringify({ user_address: userAddress })
+        });
+        const data = await response.json();
+        return data.credit_score || 700;
     }
 
     async handleAdWatch(adType, userAddress) {
@@ -97,12 +142,19 @@ class USDMediator {
             await this.distributeRevenue(amount);
         }
         await this.updateIPFS(amount, `Ad Watch (${adType})`);
-        console.log(`Ad watched: ${adType}, Amount: ${ethers.utils.formatUnits(amount, 6)} USDC`);
     }
 
-    async fetchGoogleAdRevenue(amount) { return 0.01; }
-    async fetchPiAdRevenue(amount) { return 0.005; }
-    async fetchYouTubeAdRevenue(amount) { return 0.02; }
+    async getAdRevenue(adType, amount) {
+        let revenue;
+        switch (adType) {
+            case "Google": revenue = 0.01; break;
+            case "Pi": revenue = 0.005; break;
+            case "YouTube": revenue = 0.02; break;
+            case "GameStart": case "PropertyPurchase": revenue = 0.01; break;
+            default: throw new Error("Unknown ad type");
+        }
+        return ethers.utils.parseUnits(revenue.toString(), 6);
+    }
 
     async distributeGerastyxRevenue(amount) {
         const mediatorAmount = amount * 0.02;
@@ -116,44 +168,6 @@ class USDMediator {
         await Promise.all(txPromises);
     }
 
-    async handleGerastyxOpolTransaction(sessionId, amount, type) {
-        const price = await this.getConsensusPrice("USDC", amount, 1);
-        await this.distributeGerastyxRevenue(price);
-        await this.updateIPFS({ sessionId, amount, type }, "GerastyxOpol Transaction");
-    }
-
-    async getGameResults(gameId) {
-        const game = await this.homeTeamBetsContract.games(gameId);
-        const homeTeam = game.homeTeam;
-        const awayTeam = game.awayTeam;
-        const gameStartTime = game.startTime;
-
-        const oracleContract = new ethers.Contract(
-            this.chainlinkOracleAddress,
-            ["function requestGameResult(string memory homeTeam, string memory awayTeam, uint256 startTime) public returns (bytes32 requestId)", "event GameResultReceived(bytes32 indexed requestId, uint256 result, bool hadOvertime)"],
-            this.signer
-        );
-
-        const tx = await oracleContract.requestGameResult(homeTeam, awayTeam, gameStartTime, { value: ethers.utils.parseEther("0.1") });
-        const receipt = await tx.wait();
-        const requestId = receipt.logs[0].topics[1];
-
-        return new Promise((resolve) => {
-            oracleContract.once("GameResultReceived", (reqId, result, hadOvertime) => {
-                if (reqId === requestId) {
-                    resolve({ result: result.toNumber(), hadOvertime });
-                }
-            });
-        });
-    }
-
-    async completeGame(gameId) {
-        const { result, hadOvertime } = await this.getGameResults(gameId);
-        const tx = await this.homeTeamBetsContract.completeGame(gameId, result, hadOvertime);
-        await tx.wait();
-        await this.updateIPFS({ gameId, result, hadOvertime }, "Game Completed");
-    }
-
     async updateIPFS(data, type) {
         const content = JSON.stringify({ type, data, timestamp: Date.now() });
         const { cid } = await this.ipfs.add(content);
@@ -163,21 +177,6 @@ class USDMediator {
     listenForEvents() {
         this.contract.on("CrossChainTransfer", (fromChain, toChain, tokenSymbol, amount, recipient) => {
             console.log(`Transfer: ${tokenSymbol} ${amount} from ${fromChain} to ${toChain} for ${recipient}`);
-        });
-        this.contract.on("RewardsDistributed", (total, cj03nes, mediator, reserve) => {
-            console.log(`Rewards: Total=${total}, cj03nes=${cj03nes}, Mediator=${mediator}, Reserve=${reserve}`);
-        });
-        this.homeTeamBetsContract.on("BetPlaced", (bettor, gameId, amount, betType, overtime, timestamp) => {
-            console.log(`Bet placed: ${bettor} on Game ${gameId} for ${amount} USDC - Type: ${betType}`);
-        });
-        this.homeTeamBetsContract.on("WinningsDistributed", (winner, gameId, amount) => {
-            console.log(`Winnings: ${winner} received ${amount} USDC for Game ${gameId}`);
-        });
-        this.gerastyxOpolContract.on("DiceRolled", (player, sessionId, roll) => {
-            console.log(`Dice rolled: ${player} in Session ${sessionId} - Roll: ${roll}`);
-        });
-        this.gerastyxOpolContract.on("PropertyBought", (player, sessionId, propertyId) => {
-            console.log(`Property bought: ${player} in Session ${sessionId} - Property: ${propertyId}`);
         });
     }
 }
