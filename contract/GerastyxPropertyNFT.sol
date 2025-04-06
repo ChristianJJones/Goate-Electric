@@ -16,7 +16,6 @@ contract GerastyxPropertyNFT is ERC721, Ownable {
     function initializeProperties() internal {
         propertyValues[1] = 100e18; // Duck Crossing
         propertyValues[2] = 110e18; // Duck Coast
-        // Add all 25 properties
     }
 
     function mint(address to, uint256 tokenId) external onlyOwner {
