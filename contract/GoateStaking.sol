@@ -4,12 +4,10 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./USDMediator.sol";
 import "./InstilledInteroperability.sol";
-import "./ZeropointDigitalStockNFT.sol";
 
 contract GoateStaking {
     USDMediator public usdMediator;
     InstilledInteroperability public interoperability;
-    ZeropointDigitalStockNFT public stockNFT;
     address public owner;
 
     struct Stake {
@@ -32,11 +30,10 @@ contract GoateStaking {
     event Staked(address indexed user, string asset, uint256 amount, uint256 duration);
     event Unstaked(address indexed user, string asset, uint256 amount);
 
-    constructor(address _usdMediator, address _interoperability, address _stockNFT) {
+    constructor(address _usdMediator, address _interoperability) {
         owner = msg.sender;
         usdMediator = USDMediator(_usdMediator);
         interoperability = InstilledInteroperability(_interoperability);
-        stockNFT = ZeropointDigitalStockNFT(_stockNFT);
     }
 
     function stake(string memory asset, uint256 amount, uint256 duration) external {
