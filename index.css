@@ -171,7 +171,7 @@ button:hover { background: #E6C200; }
     text-align: center; 
     border: 1px solid #FFD700; 
 }
-#staking-container, #game-container, #scratch-off-container { 
+#staking-container, #game-container, #scratch-off-container, #games-list { 
     width: 100%; 
     height: 600px; 
     border: 1px solid #FFD700; 
