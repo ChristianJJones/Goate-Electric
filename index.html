@@ -19,91 +19,29 @@
             </div>
         </div>
         <nav class="navigation" id="navigation" style="display: none;">
-            <ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
                 <li><a href="#zeropoint" class="nav-link">Zeropoint</a></li>
                 <li><a href="#zeropointwifi" class="nav-link">ZeropointWifi</a></li>
-                <li><a href="#earn" class="nav-link">Earn</a></li>
+                <li><a href="#zeropointphoneservice" class="nav-link">ZeropointPhoneService</a></li>
+                <li><a href="#digital-stocks" class="nav-link">ZeropointDigitalStocks</a></li>
                 <li><a href="#swap" class="nav-link">Swap</a></li>
-                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
-                <li><a href="#settings" class="nav-link">Settings</a></li>
-                <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li>
-                <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li>
-                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li>
-                <li><a href="#digital-stocks" class="nav-link">Digital Stocks</a></li>
                 <li><a href="#goate-staking" class="nav-link">Goate Staking</a></li>
+                <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li>
+                <li><a href="#scratch-off" class="nav-link">Scratch Off NFT</a></li>
+                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li>
+                <li><a href="#earn" class="nav-link">Earn</a></li>
+                <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li>
+                <li><a href="#settings" class="nav-link">Settings</a></li>
             </ul>
         </nav>
     </header>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal disney-modal" style="display: none;">
-        <div class="modal-content disney-modal-content">
-            <div class="tabs">
-                <button id="signup-tab" class="tab active">SignUp</button>
-                <button id="login-tab" class="tab">Login</button>
-            </div>
-            <form id="signup-form" class="auth-form">
-                <div class="form-group">
-                    <label for="signup-email-phone">Email or Phone Number</label>
-                    <input type="text" id="signup-email-phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-username">Username</label>
-                    <input type="text" id="signup-username" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-password-confirm">Confirm Password</label>
-                    <input type="password" id="signup-password-confirm" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-first-name">First Name</label>
-                    <input type="text" id="signup-first-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-last-name">Last Name</label>
-                    <input type="text" id="signup-last-name" required>
-                </div>
-                <div class="form-group">
-                    <label>Security Questions (Select and Answer 3)</label>
-                    <select id="security-question-1">
-                        <option value="q1">What’s your childhood pet’s name?</option>
-                        <option value="q2">What’s your favorite movie?</option>
-                        <option value="q3">Where were you born?</option>
-                    </select>
-                    <input type="text" id="security-answer-1" required>
-                    <select id="security-question-2">
-                        <option value="q1">What’s your childhood pet’s name?</option>
-                        <option value="q2">What’s your favorite movie?</option>
-                        <option value="q3">Where were you born?</option>
-                    </select>
-                    <input type="text" id="security-answer-2" required>
-                    <select id="security-question-3">
-                        <option value="q1">What’s your childhood pet’s name?</option>
-                        <option value="q2">What’s your favorite movie?</option>
-                        <option value="q3">Where were you born?</option>
-                    </select>
-                    <input type="text" id="security-answer-3" required>
-                </div>
-                <button type="submit" class="disney-button">Submit</button>
-            </form>
-            <form id="login-form" class="auth-form" style="display: none;">
-                <div class="form-group">
-                    <label for="login-id">Email, Username, or Phone Number</label>
-                    <input type="text" id="login-id" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="disney-button">Submit</button>
-            </form>
-        </div>
-    </div>
 
     <main>
         <section id="home" class="page active">
@@ -126,25 +64,27 @@
                         <option value="ZPW">$ZPW</option>
                         <option value="ZPP">$ZPP</option>
                         <option value="GySt">$GySt</option>
+                        <option value="XLM">$XLM</option>
                     </select>
                     <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
                 </div>
                 <div class="button-section">
-                    <button id="consume-zpe" class="disney-button">Consume $ZPE</button>
-                    <button id="consume-zpw" class="disney-button">Consume $ZPW</button>
-                    <button id="subscribe-zpp" class="disney-button">Consume $ZPP</button>
+                    <button id="consume-zpe">Consume $ZPE</button>
+                    <button id="consume-zpw">Consume $ZPW</button>
+                    <button id="subscribe-zpp">Consume $ZPP</button>
                 </div>
             </div>
         </section>
         <section id="zeropoint" class="page hidden"><h2>Zeropoint</h2><p>Wireless charging utility, pegged to $0.10.</p></section>
         <section id="zeropointwifi" class="page hidden"><h2>ZeropointWifi</h2><p>Unlimited WiFi, pegged to $5.</p></section>
+        <section id="zeropointphoneservice" class="page hidden"><h2>ZeropointPhoneService</h2><p>Phone service utility, pegged to $10.</p></section>
         <section id="earn" class="page hidden">
             <h2>Earn</h2>
             <p>Earn USDC by watching ads.</p>
             <div class="earn-container">
-                <button id="watch-google-ad" class="disney-button">Watch Google Ad</button>
-                <button id="watch-pi-ad" class="disney-button">Watch Pi Ad</button>
-                <button id="watch-youtube-ad" class="disney-button">Watch YouTube Ad</button>
+                <button id="watch-google-ad">Watch Google Ad</button>
+                <button id="watch-pi-ad">Watch Pi Ad</button>
+                <button id="watch-youtube-ad">Watch YouTube Ad</button>
             </div>
             <div id="ad-transaction-history">
                 <h3>Transaction History</h3>
@@ -158,7 +98,7 @@
                 <input type="number" id="swap-amount" placeholder="Amount">
                 <select id="to-asset"></select>
                 <select id="to-chain"></select>
-                <button id="swap-button" class="disney-button">Swap</button>
+                <button id="swap-button">Swap</button>
             </div>
         </section>
         <section id="portfolio" class="page hidden"><h2>Portfolio</h2><ul id="portfolio-list"></ul></section>
@@ -166,35 +106,12 @@
             <h2>Settings</h2>
             <div class="settings-container">
                 <div class="bank-actions">
-                    <button id="bank-to-goate" class="disney-button">Bank to Goate Electric (Deposit)</button>
-                    <button id="goate-to-bank" class="disney-button">Goate Electric to Bank (Withdraw)</button>
+                    <button id="bank-to-goate">Bank to Goate Electric (Deposit)</button>
+                    <button id="goate-to-bank">Goate Electric to Bank (Withdraw)</button>
                 </div>
                 <div class="settings-modal">
-                    <h3>User KYC / AML Info</h3>
-                    <div id="kyc-info">
-                        <p><strong>Name:</strong> <span id="kyc-name"></span></p>
-                        <p><strong>Birthday:</strong> <span id="kyc-dob"></span></p>
-                        <p><strong>Address:</strong> <span id="kyc-address"></span></p>
-                        <p><strong>Last 4 of SSN:</strong> <span id="kyc-ssn">****</span> <button id="toggle-ssn" class="disney-button">Show</button></p>
-                    </div>
-                </div>
-                <div class="settings-modal">
-                    <h3>Account Settings</h3>
-                    <form id="account-settings-form">
-                        <div class="form-group">
-                            <label for="change-password">Change Password</label>
-                            <input type="password" id="change-password">
-                        </div>
-                        <button type="submit" class="disney-button">Update</button>
-                    </form>
-                </div>
-                <div class="settings-modal">
-                    <h3>Bank Account Settings</h3>
-                    <button id="connect-plaid" class="disney-button">Connect Bank Account with Plaid</button>
-                </div>
-                <div class="settings-modal">
-                    <h3>Goate Electric Card</h3>
-                    <button id="order-card" class="disney-button">Order Card</button>
+                    <h3>Connect Bank</h3>
+                    <button id="connect-plaid">Connect with Plaid</button>
                 </div>
             </div>
         </section>
@@ -202,8 +119,8 @@
             <h2>Manage Devices</h2>
             <div id="devices-container"></div>
             <input id="device-id" placeholder="Device ID" />
-            <button id="add-device" class="disney-button">Add Device</button>
-            <button id="use-modal" class="disney-button">Use Modal</button>
+            <button id="add-device">Add Device</button>
+            <button id="use-modal">Use Modal</button>
         </section>
         <section id="hometeambets" class="page hidden">
             <h2>HomeTeamBets</h2>
@@ -214,14 +131,20 @@
                 <ul id="bet-history-list"></ul>
             </div>
         </section>
+        <section id="scratch-off" class="page hidden">
+            <h2>Scratch Off NFT</h2>
+            <div id="scratch-off-container">
+                <iframe id="scratch-off-iframe" src="unreal://scratchoffnft" width="100%" height="100%"></iframe>
+            </div>
+        </section>
         <section id="gerastyxopol" class="page hidden">
             <h2>GerastyxOpol</h2>
             <p>Play a blockchain-based Monopoly game!</p>
             <div id="game-modes">
-                <button id="free-play" class="disney-button">Free Play</button>
-                <button id="reasonable" class="disney-button">Reasonable</button>
-                <button id="gambling" class="disney-button">Gambling</button>
-                <button id="rich" class="disney-button">Rich</button>
+                <button id="free-play">Free Play</button>
+                <button id="reasonable">Reasonable</button>
+                <button id="gambling">Gambling</button>
+                <button id="rich">Rich</button>
             </div>
             <div id="game-container"></div>
         </section>
@@ -236,7 +159,6 @@
         </section>
     </main>
 
-    <!-- Disney+-style Confirmation Modal -->
     <div id="confirmation-modal" class="modal disney-modal" style="display: none;">
         <div class="modal-content disney-modal-content">
             <h3>Confirm Transaction</h3>
