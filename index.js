@@ -9,9 +9,35 @@ const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, 
 const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer);
 const gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, signer);
 const greyStaxContract = new ethers.Contract("0xYourGreyStaxAddress", greyStaxABI, signer);
+const digitalStockNFTContract = new ethers.Contract("0xYourDigitalStockNFTAddress", digitalStockNFTABI, signer);
+const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateStakingABI, signer);
+const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer);
+const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer);
 const mediator = new USDMediator();
 let currentUser, isLoggedIn = false;
 const db = { users: {}, devices: {} };
+
+// Plaid Integration
+const plaidHandler = Plaid.create({
+    token: "YOUR_PLAID_PUBLIC_TOKEN", // Replace with real token from Plaid Dashboard
+    onSuccess: async (publicToken, metadata) => {
+        const response = await fetch('/plaid/exchange_public_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ public_token: publicToken })
+        });
+        const { access_token } = await response.json();
+        const creditResponse = await fetch('/plaid/credit_report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ access_token })
+        });
+        const creditData = await creditResponse.json();
+        // Update credit score (simplified)
+        console.log(`Credit Score: ${creditData.credit_score}`);
+    },
+    onExit: (err) => console.error(err)
+});
 
 async function updateBalances() {
     const userAddress = await signer.getAddress();
@@ -59,7 +85,7 @@ async function loadTransactionHistory() {
 }
 
 async function watchAd(adType) {
-    try {
+    await confirmTransaction(`Watch ${adType} Ad?`, async () => {
         const adContainer = document.createElement("div");
         adContainer.style.position = "fixed";
         adContainer.style.top = "0";
@@ -80,9 +106,7 @@ async function watchAd(adType) {
         await mediator.handleAdWatch(adType, await signer.getAddress());
         updateBalances();
         loadTransactionHistory();
-    } catch (error) {
-        console.error("Error watching ad:", error);
-    }
+    });
 }
 
 async function loadGames() {
@@ -108,7 +132,7 @@ async function loadGames() {
                         <option value="no">Overtime No</option>
                     </select>
                     <input type="number" id="bet-amount-${i}" placeholder="Amount (USDC)" step="0.01">
-                    <button onclick="placeBet(${i})" ${!game.isActive ? 'disabled' : ''}>Place Bet</button>
+                    <button onclick="placeBet(${i})" ${!game.isActive ? 'disabled' : ''} class="disney-button">Place Bet</button>
                 </div>
             `;
         }
@@ -119,15 +143,15 @@ async function placeBet(gameId) {
     const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
     const betType = parseInt(document.getElementById(`bet-type-${gameId}`).value);
     const overtime = document.getElementById(`overtime-${gameId}`).value === "yes";
-
-    const tx = await usdcContract.approve(homeTeamBetsContract.address, amount);
-    await tx.wait();
-    const betTx = await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
-    await betTx.wait();
-
-    updateBalances();
-    loadBetHistory();
-    loadGames();
+    await confirmTransaction(`Place bet of ${ethers.utils.formatUnits(amount, 6)} USDC on Game ${gameId}?`, async () => {
+        const tx = await usdcContract.approve(homeTeamBetsContract.address, amount);
+        await tx.wait();
+        const betTx = await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
+        await betTx.wait();
+        updateBalances();
+        loadBetHistory();
+        loadGames();
+    });
 }
 
 async function loadBetHistory() {
@@ -142,19 +166,142 @@ async function loadBetHistory() {
 
 async function startGame(mode) {
     const sessionId = await gerastyxOpolContract.sessionCount();
-    if (mode === "FreePlay") {
-        await gerastyxOpolContract.startSession(0, { value: 0 });
-    } else {
-        const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
-        await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
-        await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
-    }
-    loadGame(sessionId);
+    await confirmTransaction(`Start ${mode} session?`, async () => {
+        if (mode === "FreePlay") {
+            await gerastyxOpolContract.startSession(0, { value: 0 });
+        } else {
+            const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
+            await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
+            await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
+        }
+        loadGame(sessionId);
+    });
 }
 
 function loadGame(sessionId) {
     const gameContainer = document.getElementById('game-container');
     gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
+}
+
+async function initializeStocks() {
+    const response = await fetch('https://api.alpaca.markets/v2/assets', {
+        headers: { 'APCA-API-KEY-ID': 'YOUR_ALPACA_KEY', 'APCA-API-SECRET-KEY': 'YOUR_ALPACA_SECRET' }
+    });
+    const stocks = await response.json();
+    for (const stock of stocks) {
+        await digitalStockNFTContract.mintStock("0xYourOwnerAddress", stock.symbol);
+    }
+}
+
+async function loadStocks() {
+    const stockList = document.getElementById('stock-list');
+    stockList.innerHTML = '';
+    const tokenCount = await digitalStockNFTContract.tokenCounter();
+    for (let i = 0; i < tokenCount; i++) {
+        const symbol = await digitalStockNFTContract.stockSymbols(i);
+        stockList.innerHTML += `
+            <div class="stock-card">
+                <h3>${symbol}</h3>
+                <input type="number" id="amount-${i}" placeholder="Amount (USDC)">
+                <select id="chain-${i}">
+                    <option value="1">Ethereum</option>
+                    <!-- Add other chains -->
+                </select>
+                <button onclick="buyStock(${i})" class="disney-button">Buy</button>
+                <button onclick="sellStock(${i})" class="disney-button">Sell</button>
+            </div>
+        `;
+    }
+}
+
+async function buyStock(tokenId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
+    const chainId = document.getElementById(`chain-${tokenId}`).value;
+    await confirmTransaction(`Buy ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await usdcContract.approve(digitalStockNFTContract.address, amount);
+        await digitalStockNFTContract.buyStock(tokenId, amount, chainId);
+        updateBalances();
+        loadStocks();
+    });
+}
+
+async function sellStock(tokenId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
+    await confirmTransaction(`Sell ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await digitalStockNFTContract.sellStock(tokenId, amount, "USDC", 1);
+        updateBalances();
+        loadStocks();
+    });
+}
+
+function loadStaking() {
+    const stakingContainer = document.getElementById('staking-container');
+    stakingContainer.innerHTML = `<iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>`;
+}
+
+async function stake(asset, amount, duration) {
+    await confirmTransaction(`Stake ${ethers.utils.formatUnits(amount, 6)} ${asset} for ${duration} seconds?`, async () => {
+        const token = new ethers.Contract(interoperabilityContract.tokenMap(1, asset), erc20ABI, signer);
+        await token.approve(stakingContract.address, amount);
+        await stakingContract.stake(asset, amount, duration);
+        updateBalances();
+    });
+}
+
+async function lend(amount) {
+    await confirmTransaction(`Lend ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await usdcContract.approve(lendingContract.address, amount);
+        await lendingContract.lend(amount);
+        updateBalances();
+    });
+}
+
+async function borrow(amount) {
+    await confirmTransaction(`Borrow ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await lendingContract.borrow(amount);
+        updateBalances();
+    });
+}
+
+async function repay(amount) {
+    await confirmTransaction(`Repay ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await usdcContract.approve(lendingContract.address, amount);
+        await lendingContract.repay(amount);
+        updateBalances();
+    });
+}
+
+async function confirmTransaction(message, callback) {
+    const modal = document.getElementById('confirmation-modal');
+    const messageEl = document.getElementById('modal-message');
+    const yesBtn = document.getElementById('modal-yes');
+    const noBtn = document.getElementById('modal-no');
+    const pinSection = document.getElementById('pin-section');
+    const pinInput = document.getElementById('pin-input');
+    const pinSubmit = document.getElementById('pin-submit');
+
+    messageEl.textContent = message;
+    modal.style.display = 'flex';
+    pinSection.style.display = 'none';
+
+    return new Promise((resolve) => {
+        yesBtn.onclick = () => {
+            pinSection.style.display = 'block';
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+        };
+        noBtn.onclick = () => {
+            modal.style.display = 'none';
+            resolve(false);
+        };
+        pinSubmit.onclick = () => {
+            if (pinInput.value.length === 4) {
+                modal.style.display = 'none';
+                callback();
+                resolve(true);
+            }
+        };
+    });
 }
 
 function updateUI() {
@@ -237,41 +384,51 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('consume-zpe').addEventListener('click', async () => {
         const amount = document.getElementById('payment-amount').value;
-        const tx = await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
-        await tx.wait();
-        await mediator.handleConsumption(1, "ZPE", ethers.utils.parseUnits(amount || "1", 3));
-        updateBalances();
+        await confirmTransaction(`Consume ${amount || 1} $ZPE?`, async () => {
+            const tx = await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
+            await tx.wait();
+            await mediator.handleConsumption(1, "ZPE", ethers.utils.parseUnits(amount || "1", 3));
+            updateBalances();
+        });
     });
 
     document.getElementById('consume-zpw').addEventListener('click', async () => {
         const amount = document.getElementById('payment-amount').value;
-        const tx = await zpwContract.consumeForService(ethers.utils.parseUnits(amount || "1", 2));
-        await tx.wait();
-        await mediator.handleConsumption(1, "ZPW", ethers.utils.parseUnits(amount || "1", 2));
-        updateBalances();
+        await confirmTransaction(`Consume ${amount || 1} $ZPW?`, async () => {
+            const tx = await zpwContract.consumeForService(ethers.utils.parseUnits(amount || "1", 2));
+            await tx.wait();
+            await mediator.handleConsumption(1, "ZPW", ethers.utils.parseUnits(amount || "1", 2));
+            updateBalances();
+        });
     });
 
     document.getElementById('subscribe-zpp').addEventListener('click', async () => {
-        const tx = await zppContract.subscribe();
-        await tx.wait();
-        await mediator.handleConsumption(1, "ZPP", 100);
-        updateBalances();
+        await confirmTransaction(`Subscribe to $ZPP?`, async () => {
+            const tx = await zppContract.subscribe();
+            await tx.wait();
+            await mediator.handleConsumption(1, "ZPP", 100);
+            updateBalances();
+        });
     });
 
     document.getElementById('add-device').addEventListener('click', async () => {
         const deviceId = document.getElementById('device-id').value;
-        const tx = await deviceContract.addDevice(deviceId);
-        await tx.wait();
-        loadDevices();
+        await confirmTransaction(`Add device ${deviceId}?`, async () => {
+            const tx = await deviceContract.addDevice(deviceId);
+            await tx.wait();
+            loadDevices();
+        });
     });
 
     document.getElementById('use-modal').addEventListener('click', async () => {
         const deviceId = document.getElementById('device-id').value;
-        const tx = await deviceContract.useModal(deviceId);
-        await tx.wait();
-        await mediator.handleModalPurchase(1 * 10**6);
-        loadDevices();
-        updateBalances();
+        await confirmTransaction(`Use modal on ${deviceId}?`, async () => {
+            const tx = await deviceContract.useModal(deviceId);
+            await tx.wait();
+            await mediator.handleModalPurchase(1 * 10**6);
+            loadDevices();
+            updateBalances();
+        });
     });
 
     document.getElementById('bank-to-goate').addEventListener('click', async () => {
@@ -291,6 +448,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('gambling').addEventListener('click', () => startGame("Gambling"));
     document.getElementById('rich').addEventListener('click', () => startGame("Rich"));
 
+    document.getElementById('connect-plaid').addEventListener('click', () => plaidHandler.open());
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -303,6 +462,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 loadBetHistory();
             } else if (link.getAttribute('href') === '#gerastyxopol' && isLoggedIn) {
                 loadGame(await gerastyxOpolContract.sessionCount() - 1);
+            } else if (link.getAttribute('href') === '#digital-stocks' && isLoggedIn) {
+                loadStocks();
+            } else if (link.getAttribute('href') === '#goate-staking' && isLoggedIn) {
+                loadStaking();
             }
         });
     });
@@ -312,4 +475,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const select = document.getElementById(id);
         tokens.forEach(token => select.innerHTML += `<option value="${token}">${token}</option>`);
     });
+
+    document.getElementById('stock-search').addEventListener('input', (e) => {
+        const search = e.target.value.toLowerCase();
+        document.querySelectorAll('.stock-card').forEach(card => {
+            card.style.display = card.querySelector('h3').textContent.toLowerCase().includes(search) ? 'block' : 'none';
+        });
+    });
+
+    await initializeStocks(); // Initialize stocks on load
 });
