@@ -11,10 +11,12 @@ contract Lending {
     InstilledInteroperability public interoperability;
     ZeropointDigitalStockNFT public stockNFT;
     address public owner;
+    string public plaidAPI = "https://api.plaid.com";
 
     uint256 public borrowPool;
     mapping(address => uint256) public loans;
     mapping(address => uint256) public loanDueDates;
+    mapping(address => uint256) public creditScores;
 
     string[] public stockList = [
         "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
@@ -42,13 +44,12 @@ contract Lending {
             usdMediator.buyStock(stockList[i], perStock);
         }
         borrowPool += amount;
-
         emit Lent(msg.sender, amount);
     }
 
     function borrow(uint256 amount) external {
-        uint256 creditScore = calculateCreditScore(msg.sender);
-        uint256 ecosystemSize = 1000; // Placeholder for total users
+        uint256 creditScore = getCreditScore(msg.sender);
+        uint256 ecosystemSize = 1000; // Placeholder
         uint256 maxLoan = (creditScore * borrowPool) / (1000 * ecosystemSize);
         require(amount <= maxLoan, "Exceeds loan limit");
         require(loans[msg.sender] == 0, "Existing loan pending");
@@ -58,7 +59,6 @@ contract Lending {
         loans[msg.sender] = amount;
         loanDueDates[msg.sender] = block.timestamp + 30 days;
         usdMediator.transferUSD(msg.sender, amount);
-
         emit Borrowed(msg.sender, amount);
     }
 
@@ -70,7 +70,6 @@ contract Lending {
         loans[msg.sender] -= amount;
         borrowPool += amount;
         if (loans[msg.sender] == 0) loanDueDates[msg.sender] = 0;
-
         emit Repaid(msg.sender, amount);
     }
 
@@ -82,8 +81,10 @@ contract Lending {
         loanDueDates[user] = 0;
     }
 
-    function calculateCreditScore(address user) internal view returns (uint256) {
-        // Placeholder: Use chain history and bank account data
-        return 700; // Example score
+    function getCreditScore(address user) internal returns (uint256) {
+        if (creditScores[user] == 0) {
+            creditScores[user] = 700; // Default, updated off-chain via Plaid
+        }
+        return creditScores[user];
     }
 }
