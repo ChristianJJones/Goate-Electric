@@ -17,7 +17,7 @@ contract GoateStaking {
         string asset;
         uint256 amount;
         uint256 startTime;
-        uint256 duration; // In seconds
+        uint256 duration;
         bool active;
     }
 
