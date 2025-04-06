@@ -1,99 +1,114 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./InstilledInteroperability.sol";
-
-contract USDMediator {
-    InstilledInteroperability public interoperability;
-    IERC20 public usdcToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    address public owner;
-
-    mapping(string => string) public tradingAPIs;
-    string[] public reserveAssets = [
-        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
-        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE",
-        "USD", "ZPE", "ZPW", "ZPP", "GySt", "XLM", "PI", "GerastyxOpolBank"
-    ];
-
-    event RevenueDistributed(uint256 amount, address cj03nes, address reserves, address mediator);
-
-    constructor(address _interoperability) {
-        owner = msg.sender;
-        interoperability = InstilledInteroperability(_interoperability);
-        tradingAPIs["Alpaca"] = "https://api.alpaca.markets";
-        tradingAPIs["Tradier"] = "https://api.tradier.com";
-        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com";
-        tradingAPIs["ETrade"] = "https://api.etrade.com";
-        tradingAPIs["TradeStation"] = "https://api.tradestation.com";
-        tradingAPIs["Questrade"] = "https://api.questrade.com";
+class USDMediator {
+    constructor() {
+        this.provider = new ethers.providers.Web3Provider(window.ethereum);
+        this.signer = this.provider.getSigner();
+        this.contract = new ethers.Contract("0xYourUSDMediatorAddress", usdMediatorABI, this.signer);
+        this.providers = {
+            alpaca: 'https://api.alpaca.markets',
+            tradier: 'https://api.tradier.com',
+            snaptrade: 'https://api.snaptrade.com',
+            etrade: 'https://api.etrade.com',
+            tradestation: 'https://api.tradestation.com',
+            questrade: 'https://api.questrade.com',
+            plaid: 'https://api.plaid.com',
+            stellar: 'https://horizon.stellar.org',
+            aquarius: 'https://api.aquariusdex.com',
+            moonpay: 'https://api.moonpay.com',
+            oneinch: 'https://api.1inch.exchange/v5.0',
+            uniswap: 'https://api.uniswap.org/v1',
+            pancakeswap: 'https://api.pancakeswap.info/api/v2',
+            okx: 'https://www.okx.com/api/v5',
+            sushiswap: 'https://api.sushiswap.org/v1'
+        };
+        this.alpacaKey = 'YOUR_ALPACA_KEY';
+        this.alpacaSecret = 'YOUR_ALPACA_SECRET';
+        this.tradierKey = 'YOUR_TRADIER_KEY';
+        this.stellarServer = new Stellar.Server(this.providers.stellar);
     }
 
-    function buyStock(string memory stockSymbol, uint256 amount) external {
-        require(amount > 0, "Amount must be greater than 0");
-        require(usdcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
-        uint256 revenue = amount * 5 / 100;
-        distributeRevenue(revenue);
+    async getConsensusPrice(tokenSymbol, amount, chainId) {
+        const prices = await Promise.all([
+            fetch(`${this.providers.alpaca}/v2/stocks/${tokenSymbol}/quotes/latest`, {
+                headers: { 'APCA-API-KEY-ID': this.alpacaKey, 'APCA-API-SECRET-KEY': this.alpacaSecret }
+            }).then(res => res.json()).then(data => data.quote.ap * amount),
+            fetch(`${this.providers.tradier}/v1/markets/quotes?symbols=${tokenSymbol}`, {
+                headers: { 'Authorization': `Bearer ${this.tradierKey}` }
+            }).then(res => res.json()).then(data => data.quotes.quote.last * amount),
+            fetch(`${this.providers.oneinch}/${chainId}/quote?fromTokenAddress=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&toTokenAddress=${tokenSymbol}&amount=${amount}`).then(res => res.json()).then(data => data.toTokenAmount)
+        ]);
+        return prices.reduce((sum, price) => sum + parseFloat(price), 0) / prices.length;
     }
 
-    function sellStock(string memory stockSymbol, uint256 amount, string memory toAsset, address recipient) external {
-        uint256 usdAmount = amount;
-        uint256 revenue = usdAmount * 5 / 100;
-        distributeRevenue(revenue);
-        uint256 netAmount = usdAmount - revenue;
-        interoperability.crossChainTransfer(1, 1, toAsset, netAmount, recipient);
+    async buyStock(stockSymbol, amount) {
+        const price = await this.getConsensusPrice(stockSymbol, amount / 1e6, 1);
+        await fetch(`${this.providers.alpaca}/v2/orders`, {
+            method: 'POST',
+            headers: {
+                'APCA-API-KEY-ID': this.alpacaKey,
+                'APCA-API-SECRET-KEY': this.alpacaSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: stockSymbol,
+                qty: amount / price,
+                side: 'buy',
+                type: 'market'
+            })
+        });
+        const revenue = amount * 0.05;
+        await this.distributeRevenue(revenue);
     }
 
-    function transferUSD(address to, uint256 amount) external {
-        require(msg.sender == address(scratchOffNFT) || msg.sender == owner, "Unauthorized");
-        require(usdcToken.transfer(to, amount), "Transfer failed");
+    async sellStock(stockSymbol, amount, toAsset, recipient) {
+        const price = await this.getConsensusPrice(stockSymbol, amount / 1e6, 1);
+        await fetch(`${this.providers.alpaca}/v2/orders`, {
+            method: 'POST',
+            headers: {
+                'APCA-API-KEY-ID': this.alpacaKey,
+                'APCA-API-SECRET-KEY': this.alpacaSecret,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                symbol: stockSymbol,
+                qty: amount / price,
+                side: 'sell',
+                type: 'market'
+            })
+        });
+        const usdAmount = price * 0.95;
+        await this.distributeRevenue(price * 0.05);
+        await this.contract.crossChainTransfer(1, 1, toAsset, usdAmount, recipient);
     }
 
-    function stakeDebt(address user, uint256 amount) external {
-        uint256 perAsset = amount / reserveAssets.length;
-        for (uint256 i = 0; i < reserveAssets.length; i++) {
-            if (keccak256(abi.encodePacked(reserveAssets[i])) == keccak256(abi.encodePacked("USD"))) {
-                usdcToken.transfer(address(this), perAsset);
-            } else {
-                buyStock(reserveAssets[i], perAsset);
-            }
-        }
+    async swap(fromToken, toToken, amount, chainId) {
+        const dexes = [
+            `${this.providers.oneinch}/${chainId}/swap`,
+            `${this.providers.uniswap}/quote`,
+            `${this.providers.pancakeswap}/tokens`,
+            `${this.providers.sushiswap}/quote`,
+            `${this.providers.okx}/market/tickers`
+        ];
+        const response = await fetch(dexes[0], {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                fromTokenAddress: fromToken,
+                toTokenAddress: toToken,
+                amount: amount.toString()
+            })
+        });
+        const data = await response.json();
+        await this.contract.crossChainTransfer(chainId, chainId, toToken, data.toTokenAmount, await this.signer.getAddress());
     }
 
-    function distributeRevenue(uint256 amount) internal {
-        address cj03nes = 0xYourCj03nesAddress;
-        address reserves = 0xYourReservesAddress;
-        address mediator = 0xYourMediatorAddress;
-        usdcToken.transfer(cj03nes, amount * 80 / 100);
-        usdcToken.transfer(reserves, amount * 15 / 100);
-        usdcToken.transfer(mediator, amount * 5 / 100);
-        emit RevenueDistributed(amount, cj03nes, reserves, mediator);
+    async distributeRevenue(amount) {
+        await this.contract.distributeRevenue(amount);
     }
 
-    function distributeStakingRevenue(uint256 amount) external {
-        uint256 revenue = amount * 10 / 100;
-        uint256 reserve = amount * 10 / 100;
-        uint256 userShare = amount * 80 / 100;
-        distributeRevenue(revenue);
-        uint256 perReserve = reserve / reserveAssets.length;
-        for (uint256 i = 0; i < reserveAssets.length; i++) {
-            buyStock(reserveAssets[i], perReserve);
-        }
-    }
-
-    function handleAdWatch(string memory adType, address user) external {
-        // Placeholder: Off-chain ad revenue handled in usd-mediator.js
-    }
-
-    function handleGerastyxOpolTransaction(uint256 sessionId, uint256 amount, string memory type_) external {
-        distributeRevenue(amount * 5 / 100);
-    }
-
-    function handleScratchOffPayment(string memory asset, uint256 amount, uint256 chainId) external {
-        address tokenAddress = interoperability.tokenMap(chainId, asset);
-        IERC20 token = IERC20(tokenAddress);
-        uint256 half = amount / 2;
-        require(token.transferFrom(msg.sender, address(this), half), "Mediator transfer failed");
-        require(token.transfer(0xYourRevenueAddress, half), "Revenue transfer failed");
+    async handleAdWatch(adType, userAddress) {
+        const amount = adType === "Google" ? 0.01 : adType === "Pi" ? 0.005 : 0.02;
+        await this.contract.transferUSD(userAddress, ethers.utils.parseUnits(amount.toString(), 6));
     }
 }
+
+module.exports = USDMediator;
