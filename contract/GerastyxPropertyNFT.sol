@@ -23,8 +23,4 @@ contract GerastyxPropertyNFT is ERC721, Ownable {
         _safeMint(to, tokenId);
         tokenCounter++;
     }
-
-    function getPropertyValue(uint256 tokenId) external view returns (uint256) {
-        return propertyValues[tokenId];
-    }
 }
