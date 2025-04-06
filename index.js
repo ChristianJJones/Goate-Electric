@@ -13,14 +13,15 @@ const digitalStockNFTContract = new ethers.Contract("0xYourDigitalStockNFTAddres
 const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateStakingABI, signer);
 const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer);
 const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer);
+const scratchOffContract = new ethers.Contract("0xYourScratchOffNFTAddress", scratchOffABI, signer);
 const mediator = new USDMediator();
-let currentUser, isLoggedIn = false;
-const db = { users: {}, devices: {} };
 
-// Plaid Integration
+let currentUser, isLoggedIn = false;
+const db = { users: {}, devices: {}};
+
 const plaidHandler = Plaid.create({
-    token: "YOUR_PLAID_PUBLIC_TOKEN", // Replace with real token from Plaid Dashboard
-    onSuccess: async (publicToken, metadata) => {
+    token: "YOUR_PLAID_PUBLIC_TOKEN",
+    onSuccess: async (publicToken) => {
         const response = await fetch('/plaid/exchange_public_token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -33,159 +34,26 @@ const plaidHandler = Plaid.create({
             body: JSON.stringify({ access_token })
         });
         const creditData = await creditResponse.json();
-        // Update credit score (simplified)
-        console.log(`Credit Score: ${creditData.credit_score}`);
+        console.log("Credit Score:", creditData.credit_score);
     },
     onExit: (err) => console.error(err)
 });
 
 async function updateBalances() {
     const userAddress = await signer.getAddress();
+    document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
     document.getElementById('zeropoint-balance').textContent = ethers.utils.formatUnits(await zpeContract.balanceOf(userAddress), 3);
     document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2);
     document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2);
-    document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
     document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18);
-}
-
-async function loadDevices() {
-    const userAddress = await signer.getAddress();
-    const devices = await deviceContract.getUserDevices(userAddress);
-    const container = document.getElementById('devices-container');
-    container.innerHTML = devices.map(device => `
-        <div class="device-card">
-            <span>${device.deviceId} (Modals: ${device.modalCount})</span>
-            <div class="slider-group">
-                <button class="slider-btn on ${device.isActive ? 'active' : ''}" data-device="${device.deviceId}">On</button>
-                <button class="slider-btn off ${!device.isActive ? 'active' : ''}" data-device="${device.deviceId}">Off</button>
-            </div>
-        </div>
-    `).join('');
-    document.querySelectorAll('.slider-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const deviceId = btn.dataset.device;
-            const isOn = btn.classList.contains('on');
-            if (isOn && !btn.classList.contains('active')) {
-                await deviceContract.addDevice(deviceId);
-            } else if (!isOn && btn.classList.contains('active')) {
-                await deviceContract.disconnectDevice(deviceId);
-            }
-            loadDevices();
-        });
-    });
-}
-
-async function loadTransactionHistory() {
-    const userAddress = await signer.getAddress();
-    const history = await adWatchContract.getTransactionHistory(userAddress);
-    const historyList = document.getElementById('history-list');
-    historyList.innerHTML = history.map(tx => `
-        <li>${tx.adType} - ${ethers.utils.formatUnits(tx.payout, 6)} USDC - ${new Date(tx.timestamp * 1000).toLocaleString()}</li>
-    `).join('');
-}
-
-async function watchAd(adType) {
-    await confirmTransaction(`Watch ${adType} Ad?`, async () => {
-        const adContainer = document.createElement("div");
-        adContainer.style.position = "fixed";
-        adContainer.style.top = "0";
-        adContainer.style.left = "0";
-        adContainer.style.width = "100vw";
-        adContainer.style.height = "100vh";
-        adContainer.style.background = "black";
-        adContainer.style.color = "#FFD700";
-        adContainer.style.display = "flex";
-        adContainer.style.justifyContent = "center";
-        adContainer.style.alignItems = "center";
-        adContainer.innerHTML = `<p>Watching ${adType} Ad... (30s)</p>`;
-        document.body.appendChild(adContainer);
-
-        await new Promise(resolve => setTimeout(resolve, 30000));
-        document.body.removeChild(adContainer);
-
-        await mediator.handleAdWatch(adType, await signer.getAddress());
-        updateBalances();
-        loadTransactionHistory();
-    });
-}
-
-async function loadGames() {
-    const gameCount = await homeTeamBetsContract.gameCount();
-    const gamesList = document.getElementById('games-list');
-    gamesList.innerHTML = '';
-
-    for (let i = 0; i < gameCount; i++) {
-        const game = await homeTeamBetsContract.games(i);
-        if (!game.completed) {
-            gamesList.innerHTML += `
-                <div class="game-card">
-                    <h3>${game.homeTeam} vs ${game.awayTeam}</h3>
-                    <p>Starts: ${new Date(game.startTime * 1000).toLocaleString()}</p>
-                    <p>Total Pool: ${ethers.utils.formatUnits(game.totalPool, 6)} USDC</p>
-                    <select id="bet-type-${i}">
-                        <option value="0">Win</option>
-                        <option value="1">Lose</option>
-                        <option value="2">Tie</option>
-                    </select>
-                    <select id="overtime-${i}">
-                        <option value="yes">Overtime Yes</option>
-                        <option value="no">Overtime No</option>
-                    </select>
-                    <input type="number" id="bet-amount-${i}" placeholder="Amount (USDC)" step="0.01">
-                    <button onclick="placeBet(${i})" ${!game.isActive ? 'disabled' : ''} class="disney-button">Place Bet</button>
-                </div>
-            `;
-        }
-    }
-}
-
-async function placeBet(gameId) {
-    const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
-    const betType = parseInt(document.getElementById(`bet-type-${gameId}`).value);
-    const overtime = document.getElementById(`overtime-${gameId}`).value === "yes";
-    await confirmTransaction(`Place bet of ${ethers.utils.formatUnits(amount, 6)} USDC on Game ${gameId}?`, async () => {
-        const tx = await usdcContract.approve(homeTeamBetsContract.address, amount);
-        await tx.wait();
-        const betTx = await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
-        await betTx.wait();
-        updateBalances();
-        loadBetHistory();
-        loadGames();
-    });
-}
-
-async function loadBetHistory() {
-    const userAddress = await signer.getAddress();
-    const history = await homeTeamBetsContract.getTransactionHistory(userAddress);
-    const historyList = document.getElementById('bet-history-list');
-    historyList.innerHTML = history.map(bet => {
-        const betTypeStr = bet.betType === 0 ? 'Win' : bet.betType === 1 ? 'Lose' : 'Tie';
-        return `<li>${ethers.utils.formatUnits(bet.amount, 6)} USDC - ${betTypeStr} - Overtime: ${bet.overtime ? 'Yes' : 'No'} - ${new Date(bet.timestamp * 1000).toLocaleString()}</li>`;
-    }).join('');
-}
-
-async function startGame(mode) {
-    const sessionId = await gerastyxOpolContract.sessionCount();
-    await confirmTransaction(`Start ${mode} session?`, async () => {
-        if (mode === "FreePlay") {
-            await gerastyxOpolContract.startSession(0, { value: 0 });
-        } else {
-            const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
-            await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
-            await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
-        }
-        loadGame(sessionId);
-    });
-}
-
-function loadGame(sessionId) {
-    const gameContainer = document.getElementById('game-container');
-    gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
 }
 
 async function initializeStocks() {
     const response = await fetch('https://api.alpaca.markets/v2/assets', {
-        headers: { 'APCA-API-KEY-ID': 'YOUR_ALPACA_KEY', 'APCA-API-SECRET-KEY': 'YOUR_ALPACA_SECRET' }
+        headers: { 
+            'APCA-API-KEY-ID': 'YOUR_ALPACA_KEY', 
+            'APCA-API-SECRET-KEY': 'YOUR_ALPACA_SECRET' 
+        }
     });
     const stocks = await response.json();
     for (const stock of stocks) {
@@ -205,10 +73,10 @@ async function loadStocks() {
                 <input type="number" id="amount-${i}" placeholder="Amount (USDC)">
                 <select id="chain-${i}">
                     <option value="1">Ethereum</option>
-                    <!-- Add other chains -->
+                    <option value="512">Stellar</option>
                 </select>
-                <button onclick="buyStock(${i})" class="disney-button">Buy</button>
-                <button onclick="sellStock(${i})" class="disney-button">Sell</button>
+                <button onclick="buyStock(${i})">Buy</button>
+                <button onclick="sellStock(${i})">Sell</button>
             </div>
         `;
     }
@@ -234,13 +102,29 @@ async function sellStock(tokenId) {
     });
 }
 
-function loadStaking() {
+async function loadStaking() {
     const stakingContainer = document.getElementById('staking-container');
     stakingContainer.innerHTML = `<iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>`;
 }
 
+async function loadScratchOff() {
+    const scratchOffContainer = document.getElementById('scratch-off-container');
+    scratchOffContainer.innerHTML = `<iframe src="unreal://scratchoffnft" width="100%" height="100%"></iframe>`;
+}
+
+async function scratchNFT(mode, asset, chainId) {
+    const amounts = { "Pennies": "1", "Nickels": "5", "Dimes": "10", "Quarters": "25", "Dollars": "100" };
+    const amount = ethers.utils.parseUnits(amounts[mode], 6);
+    await confirmTransaction(`Scratch ${mode} NFT for ${amounts[mode]} ${asset} on Chain ${chainId}?`, async () => {
+        const token = new ethers.Contract(interoperabilityContract.tokenMap(chainId, asset), erc20ABI, signer);
+        await token.approve(scratchOffContract.address, amount);
+        await scratchOffContract.scratch(asset, mode === "Pennies" ? 0 : mode === "Nickels" ? 1 : mode === "Dimes" ? 2 : mode === "Quarters" ? 3 : 4, chainId);
+        updateBalances();
+    });
+}
+
 async function stake(asset, amount, duration) {
-    await confirmTransaction(`Stake ${ethers.utils.formatUnits(amount, 6)} ${asset} for ${duration} seconds?`, async () => {
+    await confirmTransaction(`Stake ${amount} ${asset} for ${duration} seconds?`, async () => {
         const token = new ethers.Contract(interoperabilityContract.tokenMap(1, asset), erc20ABI, signer);
         await token.approve(stakingContract.address, amount);
         await stakingContract.stake(asset, amount, duration);
@@ -249,7 +133,7 @@ async function stake(asset, amount, duration) {
 }
 
 async function lend(amount) {
-    await confirmTransaction(`Lend ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+    await confirmTransaction(`Lend ${amount} USDC?`, async () => {
         await usdcContract.approve(lendingContract.address, amount);
         await lendingContract.lend(amount);
         updateBalances();
@@ -257,18 +141,40 @@ async function lend(amount) {
 }
 
 async function borrow(amount) {
-    await confirmTransaction(`Borrow ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+    await confirmTransaction(`Borrow ${amount} USDC?`, async () => {
         await lendingContract.borrow(amount);
         updateBalances();
     });
 }
 
 async function repay(amount) {
-    await confirmTransaction(`Repay ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+    await confirmTransaction(`Repay ${amount} USDC?`, async () => {
         await usdcContract.approve(lendingContract.address, amount);
         await lendingContract.repay(amount);
         updateBalances();
     });
+}
+
+async function startGame(mode) {
+    const sessionId = await gerastyxOpolContract.sessionCount();
+    if (mode === "FreePlay") {
+        await confirmTransaction("Start Free Play session?", async () => {
+            await gerastyxOpolContract.startSession(0, 0);
+            loadGame(sessionId);
+        });
+    } else {
+        const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
+        await confirmTransaction(`Start ${mode} session for ${fee} USDC?`, async () => {
+            await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
+            await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
+            loadGame(sessionId);
+        });
+    }
+}
+
+function loadGame(sessionId) {
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
 }
 
 async function confirmTransaction(message, callback) {
@@ -304,6 +210,45 @@ async function confirmTransaction(message, callback) {
     });
 }
 
+async function loadDevices() {
+    const userAddress = await signer.getAddress();
+    const devices = await deviceContract.getUserDevices(userAddress);
+    const container = document.getElementById('devices-container');
+    container.innerHTML = devices.map(device => `
+        <div class="device-card">
+            <span>${device.deviceId} (Modals: ${device.modalCount})</span>
+            <div class="slider-group">
+                <button class="slider-btn on ${device.isActive ? 'active' : ''}" data-device="${device.deviceId}">On</button>
+                <button class="slider-btn off ${!device.isActive ? 'active' : ''}" data-device="${device.deviceId}">Off</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function watchAd(adType) {
+    await confirmTransaction(`Watch ${adType} Ad?`, async () => {
+        const adContainer = document.createElement("div");
+        adContainer.style.position = "fixed";
+        adContainer.style.top = "0";
+        adContainer.style.left = "0";
+        adContainer.style.width = "100vw";
+        adContainer.style.height = "100vh";
+        adContainer.style.background = "black";
+        adContainer.style.color = "#FFD700";
+        adContainer.style.display = "flex";
+        adContainer.style.justifyContent = "center";
+        adContainer.style.alignItems = "center";
+        adContainer.innerHTML = `<p>Watching ${adType} Ad... (30s)</p>`;
+        document.body.appendChild(adContainer);
+
+        await new Promise(resolve => setTimeout(resolve, 30000));
+        document.body.removeChild(adContainer);
+
+        await mediator.handleAdWatch(adType, await signer.getAddress());
+        updateBalances();
+    });
+}
+
 function updateUI() {
     document.getElementById('logged-in').style.display = isLoggedIn ? 'block' : 'none';
     document.getElementById('not-logged-in').style.display = isLoggedIn ? 'none' : 'block';
@@ -315,65 +260,33 @@ function updateUI() {
         document.getElementById('user-email').textContent = currentUser;
         updateBalances();
         loadDevices();
-        loadTransactionHistory();
-        loadBetHistory();
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     await provider.send("eth_requestAccounts", []);
+    await initializeStocks();
 
-    document.getElementById('signup-login').addEventListener('click', () => {
-        document.getElementById('auth-modal').style.display = 'flex';
-    });
-
-    document.getElementById('signup-tab').addEventListener('click', () => {
-        document.getElementById('signup-tab').classList.add('active');
-        document.getElementById('login-tab').classList.remove('active');
-        document.getElementById('signup-form').style.display = 'block';
-        document.getElementById('login-form').style.display = 'none';
-    });
-
-    document.getElementById('login-tab').addEventListener('click', () => {
-        document.getElementById('login-tab').classList.add('active');
-        document.getElementById('signup-tab').classList.remove('active');
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('signup-form').style.display = 'none';
-    });
-
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const id = document.getElementById('login-id').value;
-        const password = document.getElementById('login-password').value;
-        if (db.users[id]?.password === password) {
-            currentUser = db.users[id].username;
-            isLoggedIn = true;
-            updateUI();
-            document.getElementById('auth-modal').style.display = 'none';
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('open');
+        if (hamburger.classList.contains('open')) {
+            hamburger.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            hamburger.children[1].style.opacity = '0';
+            hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+        } else {
+            hamburger.children[0].style.transform = 'none';
+            hamburger.children[1].style.opacity = '1';
+            hamburger.children[2].style.transform = 'none';
         }
     });
 
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signup-email-phone').value;
-        const username = document.getElementById('signup-username').value;
-        db.users[email] = {
-            username,
-            password: document.getElementById('signup-password').value,
-            assets: {},
-            security: {
-                q1: document.getElementById('security-question-1').value,
-                a1: document.getElementById('security-answer-1').value,
-                q2: document.getElementById('security-question-2').value,
-                a2: document.getElementById('security-answer-2').value,
-                q3: document.getElementById('security-question-3').value,
-                a3: document.getElementById('security-answer-3').value
-            }
-        };
-        currentUser = username;
+    document.getElementById('signup-login').addEventListener('click', () => {
+        currentUser = "user@example.com";
         isLoggedIn = true;
         updateUI();
-        document.getElementById('auth-modal').style.display = 'none';
     });
 
     document.getElementById('logout').addEventListener('click', () => {
@@ -385,58 +298,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('consume-zpe').addEventListener('click', async () => {
         const amount = document.getElementById('payment-amount').value;
         await confirmTransaction(`Consume ${amount || 1} $ZPE?`, async () => {
-            const tx = await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
-            await tx.wait();
-            await mediator.handleConsumption(1, "ZPE", ethers.utils.parseUnits(amount || "1", 3));
-            updateBalances();
-        });
-    });
-
-    document.getElementById('consume-zpw').addEventListener('click', async () => {
-        const amount = document.getElementById('payment-amount').value;
-        await confirmTransaction(`Consume ${amount || 1} $ZPW?`, async () => {
-            const tx = await zpwContract.consumeForService(ethers.utils.parseUnits(amount || "1", 2));
-            await tx.wait();
-            await mediator.handleConsumption(1, "ZPW", ethers.utils.parseUnits(amount || "1", 2));
-            updateBalances();
-        });
-    });
-
-    document.getElementById('subscribe-zpp').addEventListener('click', async () => {
-        await confirmTransaction(`Subscribe to $ZPP?`, async () => {
-            const tx = await zppContract.subscribe();
-            await tx.wait();
-            await mediator.handleConsumption(1, "ZPP", 100);
+            await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
             updateBalances();
         });
     });
 
     document.getElementById('add-device').addEventListener('click', async () => {
         const deviceId = document.getElementById('device-id').value;
-        await confirmTransaction(`Add device ${deviceId}?`, async () => {
-            const tx = await deviceContract.addDevice(deviceId);
-            await tx.wait();
+        await confirmTransaction(`Add Device ${deviceId}?`, async () => {
+            await deviceContract.addDevice(deviceId);
             loadDevices();
         });
-    });
-
-    document.getElementById('use-modal').addEventListener('click', async () => {
-        const deviceId = document.getElementById('device-id').value;
-        await confirmTransaction(`Use modal on ${deviceId}?`, async () => {
-            const tx = await deviceContract.useModal(deviceId);
-            await tx.wait();
-            await mediator.handleModalPurchase(1 * 10**6);
-            loadDevices();
-            updateBalances();
-        });
-    });
-
-    document.getElementById('bank-to-goate').addEventListener('click', async () => {
-        alert("Bank to Goate Electric deposit initiated");
-    });
-
-    document.getElementById('goate-to-bank').addEventListener('click', async () => {
-        alert("Goate Electric to Bank withdrawal initiated");
     });
 
     document.getElementById('watch-google-ad').addEventListener('click', () => watchAd("Google"));
@@ -455,25 +327,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelector(link.getAttribute('href')).classList.add('active');
-            if (link.getAttribute('href') === '#earn' && isLoggedIn) {
-                loadTransactionHistory();
-            } else if (link.getAttribute('href') === '#hometeambets' && isLoggedIn) {
-                loadGames();
-                loadBetHistory();
-            } else if (link.getAttribute('href') === '#gerastyxopol' && isLoggedIn) {
-                loadGame(await gerastyxOpolContract.sessionCount() - 1);
-            } else if (link.getAttribute('href') === '#digital-stocks' && isLoggedIn) {
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('open');
+            hamburger.children[0].style.transform = 'none';
+            hamburger.children[1].style.opacity = '1';
+            hamburger.children[2].style.transform = 'none';
+            if (link.getAttribute('href') === '#digital-stocks' && isLoggedIn) {
                 loadStocks();
             } else if (link.getAttribute('href') === '#goate-staking' && isLoggedIn) {
                 loadStaking();
+            } else if (link.getAttribute('href') === '#scratch-off' && isLoggedIn) {
+                loadScratchOff();
             }
         });
-    });
-
-    const tokens = ["USDC", "ZPE", "ZPW", "ZPP", "GySt"];
-    ["from-asset", "to-asset"].forEach(id => {
-        const select = document.getElementById(id);
-        tokens.forEach(token => select.innerHTML += `<option value="${token}">${token}</option>`);
     });
 
     document.getElementById('stock-search').addEventListener('input', (e) => {
@@ -482,6 +348,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             card.style.display = card.querySelector('h3').textContent.toLowerCase().includes(search) ? 'block' : 'none';
         });
     });
-
-    await initializeStocks(); // Initialize stocks on load
 });
