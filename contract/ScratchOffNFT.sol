@@ -23,18 +23,12 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
         100e6  // $100.00 (Dollars)
     ];
 
-    // Weights for each mode (9 symbols, 9 scratch spots, individual VRF per spot)
     uint256[9][5] public weights = [
-        // Pennies: 10%, 5%, 5%, 10%, 10%, 10%, 10%, 10%, 30%
-        [10, 5, 5, 10, 10, 10, 10, 10, 30],
-        // Nickels: 10%, 10%, 5%, 10%, 10%, 10%, 10%, 10%, 25%
-        [10, 10, 5, 10, 10, 10, 10, 10, 25],
-        // Dimes: 20%, 10%, 10%, 10%, 10%, 10%, 10%, 10%, 20%
-        [20, 10, 10, 10, 10, 10, 10, 10, 20],
-        // Quarters: 20%, 10%, 10%, 10%, 10%, 15%, 10%, 10%, 15%
-        [20, 10, 10, 10, 10, 15, 10, 10, 15],
-        // Dollars: 20%, 15%, 10%, 10%, 10%, 15%, 10%, 10%, 10%
-        [20, 15, 10, 10, 10, 15, 10, 10, 10]
+        [10, 5, 5, 10, 10, 10, 10, 10, 30],  // Pennies
+        [10, 10, 5, 10, 10, 10, 10, 10, 25], // Nickels
+        [20, 10, 10, 10, 10, 10, 10, 10, 20], // Dimes
+        [20, 10, 10, 10, 10, 15, 10, 10, 15], // Quarters
+        [20, 15, 10, 10, 10, 15, 10, 10, 10]  // Dollars
     ];
 
     string[9] public symbols = [
@@ -52,7 +46,7 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
     struct ScratchCard {
         address owner;
         Mode mode;
-        uint256[9] spots; // 9 spots with symbol indices (0-8)
+        uint256[9] spots;
         bool revealed;
     }
 
@@ -89,7 +83,6 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
         IERC20 token = IERC20(tokenAddress);
         require(token.transferFrom(msg.sender, address(this), cost), "Transfer failed");
 
-        // Split 50% to USDMediator, 50% as revenue
         uint256 half = cost / 2;
         require(token.transfer(address(usdMediator), half), "Mediator transfer failed");
         require(token.transfer(0xYourRevenueAddress, half), "Revenue transfer failed");
@@ -99,7 +92,6 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
         scratchCards[tokenId] = ScratchCard(msg.sender, Mode(mode), [0, 0, 0, 0, 0, 0, 0, 0, 0], false);
         tokenCounter++;
 
-        // Request VRF for each of the 9 spots
         for (uint256 spot = 0; spot < 9; spot++) {
             bytes32 requestId = requestRandomness(keyHash, fee);
             requestIdToTokenId[requestId] = tokenId;
@@ -115,7 +107,6 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
         ScratchCard storage card = scratchCards[tokenId];
         Mode mode = card.mode;
 
-        // Weighted random selection
         uint256 totalWeight = 100;
         uint256 randomValue = randomness % totalWeight;
         uint256 cumulativeWeight = 0;
@@ -128,7 +119,6 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
             }
         }
 
-        // Check if all spots are revealed
         bool allRevealed = true;
         for (uint256 i = 0; i < 9; i++) {
             if (card.spots[i] == 0 && i != spot) {
@@ -141,7 +131,7 @@ contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
             card.revealed = true;
             uint256 gerastyxCount = 0;
             for (uint256 i = 0; i < 9; i++) {
-                if (card.spots[i] == 8) { // gerastyxOpolLogo index
+                if (card.spots[i] == 8) {
                     gerastyxCount++;
                 }
             }
