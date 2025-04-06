@@ -4,12 +4,10 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./USDMediator.sol";
 import "./InstilledInteroperability.sol";
-import "./ZeropointDigitalStockNFT.sol";
 
 contract Lending {
     USDMediator public usdMediator;
     InstilledInteroperability public interoperability;
-    ZeropointDigitalStockNFT public stockNFT;
     address public owner;
     string public plaidAPI = "https://api.plaid.com";
 
@@ -27,11 +25,10 @@ contract Lending {
     event Borrowed(address indexed user, uint256 amount);
     event Repaid(address indexed user, uint256 amount);
 
-    constructor(address _usdMediator, address _interoperability, address _stockNFT) {
+    constructor(address _usdMediator, address _interoperability) {
         owner = msg.sender;
         usdMediator = USDMediator(_usdMediator);
         interoperability = InstilledInteroperability(_interoperability);
-        stockNFT = ZeropointDigitalStockNFT(_stockNFT);
     }
 
     function lend(uint256 amount) external {
