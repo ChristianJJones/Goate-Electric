@@ -102,6 +102,42 @@ async function sellStock(tokenId) {
     });
 }
 
+async function loadGames() {
+    const gamesList = document.getElementById('games-list');
+    gamesList.innerHTML = '';
+    const gameCount = await homeTeamBetsContract.gameCount();
+    for (let i = 0; i < gameCount; i++) {
+        const game = await homeTeamBetsContract.games(i);
+        gamesList.innerHTML += `
+            <div class="game-card">
+                <h3>${game.homeTeam} vs ${game.awayTeam}</h3>
+                <p>Start: ${new Date(game.startTime * 1000).toLocaleString()}</p>
+                <p>Pool: ${ethers.utils.formatUnits(game.totalPool, 6)} USDC</p>
+                <select id="bet-type-${i}">
+                    <option value="0">Win</option>
+                    <option value="1">Lose</option>
+                    <option value="2">Tie</option>
+                </select>
+                <input type="checkbox" id="overtime-${i}"> Overtime?
+                <input type="number" id="bet-amount-${i}" placeholder="Bet Amount (USDC)">
+                <button onclick="placeBet(${i})">Place Bet</button>
+            </div>
+        `;
+    }
+}
+
+async function placeBet(gameId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
+    const betType = document.getElementById(`bet-type-${gameId}`).value;
+    const overtime = document.getElementById(`overtime-${gameId}`).checked;
+    await confirmTransaction(`Place ${ethers.utils.formatUnits(amount, 6)} USDC bet on Game ${gameId}?`, async () => {
+        await usdcContract.approve(homeTeamBetsContract.address, amount);
+        await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
+        updateBalances();
+        loadGames();
+    });
+}
+
 async function loadStaking() {
     const stakingContainer = document.getElementById('staking-container');
     stakingContainer.innerHTML = `<iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>`;
@@ -330,22 +366,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             navMenu.classList.remove('active');
             hamburger.classList.remove('open');
             hamburger.children[0].style.transform = 'none';
-            hamburger.children[1].style.opacity = '1';
-            hamburger.children[2].style.transform = 'none';
-            if (link.getAttribute('href') === '#digital-stocks' && isLoggedIn) {
-                loadStocks();
-            } else if (link.getAttribute('href') === '#goate-staking' && isLoggedIn) {
-                loadStaking();
-            } else if (link.getAttribute('href') === '#scratch-off' && isLoggedIn) {
-                loadScratchOff();
-            }
-        });
-    });
-
-    document.getElementById('stock-search').addEventListener('input', (e) => {
-        const search = e.target.value.toLowerCase();
-        document.querySelectorAll('.stock-card').forEach(card => {
-            card.style.display = card.querySelector('h3').textContent.toLowerCase().includes(search) ? 'block' : 'none';
-        });
-    });
-});
+            hamburger.children[1].
