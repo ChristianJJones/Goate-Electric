@@ -4,10 +4,12 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./InstilledInteroperability.sol";
+import "./USDMediator.sol";
 
 contract HomeTeamBets {
     InstilledInteroperability public interoperability;
-    IERC20 public usdcToken;
+    USDMediator public usdMediator;
+    IERC20 public usdcToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
     address public owner;
     uint256 public totalRevenue;
 
@@ -46,10 +48,10 @@ contract HomeTeamBets {
     event GameCompleted(uint256 gameId, BetType result, bool hadOvertime);
     event WinningsDistributed(address indexed winner, uint256 gameId, uint256 amount);
 
-    constructor(address _interoperability, address _usdcToken, address _oracle) {
+    constructor(address _interoperability, address _usdMediator, address _oracle) {
         owner = msg.sender;
         interoperability = InstilledInteroperability(_interoperability);
-        usdcToken = IERC20(_usdcToken);
+        usdMediator = USDMediator(_usdMediator);
         oracle = AggregatorV3Interface(_oracle);
     }
 
@@ -63,6 +65,8 @@ contract HomeTeamBets {
         game.startTime = _startTime;
         game.isActive = true;
         gameCount++;
+
+        emit GameStarted(gameCount - 1, _startTime);
     }
 
     function placeBet(uint256 _gameId, uint256 _amount, BetType _betType, bool _overtime) external {
@@ -132,7 +136,7 @@ contract HomeTeamBets {
             address winner = winners[i];
             Bet memory bet = game.bets[winner];
             uint256 winnerShare = (bet.amount * winnerPool) / totalWinningWeight;
-            interoperability.crossChainTransfer(1, 1, "USDC", winnerShare, winner);
+            usdMediator.transferUSD(winner, winnerShare); // Default to Stellar/USD via USDMediator
             transactionHistory[winner].push(Bet(winner, winnerShare, bet.betType, bet.overtime, block.timestamp));
             emit WinningsDistributed(winner, _gameId, winnerShare);
         }
