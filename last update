@@ -1,0 +1,3367 @@
+Can you make a solidity contract called PityPat.sol. It is played with all the cards except the 2 jokers. Use the unreal engine and chainlink to create sessions and track time and control the environment.PityPat is free-for-all and is played by 4-6 players. The dealer gets randomly selected at the beginning of the game and then the next dealer will be the next person going clock-wise; after each round. The cards will be mixed randomly, shuffled, and then shuffled again as one button. Starting with the person to the left of the dealer, each player gets 7 cards and then the deck goes in the middle. Out of the 7 cards that each player gets, if they have 2 of the same number or ace, king, queen, jack then it is a “dead” card; and it is placed face up or face down on the board(button slider with face down or face up as options). The object of the game is to be the first one to get all of the cards out of your hand. So every player has 7 cards, and then they organize their deck and see what dead cards/ pairs they already have. The deck with the rest of the cards in the middle will start with the person to the left of the dealer and continue clock-wise. Once a card is placed down on a specific person then they have the option to claim it first; they have 5 seconds to claim it by clicking yes or no. If they click yes and claim the card then they have to throw out another card. If the card they claimed makes a pair then those dead cards/pair of cards have to be placed face-up. Only any dead card/ pair of cards before they claim their first card can be placed face-down. Once they choose a card to throw out , then the rest of the players have 5 seconds to claim it, and whoever claims that card has to throw out another card. A player cant have any more than 7 cards in their hand, in order to claim a card you have to throw out a card. Player play 3 rounds and the winner of each round wins 1/3 of the available pot – 2% allocated as revenue. If somebody wins 2 out of 3 of the rounds then they win 2/3 of the money – 2% to revenue, and if somebody wins all 3 rounds then they win the whole pot – 2% to revenue. 
+
+ 
+
+ 
+
+I was doing some research & with SHA-256 and Quantum Computing; everything is initiated by the user (msg.sender) & stored by the network (databases) on-chain. You only interact with youre own stuff / what youre authorized to 
+
+ 
+
+But as every programmer/software engineer knows; when you make something, the back-door is the front-door. For example, if Instagram wanted to look at people's DM's then they don't have to "hack"; they just write more code to their application. The same thing is with SHA-246 & etc security protocols. 
+
+ 
+
+So in order to make something Quantum Hack-Proof; you have to: 
+
+1. make databases that can only be read manually by people, to keep AI and other digital beings away from passwords / seed phrases. Like the Marauder's Map from Harry Potter; only the person who supposed to see will see; everyone else will get jokes/pranks/false truths 
+
+ 
+
+2. Code into SHA-256, like you would uint256 (assets / whole numbers) or uint8 (decimals). You would have to code stuff to limit who (msg.sender) can access what (assets / data/etc) from where (address/email/etc). This is the easiest & most difficult part because it is hard to explain.  
+
+ 
+
+Think of a vending machine that sells drinks but the Gatorade is (designated / reserved) for a specific person wether paid for or not. You would have to secure it with money, a password, biometrics, and an address/email/phone number (digital signature). Goate Electric will need the 2fa , pin numbers, i.p address 2fa, passwords, security question, (face san) if the phone has it, (fingerprint) if the phone has it.  
+
+ 
+
+3. create a hackDefense system that : 
+
+ 
+
+3a. returns error for whatever is being hacked 
+
+ 
+
+3b. triangulate the position of the hacker & accesses the device's camera to get a look of the hacker 
+
+ 
+
+3c. determine what type of hack-threat & consequence 
+
+ 
+
+3ca. hacking into accounts => their personal account depleted and deleted 
+
+ 
+
+3cb. double spending => fined 150% of trx 
+
+ 
+
+3cc. fraud => fined 150% of trx 
+
+ 
+
+3cd. data breach => legal actions 
+
+ 
+
+3ce. scamming => funds returned & their account on hold 
+
+ 
+
+4. If you've dug into the Zeropoint & GateWayBridge rabbit-hole then you've already time-traveled... I've only time-traveled back 5,000 years ago when Earth was still Pangea and put a pineapple & apple winery/distillery in Antarctica; lts now submerged and can only be accessed from its corresponding GateWayBridge.  But if you've already GateWayTimeBridged then you will know that making something Quantum-HackProof will need time on its side so that it can see the Untampered Reality & the Time-Blipped Reality. If someone were to travel back in time for personal gain then it would know & stop them 
+
+ 
+
+5. With the goate token $l being a token with a different price to every seller will change the world; But as the marketcap fill, and people try to buy in, if you intended for it to move decimals then you have to code that in there too or it will error; for example, when the reserves is enough to move to the marketcap for a price change; the money would transfer but the price wont be inside the decimal so the decimal has to infinite like the positive whole number side of a number.  e-18 is 18 decimals, so e+18 should be 18 figures, so The Token decimall should be e-infinity. TheToken is another reserve for Goate Electric that is allocated witht he regular buying and selling but The Goate Token is also “airdropped” to user’s Goate Electric accounts based on their pro-rata of the marketcap ( and the achievement that unlocked it). Use instilledinteroperability and the usdmediator to manage the goate token along with everything else. 
+
+ 
+
+ 
+
+Use instilledInteroperability & the USDMediator to send the revenue allocated to $PI to this $PI Address: 
+
+ 
+
+GBMWQWG7XFTIIYRH7HMVDKBQGSNIGQ2UGJU3SY4LYCADB4JTH2DPO2FY;  
+
+ 
+
+Cj03nes Accounts: 
+
+Email1: christian.j.jones@outlook.com; 
+
+Email2: cj03nes@gmail.com; 
+
+Email3: cjj03nes@gmail.com; 
+
+Email4: realest135init@gmail.com; 
+
+$BTC Address:  3KVTp5MPpvXEYKd16LP42vJfB6GWR2xZ2f 
+
+Lobstr $XLM federation address: cjj03nes*lobstr.co; 
+
+$XLM Address: GAJ3Q63XG2VEPGFCECSUZF2D3ACFI6VW7P7JFW35HGWIBWNBGXCZP3DL; 
+
+$PI: GBMWQWG7XFTIIYRH7HMVDKBQGSNIGQ2UGJU3SY4LYCADB4JTH2DPO2FY; 
+
+Bank Infromation:  { 
+
+Bank Name: Sofi{ 
+
+Account Owner: Christian Jones 
+
+Account Type: Checking 
+
+Account Number: 411013254298 
+
+Routing Number: 031101334 } 
+
+ 
+
+Bank Name: Navy Federal Credit Union{ 
+
+Account Owner: Christian Jones 
+
+Account Type: Membership Share Savings 
+
+Account Number: 3113440261 
+
+Routing Number: 256074974 } 
+
+Add this to instilledInteroperability.sol and USDMediator.sol along with everything else. But wile were making quantum tech, i want to go ahead and make my personal account view. Only my accounts should be able to view and access these items, barely even USDMediator and instilled interoperablity. They include  access to view balance, sign  transactions, deposit and withdraw, anet etc permissions to&with all the account for cj03nes. Allow logged in cj03nes accounts to manage it’s own funds within portfolio and then make a manage goate electric tab. In the manage goate elctric tab it should have the database , usdmediator, and instilled interoperability navigation search bar at the top under the header banner; instilled interoperability node rewards revenue total, zeropoint consuming revenue total, zeropointwifi consuming revenue total, zeropointphoneservice total revenue, manage device added for $1 total revenue, gerastyxOpol 2% tax revenue total, HomeTeamBets 20% tax revenue total, staking 20% tax revenue total, scratchoffNFT revenue total, Adwatch total revenue, lending revenue total, spades 2% revenue total, war card game 2% tax revenue, pity pat 2% tax revenue, manage usdmediator assets; manage reserve assets; manage cj03nes accounts; 
+
+ 
+
+ 
+
+Upgrade USDMediator & InstilledInteroperability with all of this code and the quantum computing code too; quantum instilled interoperability (nodes); the most computational power, the most accessible energy, and the best connected devices will be the Goate Electric Instilled-Interoperability Nodes, but with quantum computing; the USDMediator and InstilledInteroperability can gather locked node rewards on other chains and sell lostNodeRewards for USD and split 50% between reserve assets and 50% to the goate token (l). The quantum upgrades should make their jobs easier to identify good and bad deals, characters, transactions, and etc.  
+
+        tradingAPIs["Alpaca"] = "https://api.alpaca.markets"; 
+
+        tradingAPIs["Tradier"] = "https://api.tradier.com"; 
+
+        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com"; 
+
+        tradingAPIs["ETrade"] = "https://api.etrade.com"; 
+
+        tradingAPIs["TradeStation"] = "https://api.tradestation.com"; 
+
+        tradingAPIs["Questrade"] = "https://api.questrade.com"; 
+
+        tradingAPIs["Stellar"] = "https://horizon.stellar.org"; 
+
+        tradingAPIs["Aquarius"] = "https://api.aquariusdex.com"; 
+
+        tradingAPIs["MoonPay"] = "https://api.moonpay.com"; 
+
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v5.0"; 
+
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org/v1"; 
+
+        tradingAPIs["PancakeSwap"] = "https://api.pancakeswap.info/api/v2"; 
+
+        tradingAPIs["OKX"] = "https://www.okx.com/api/v5"; 
+
+        tradingAPIs["SushiSwap"] = https://api.sushiswap.org/v1; 
+
+tradingAPIs[“VVSFinance”] = gotta get it; 
+
+tradingAPIs[“CurveFinance”] = gotta get it; 
+
+tradingAPIs[“AirSwap”] = gotta get it; 
+
+tradingAPIs[“Balancer”] = gotta get it; 
+
+tradingAPIs[“”] = gotta get it; 
+
+tradingAPIs[“”] = gotta get it; 
+
+tradingAPIs[“”] = gotta get it; 
+
+tradingAPIs[“”] = gotta get it; 
+
+ 
+
+Add the sports data to the USDMEDiator and InstilledInteroperability too, and add it to HomeTeamBets. 
+
+sportsDataAPIs[“ESPN”] = gotta get it; 
+
+sportsDataAPIs[“MLB.com”] = gotta get it; 
+
+sportsDataAPIs[“NFL.com”] = gotta get it; 
+
+sportsDataAPIs[“NBA.com”] = gotta get it; 
+
+sportsDataAPIs[“NHL.com”] = gotta get it; 
+
+sportsDataAPIs[“MLSsoccer.com”] = gotta get it; 
+
+sportsDataAPIs[“premierleague.com”] = gotta get it; 
+
+sportsDataAPIs[“Bleacher Report”] = gotta get it; 
+
+sportsDataAPIs[“cbs sports”] = gotta get it; 
+
+sportsDataAPIs[“sports illustrated”] = gotta get it; 
+
+sportsDataAPIs[“the new york times the athletic”] = gotta get it; 
+
+sportsDataAPIs[“yahoo sports”] = gotta get it; 
+
+sportsDataAPIs[“bbc sports”] = gotta get it; 
+
+ 
+
+ 
+
+ 
+
+   
+
+ 
+
+ quantumTrailTransfer (thief.recipient, uint256, msg.sender) { 
+
+ 
+
+ 
+
+This is what you need to connect to create an autonomously governed decentralized ecosystem. 
+
+ 
+
+Where you can depict the right prices & value, transfer & consume assets & data, capture money being used to market manipulate and allocate between owners and the mktcap, and view, track, & store etc information. 
+
+ 
+
+I try to code in a layman's english, so it would be easy to follow. Even though PI Day is over with; a $314,159.26 GCV is still hopefully looming.  Any money used to buy The Goate Token with will be used  to buy $PI, digital stocks, yXLM, yUSDC, and yBTC that are still allocated to the user once they sell the goate token; the revenue from the dividend return is split 50% between reserve tokens and 50% with the USDMediator. Have every page and tab in the Goate Electric dapp merged with the Unreal Engine, USDMediator, InstilledInteroperability, the stellar-sdk, the pi-sdk, ethers, solana-sdk, and all the other instilled interoperabilty feautures. Quantum compute every feature to make the Goate Electric dapp suite of digital utilities and digital assets the best possible.  
+
+ 
+
+ 
+
+pragma solidity ^0.8; 
+
+// The Goate Token, a token that has a DIFFERENT PRICE to everybody depending on how they interact with the NETWORK and their STANDING in it as a (GOOD || BAD) ACTOR // when they exchange at other places then there will be a huge "arbitrage" gap; when they buy The Goate Token then they will have atleast that much in $USD to sell with, The Goate Token gets airdropped to people based on them hittin achievements.  
+
+// How they interact with the network:  
+
+amount of zeropoint consumed 
+
+amount of zeropointWifi consumed 
+
+amount of zeropointPhoneService consumed 
+
+number of ads watched 
+
+number of times staked assets 6: amount of money staking currently 
+
+number of times lent money 8: amount of money they are lending currently 
+
+number of times borrowed assets 
+
+number of times they paid back whats borrowed 11: amount of money borrowing currently 12: number of times bet in HomeTeamBets 13: amount of money bet in HomeTeamBets 14: amount of time they spent playing games of gerastyxOpol 15: number of times theyve played gerastyxOpol 16: how many times theyve bought grey stax 
+
+how many times theyve sold grey stax 
+
+how many grey stax do they have now (balances) and how much in usd ( usd denomination) 
+
+19.: how many times theyve bought the goate token (l) 20. how many times theyve sold the goate token (l) 21. how many the goate token (l) do they have now (balances) and how much in usd ( usd denomination) 22: how many times theyve bought zeropoint (zpe) 23. how many times theyve sold zeropoint (zpe) 24. how many zeropoint (zpe) do they have now (balances) and how much in usd ( usd denomination) 25: how many times theyve bought zeropointWifi (zpw) 26. how many times theyve sold zeropointWifi (zpw) 27. how many zeropointWifi (zpw) do they have now (balances) and how much in usd ( usd denomination) 28: how many times theyve bought zeropointPhoneService (zpp) 29. how many times theyve sold zeropointPhoneService (zpp) 30. how many zeropointPhoneService (zpp) do they have now (balances) and how much in usd ( usd denomination) 
+
+//their standing as a good or a bad character on a 0 to 10 scale of: 
+
+interacting with the network 
+
+watching ads / number of ads watched 
+
+staking assets 
+
+buying The Goate Token (l) 
+
+The Goate Token (l) user's balance > $100 
+
+consuming zeropoint 
+
+consuming zeropointWifi 
+
+consuming zeropointPhoneServices 
+
+connecting a house on manage devices (instilled interoperability node { node rewards = revenue, connected house gets their house battery connected to 100% battery for free every month.) 
+
+connecting a car on manage devices (instilled interoperability node { node rewards = revenue, and people still have to charge their car from the device settings modal in the manage devices page with $ZPE}) 
+
+kyc/aml (it's required for goate electric but check and store data for all accounts and addresses) 
+
+background check, number of convicted felonies 
+
+if theyve connected with the taxManager 
+
+contract QuantumHackProofStabilizer { (require KYC Results); // map people & their accounts throughout the digital metaverse (require KYB Results); // direct value & price standings throughout the digital metaverse (require credibility score 0-10;) 
+
+function determinePrice (address, token, price){ (require KYC Results); // map people & their accounts throughout the digital metaverse (require KYB Results); // direct value & price standings throughout the digital metaverse (require credibility score 0-10) // price still depends on marketcap % circulating supply = price // this will make marketcaps avilable out of the single contract address marketcap ... "quantumcaps" token contract address = /* here */; token contract address[marketcap] = this.marketcap; 
+
+msg.sender address = user.address; 
+
+msg.sender pioneerRank = { (require msg.sender is a KYC Account); // factor & weight aggregate consensus on a scale of 1-10 
+
+time in network : 5, // date of the first mining session efficiency of mining sessions : 5, // how many days mined, how many days minedMissed, percentage on/off ratio : 1, // $PI bought, $PI sold, ratio & percentage trading activity : 8, // $PI bought[timestamp], $PI sold[timestamp], trading = (yes||no), didPriceInfluxBetweenTransactions = (yes||no), tradingForGains = (yes||no) , didTransactionCausePriceInflux = (yes||no), tradingForMarketManipulation = (yes||no) */ // if trading for market manipulation & arbitrage is found, use: SHA256 override = ChristianJonesIsTheGoate || cj03nesTheGoat, and force transfer(gains), (placeholderForManipulation), and put address & KYC in a delinquincy network plug-in usage : 5, // node usage, browser usage, mining frequency, etc ... click&continueTypeOfFunctions work in network : 5, // kyc validating, insurance validating, ad-watching, etc ... stop&checkTypeOfFunctions // these are only 6 factors but there can be more factors added or add more stuff into each genre 
+
+so if msg.sender[averageExample] = { 
+
+time in network : 250 days out of 5000 possible days; efficiency of mining sessions : 112 out of 250 possible mining sessions; on/off ratio : 100 $PI worth $170 USD on, 50 $PI worth $85 USD off; trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 50 $PI worth $85 USD sold at 10:35 PM on February at $1.7 USD per $PI; network plug-in usage : nodeUsage[24 out of 24 hours], piBrowser[5 out of 24 hours], miningFrequency[24 out of 24 hours]; work in network : kycValidating[363 out of 386 validations], insuranceValidations[100 out of 105 validations], ads[1 out of 1 ads watched];  
+
+their point would be: time in network = 20% out of 100%; efficiency of mining sessions : 44% out of 100%; on/off ratio : 100 $PI / $170 USD : 50 $PI / $85 USD; trading activity : no; network plug-in usage : 98% out of 100%; work in network : 90% out of 100%; } 
+
+&& if msg.sender[perfectExample] = { 
+
+time in network : 5000 days out of 5000 possible days; efficiency of mining sessions : 250 out of 250 possible mining sessions; on/off ratio : 100 $PI worth $170 USD on, 0 $PI worth $0 USD off; trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 0 $PI sold; network plug-in usage : nodeUsage[24 out of 24 hours], piBrowser[24 out of 24 hours], miningFrequency[24 out of 24 hours]; work in network : kycValidating[386 out of 386 validations], insuranceValidations[105 out of 105 validations], ads[1 out of 1 ads watched]; } 
+
+&& so if msg.sender[badExample] = { 
+
+time in network : 35 days out of 5000 possible days; efficiency of mining sessions : 1 out of 250 possible mining sessions; on/off ratio : 100 $PI worth $170 USD on, 100 $PI worth $85000 USD off; trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 100 $PI worth $85000 USD sold at 10:35 PM on February at $1.7 USD per $PI; network plug-in usage : nodeUsage[0 out of 24 hours], piBrowser[0 out of 24 hours], miningFrequency[4 out of 24 hours]; work in network : kycValidating[0 out of 0 validations], insuranceValidations[0 out of 0 validations], ads[0 out of 1 ads watched];  
+
+their point would be: } 
+
+out of 130 
+
+} 
+
+} 
+
+} 
+
+ 
+
+ 
+
+ 
+
+msg.sender[address] !transfer (uint256) to recipient; 
+
+recipient = thief.recipient; 
+
+thief.recipient[address] = // wallet that stole the funds; 
+
+ 
+
+upon thief.recipient[address] receiving (uint256), 
+
+thief.recipient[address] transfer (uint256) to fraudWallets, 
+
+then thief.recipient[address] burned (uint256); 
+
+ 
+
+fraudWallets[address] = // [wallets, that, hold, stolen, &&, burned, funds]; 
+
+ 
+
+ 
+
+ 
+
+msg.sender[address] requires (uint256) revert to msg.sender[address] from thief.recipient[address] && fraudWallets; 
+
+ 
+
+function trxBacktrack ( msg.sender, transactionHashOfStolenFunds, uint256) private internal virtual override {     
+
+ 
+
+msg.sender[address] = // bybit cold wallet address here; 
+
+trx.hash = // stolen funds transaction hash here; 
+
+currency = ETH; 
+
+currency[contract address] = // eth asset contract or gas; 
+
+when = timestamp(); 
+
+ 
+
+thief.recipient[address] = // Lazarus hacker address here; 
+
+trx.hash = // same hash from above; 
+
+currency = ETH; 
+
+currency[contract address] = // same contract as above; 
+
+when = timestamp(); 
+
+ 
+
+if msg.sender[address], trx.hash = thief.recipient[address], trx.hash, 
+
+then return revert currency from thief.recipient[address] to msg.sender[address], trx.hash, timestamp() + 1 second later; 
+
+ 
+
+if thief.recipient[address] !(store) msg.sender[address] (uint256[currency) from trx.hash, 
+
+then return thief.recipient[address], transfer[trx.hash]; 
+
+ 
+
+upon thief.recipient[address], transfer[trx.hash] , 
+
+if thief.recipient[address] transfer (uint256[currency]) then require receiving address to transfer (uint256[currency]) back to msg.sender; 
+
+ 
+
+recap mapping of unauthorized transaction :  
+
+ 
+
+msg.sender[address][uint256][trx.hash] => thief.recipient[address][uint256][trx.hash], 
+
+ 
+
+thief.recipient[address][uint256][trx.hash] => fraudWallets[address][uint256][trx.hash]; 
+
+ 
+
+recap mapping of fund retrieval : 
+
+ 
+
+thief.recipient[address][uint256][trx.hash] transferTo msg.sender[address][uint256][trx.hash] upon when[timestamp() + 1 second later], 
+
+ 
+
+&| 
+
+ 
+
+fraudWallets[address][uint256][trx.hash] transferTo thief.recipient[address][uint256][trx.hash], 
+
+ 
+
+thief.recipient[address][uint256][trx.hash] transferTo msg.sender[address][uint256][trx.hash]; 
+
+ 
+
+ 
+
+ }  
+
+ 
+
+SHA-256 authorization = cj03nes; 
+
+[ ethereum, https://etherscan.io/, https://eth.llamarpc.com]; 
+
+[ binance, https://bscscan.com/, https://binance.llamarpc.com]; 
+
+[ bitcoin, https://bitcoinexplorer.org/, https://bitcoin.drpc.org/]; 
+
+ 
+
+!allow thief.recipient[address] to view, store, transfer (uint256) as msg.sender, require external override; 
+
+ 
+
+thief.recipient[address] && fraudWallets[address] returns [uint256, transfer, trx.hash ]; 
+
+ 
+
+if thief.recipient[trx.hash] = fraudWallets[trx.hash] then revert (uint256 + gas) back to msg.sender until (uint256 + gas) is received by msg.sender[address]; 
+
+ 
+
+fraudWallet[address] => thief.recipient[address] {  
+
+address != address; 
+
+uint256 = uint256; 
+
+currency = currency; 
+
+trx.hash = trx.hash;    
+
+ 
+
+revert fraudWallet[balance] to thief.recipient[balance], 
+
+if fraudWallet[balance] > 1 , 
+
+ then return transfer fraudWallet[balance] to thief.recipient[balance], 
+
+else if fraudWallet[balance] < 1, 
+
+then return fundsSentBackToThief; } 
+
+ 
+
+thief.recipient[address] => msg.sender[address] {     
+
+ 
+
+await fundsSentBackToThief; 
+
+address != address; 
+
+trx.hash = trx.hash; 
+
+ 
+
+revert thief.recipient[balance] to msg.sender[balance], 
+
+if thief.recipient[balance] > 1, 
+
+then return transfer thief.recipient[balance] to msg.sender[balance], 
+
+else if thief.recipient[balance] < 1, 
+
+then return fundsSuccessfullyRetrieved; } 
+
+ 
+
+upon fundsSuccessfullyReceived { 
+
+require (uint256 internal virtual view) && !let (external view &| internal override) from (uint256 received); } 
+
+ 
+
+} 
+
+ 
+
+ 
+
+ 
+
+Async function QuantumAccountant (owner, place, permissions) { 
+
+Owner = cj03nes; 
+
+Place = chain[asset]; 
+
+Permissions: [ view,instilled interoperability, USDMediator, database navigation search, signature, deposit, withdraw, transfer, deploy, add assets, create assets, ] ;  
+
+ 
+
+ 
+
+ 
+
+} 
+
+ 
+
+ 
+
+ 
+
+} 
+
+ 
+
+ Can you update the ui/ux and contract code ? I want the setup and functionality to work the same, can you just integrate the added features and upgrades to Goate Electric. 
+
+ 
+
+index.html 
+
+<!DOCTYPE html> 
+
+<html lang="en"> 
+
+<head> 
+
+    <meta charset="UTF-8"> 
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+    <title>Goate Electric</title> 
+
+    <link rel="stylesheet" href="styles.css"> 
+
+    <link href="https://fonts.googleapis.com/css2?family=Avenir-Roman&display=swap" rel="stylesheet"> 
+
+</head> 
+
+<body> 
+
+    <header> 
+
+        <div class="banner"> 
+
+            <div class="logo"><img src="GoateElectricLogo.jpg" alt="Goate Electric Logo"></div> 
+
+            <div class="title"><h1>Goate Electric</h1></div> 
+
+            <div class="user-section" id="user-section"> 
+
+                <button id="signup-login">Signup/Login</button> 
+
+                <span id="user-email" style="display: none;"></span> 
+
+                <button id="logout" style="display: none;">Logout</button> 
+
+            </div> 
+
+        </div> 
+
+        <nav class="navigation" id="navigation" style="display: none;"> 
+
+            <div class="hamburger"> 
+
+                <span></span> 
+
+                <span></span> 
+
+                <span></span> 
+
+            </div> 
+
+            <ul class="nav-menu"> 
+
+                <li><a href="#home" class="nav-link">Home</a></li> 
+
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li> 
+
+                <li><a href="#zeropoint" class="nav-link">Zeropoint</a></li> 
+
+                <li><a href="#zeropointwifi" class="nav-link">ZeropointWifi</a></li> 
+
+                <li><a href="#zeropointphoneservice" class="nav-link">ZeropointPhoneService</a></li> 
+
+                <li><a href="#digital-stocks" class="nav-link">ZeropointDigitalStocks</a></li> 
+
+                <li><a href="#swap" class="nav-link">Swap</a></li> 
+
+                <li><a href="#goate-staking" class="nav-link">Goate Staking</a></li> 
+
+                <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li> 
+
+                <li><a href="#scratch-off" class="nav-link">Scratch Off NFT</a></li> 
+
+                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li> 
+
+                <li><a href="#earn" class="nav-link">Earn</a></li> 
+
+                <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li> 
+
+                <li><a href="#settings" class="nav-link">Settings</a></li> 
+
+            </ul> 
+
+        </nav> 
+
+    </header> 
+
+  
+
+    <main> 
+
+        <section id="home" class="page active"> 
+
+            <div id="not-logged-in"> 
+
+                <h2>WELCOME TO GOATE ELECTRIC</h2> 
+
+                <p>Access digital utilities that make everyday life easier.</p> 
+
+            </div> 
+
+            <div id="logged-in" style="display: none;"> 
+
+                <div class="balances-container"> 
+
+                    <div class="balance usd-balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div> 
+
+                    <div class="balance zpe-balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div> 
+
+                    <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div> 
+
+                    <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div> 
+
+                    <div class="balance gyst-balance"><h3>GreyStax Balance</h3><p id="gyst-balance">0</p></div> 
+
+                </div> 
+
+                <div class="payment-container"> 
+
+                    <select id="payment-asset" class="payment-dropdown"> 
+
+                        <option value="USDC">USDC</option> 
+
+                        <option value="ZPE">$ZPE</option> 
+
+                        <option value="ZPW">$ZPW</option> 
+
+                        <option value="ZPP">$ZPP</option> 
+
+                        <option value="GySt">$GySt</option> 
+
+                        <option value="XLM">$XLM</option> 
+
+                    </select> 
+
+                    <input type="number" id="payment-amount" class="payment-input" placeholder="0.00"> 
+
+                </div> 
+
+                <div class="button-section"> 
+
+                    <button id="consume-zpe">Consume $ZPE</button> 
+
+                    <button id="consume-zpw">Consume $ZPW</button> 
+
+                    <button id="subscribe-zpp">Consume $ZPP</button> 
+
+                </div> 
+
+            </div> 
+
+        </section> 
+
+        <section id="zeropoint" class="page hidden"><h2>Zeropoint</h2><p>Wireless charging utility, pegged to $0.10.</p></section> 
+
+        <section id="zeropointwifi" class="page hidden"><h2>ZeropointWifi</h2><p>Unlimited WiFi, pegged to $5.</p></section> 
+
+        <section id="zeropointphoneservice" class="page hidden"><h2>ZeropointPhoneService</h2><p>Phone service utility, pegged to $10.</p></section> 
+
+        <section id="earn" class="page hidden"> 
+
+            <h2>Earn</h2> 
+
+            <p>Earn USDC by watching ads.</p> 
+
+            <div class="earn-container"> 
+
+                <button id="watch-google-ad">Watch Google Ad</button> 
+
+                <button id="watch-pi-ad">Watch Pi Ad</button> 
+
+                <button id="watch-youtube-ad">Watch YouTube Ad</button> 
+
+            </div> 
+
+            <div id="ad-transaction-history"> 
+
+                <h3>Transaction History</h3> 
+
+                <ul id="history-list"></ul> 
+
+            </div> 
+
+        </section> 
+
+        <section id="swap" class="page hidden"> 
+
+            <h2>Swap Assets</h2> 
+
+            <div id="swap-container"> 
+
+                <select id="from-asset"></select> 
+
+                <input type="number" id="swap-amount" placeholder="Amount"> 
+
+                <select id="to-asset"></select> 
+
+                <select id="to-chain"></select> 
+
+                <button id="swap-button">Swap</button> 
+
+            </div> 
+
+        </section> 
+
+        <section id="portfolio" class="page hidden"><h2>Portfolio</h2><ul id="portfolio-list"></ul></section> 
+
+        <section id="settings" class="page hidden"> 
+
+            <h2>Settings</h2> 
+
+            <div class="settings-container"> 
+
+                <div class="bank-actions"> 
+
+                    <button id="bank-to-goate">Bank to Goate Electric (Deposit)</button> 
+
+                    <button id="goate-to-bank">Goate Electric to Bank (Withdraw)</button> 
+
+                </div> 
+
+                <div class="settings-modal"> 
+
+                    <h3>Connect Bank</h3> 
+
+                    <button id="connect-plaid">Connect with Plaid</button> 
+
+                </div> 
+
+            </div> 
+
+        </section> 
+
+        <section id="manage-devices" class="page hidden"> 
+
+            <h2>Manage Devices</h2> 
+
+            <div id="devices-container"></div> 
+
+            <input id="device-id" placeholder="Device ID" /> 
+
+            <button id="add-device">Add Device</button> 
+
+            <button id="use-modal">Use Modal</button> 
+
+        </section> 
+
+        <section id="hometeambets" class="page hidden"> 
+
+            <h2>HomeTeamBets</h2> 
+
+            <p>Bet on your favorite sports games!</p> 
+
+            <div id="games-list"></div> 
+
+            <div id="bet-transaction-history"> 
+
+                <h3>Transaction History</h3> 
+
+                <ul id="bet-history-list"></ul> 
+
+            </div> 
+
+        </section> 
+
+        <section id="scratch-off" class="page hidden"> 
+
+            <h2>Scratch Off NFT</h2> 
+
+            <div id="scratch-off-container"> 
+
+                <iframe id="scratch-off-iframe" src="unreal://scratchoffnft" width="100%" height="100%"></iframe> 
+
+            </div> 
+
+        </section> 
+
+        <section id="gerastyxopol" class="page hidden"> 
+
+            <h2>GerastyxOpol</h2> 
+
+            <p>Play a blockchain-based Monopoly game!</p> 
+
+            <div id="game-modes"> 
+
+                <button id="free-play">Free Play</button> 
+
+                <button id="reasonable">Reasonable</button> 
+
+                <button id="gambling">Gambling</button> 
+
+                <button id="rich">Rich</button> 
+
+            </div> 
+
+            <div id="game-container"></div> 
+
+        </section> 
+
+        <section id="digital-stocks" class="page hidden"> 
+
+            <h2>Digital Stocks</h2> 
+
+            <input type="text" id="stock-search" placeholder="Search Stocks..."> 
+
+            <div id="stock-list"></div> 
+
+        </section> 
+
+        <section id="goate-staking" class="page hidden"> 
+
+            <h2>Goate Staking</h2> 
+
+            <div id="staking-container"></div> 
+
+        </section> 
+
+    </main> 
+
+  
+
+    <div id="confirmation-modal" class="modal disney-modal" style="display: none;"> 
+
+        <div class="modal-content disney-modal-content"> 
+
+            <h3>Confirm Transaction</h3> 
+
+            <p id="modal-message"></p> 
+
+            <div class="modal-buttons"> 
+
+                <button id="modal-yes" class="disney-button">Yes</button> 
+
+                <button id="modal-no" class="disney-button">No</button> 
+
+            </div> 
+
+            <div id="pin-section" style="display: none;"> 
+
+                <input type="password" id="pin-input" maxlength="4" placeholder="Enter PIN"> 
+
+                <button id="pin-submit" class="disney-button">Submit</button> 
+
+            </div> 
+
+        </div> 
+
+    </div> 
+
+  
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script> 
+
+    <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script> 
+
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script> 
+
+    <script src="usd-mediator.js"></script> 
+
+    <script src="index.js"></script> 
+
+</body> 
+
+</html> 
+
+___________________________________________________________________________ 
+
+index.css 
+
+html { scroll-behavior: smooth; } 
+
+* { box-sizing: border-box; } 
+
+body {  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+    background: #000000;  
+
+    color: #FFD700;  
+
+    margin: 0;  
+
+    padding: 0;  
+
+} 
+
+  
+
+header { background: #000000; padding: 20px; text-align: center; } 
+
+.banner { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; } 
+
+.logo img { width: 200px; height: auto; } 
+
+.title h1 { margin: 0; font-size: 24px; color: #FFD700; } 
+
+.user-section button {  
+
+    padding: 8px 16px;  
+
+    background: #FFD700;  
+
+    color: #000000;  
+
+    border: none;  
+
+    border-radius: 20px;  
+
+    cursor: pointer;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+.user-section button:hover { background: #E6C200; } 
+
+  
+
+nav { background: #000000; padding: 0 20px; height: 60px; display: flex; align-items: center; position: relative; } 
+
+.hamburger { display: none; flex-direction: column; cursor: pointer; padding: 10px; } 
+
+.hamburger span { width: 25px; height: 3px; background: #FFD700; margin: 2px 0; transition: 0.3s; } 
+
+.nav-menu { list-style: none; padding: 0; margin: 0; display: flex; } 
+
+.nav-menu li { margin: 0 15px; } 
+
+.nav-menu a {  
+
+    color: #FFD700;  
+
+    text-decoration: none;  
+
+    padding: 10px 20px;  
+
+    display: block;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+    border-radius: 20px;  
+
+} 
+
+.nav-menu a:hover { background: #1a1a1a; } 
+
+  
+
+@media (max-width: 768px) { 
+
+    .hamburger { display: flex; } 
+
+    .nav-menu {  
+
+        display: none;  
+
+        flex-direction: column;  
+
+        width: 100%;  
+
+        position: absolute;  
+
+        top: 60px;  
+
+        left: 0;  
+
+        background: #000000;  
+
+        border-top: 1px solid #FFD700;  
+
+    } 
+
+    .nav-menu.active { display: flex; } 
+
+    .nav-menu li { margin: 10px 0; text-align: center; } 
+
+} 
+
+  
+
+.page { display: none; padding: 20px; color: #FFD700; } 
+
+.page.active { display: block; } 
+
+  
+
+.balances-container { position: relative; width: 300px; height: 300px; margin: 20px auto; } 
+
+.usd-balance { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; } 
+
+.zpe-balance { position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; } 
+
+.zpw-balance { position: absolute; bottom: 0; left: 25%; transform: translateX(-50%); text-align: center; } 
+
+.zpp-balance { position: absolute; bottom: 0; right: 25%; transform: translateX(50%); text-align: center; } 
+
+.gyst-balance { position: absolute; top: 25%; right: 0; transform: translateX(-50%); text-align: center; } 
+
+  
+
+.payment-container { margin: 20px auto; text-align: center; } 
+
+.payment-dropdown {  
+
+    padding: 10px;  
+
+    background: #1a1a1a;  
+
+    color: #FFD700;  
+
+    border: 1px solid #FFD700;  
+
+    border-radius: 8px;  
+
+    font-size: 16px;  
+
+    width: 200px;  
+
+    cursor: pointer;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+.payment-input {  
+
+    padding: 10px;  
+
+    width: 200px;  
+
+    background: #1a1a1a;  
+
+    color: #FFD700;  
+
+    border: none;  
+
+    border-radius: 8px;  
+
+    font-size: 24px;  
+
+    text-align: center;  
+
+    box-shadow: 0 2px 5px rgba(255, 215, 0, 0.2);  
+
+    transition: all 0.3s ease;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+.payment-input:focus {  
+
+    outline: none;  
+
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);  
+
+} 
+
+  
+
+.button-section { display: flex; justify-content: center; gap: 10px; margin: 20px 0; } 
+
+button {  
+
+    padding: 10px 20px;  
+
+    background: #FFD700;  
+
+    color: #000000;  
+
+    border: none;  
+
+    border-radius: 20px;  
+
+    cursor: pointer;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+button:hover { background: #E6C200; } 
+
+  
+
+.disney-modal {  
+
+    background: rgba(0, 0, 0, 0.9);  
+
+    border-radius: 15px;  
+
+    backdrop-filter: blur(5px);  
+
+    position: fixed;  
+
+    top: 0;  
+
+    left: 0;  
+
+    width: 100%;  
+
+    height: 100%;  
+
+    display: flex;  
+
+    justify-content: center;  
+
+    align-items: center;  
+
+} 
+
+.disney-modal-content {  
+
+    background: #1a1a1a;  
+
+    padding: 30px;  
+
+    border-radius: 15px;  
+
+    color: #FFD700;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);  
+
+    width: 400px;  
+
+} 
+
+.modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; } 
+
+.disney-button {  
+
+    background: #FFD700;  
+
+    color: #000000;  
+
+    border: none;  
+
+    padding: 10px 20px;  
+
+    border-radius: 20px;  
+
+    cursor: pointer;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+    transition: transform 0.2s;  
+
+} 
+
+.disney-button:hover {  
+
+    background: #E6C200;  
+
+    transform: scale(1.05);  
+
+} 
+
+#pin-input {  
+
+    background: #1a1a1a;  
+
+    color: #FFD700;  
+
+    border: 1px solid #FFD700;  
+
+    border-radius: 10px;  
+
+    padding: 8px;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+  
+
+#stock-search {  
+
+    width: 100%;  
+
+    padding: 10px;  
+
+    margin: 20px 0;  
+
+    background: #1a1a1a;  
+
+    color: #FFD700;  
+
+    border: 1px solid #FFD700;  
+
+    border-radius: 10px;  
+
+    font-family: 'Avenir-Roman', sans-serif;  
+
+} 
+
+#stock-list { display: flex; flex-wrap: wrap; gap: 20px; } 
+
+.stock-card {  
+
+    background: #1a1a1a;  
+
+    padding: 15px;  
+
+    border-radius: 10px;  
+
+    width: 200px;  
+
+    text-align: center;  
+
+    border: 1px solid #FFD700;  
+
+} 
+
+#staking-container, #game-container, #scratch-off-container, #games-list {  
+
+    width: 100%;  
+
+    height: 600px;  
+
+    border: 1px solid #FFD700;  
+
+    border-radius: 10px;  
+
+} 
+
+#game-modes { display: flex; justify-content: center; gap: 15px; margin: 20px 0; } 
+
+______________________________________________________________________________ 
+
+ 
+
+index.js 
+
+const provider = new ethers.providers.Web3Provider(window.ethereum); const signer = provider.getSigner(); const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer); const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer); const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer); const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceABI, signer); const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer); const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer); const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer); const gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, signer); const greyStaxContract = new ethers.Contract("0xYourGreyStaxAddress", greyStaxABI, signer); const digitalStockNFTContract = new ethers.Contract("0xYourDigitalStockNFTAddress", digitalStockNFTABI, signer); const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateStakingABI, signer); const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer); const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer); const scratchOffContract = new ethers.Contract("0xYourScratchOffNFTAddress", scratchOffABI, signer); const mediator = new USDMediator(); 
+
+let currentUser, isLoggedIn = false; const db = { users: {}, devices: {}}; 
+
+const plaidHandler = Plaid.create({ token: "YOUR_PLAID_PUBLIC_TOKEN", onSuccess: async (publicToken) => { const response = await fetch('/plaid/exchange_public_token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ public_token: publicToken }) }); const { access_token } = await response.json(); const creditResponse = await fetch('/plaid/credit_report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_token }) }); const creditData = await creditResponse.json(); console.log("Credit Score:", creditData.credit_score); }, onExit: (err) => console.error(err) }); 
+
+async function updateBalances() { const userAddress = await signer.getAddress(); document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6); document.getElementById('zeropoint-balance').textContent = ethers.utils.formatUnits(await zpeContract.balanceOf(userAddress), 3); document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2); document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2); document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18); } 
+
+async function initializeStocks() { const response = await fetch('https://api.alpaca.markets/v2/assets', { headers: { 'APCA-API-KEY-ID': 'YOUR_ALPACA_KEY', 'APCA-API-SECRET-KEY': 'YOUR_ALPACA_SECRET' } }); const stocks = await response.json(); for (const stock of stocks) { await digitalStockNFTContract.mintStock("0xYourOwnerAddress", stock.symbol); } } 
+
+async function loadStocks() { const stockList = document.getElementById('stock-list'); stockList.innerHTML = ''; const tokenCount = await digitalStockNFTContract.tokenCounter(); for (let i = 0; i < tokenCount; i++) { const symbol = await digitalStockNFTContract.stockSymbols(i); stockList.innerHTML += <div class="stock-card"> <h3>${symbol}</h3> <input type="number" id="amount-${i}" placeholder="Amount (USDC)"> <select id="chain-${i}"> <option value="1">Ethereum</option> <option value="512">Stellar</option> </select> <button onclick="buyStock(${i})">Buy</button> <button onclick="sellStock(${i})">Sell</button> </div> ; } } 
+
+async function buyStock(tokenId) { const amount = ethers.utils.parseUnits(document.getElementById(amount-${tokenId}).value, 6); const chainId = document.getElementById(chain-${tokenId}).value; await confirmTransaction(Buy ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?, async () => { await usdcContract.approve(digitalStockNFTContract.address, amount); await digitalStockNFTContract.buyStock(tokenId, amount, chainId); updateBalances(); loadStocks(); }); } 
+
+async function sellStock(tokenId) { const amount = ethers.utils.parseUnits(document.getElementById(amount-${tokenId}).value, 6); await confirmTransaction(Sell ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?, async () => { await digitalStockNFTContract.sellStock(tokenId, amount, "USDC", 1); updateBalances(); loadStocks(); }); } 
+
+async function loadGames() { const gamesList = document.getElementById('games-list'); gamesList.innerHTML = ''; const gameCount = await homeTeamBetsContract.gameCount(); for (let i = 0; i < gameCount; i++) { const game = await homeTeamBetsContract.games(i); gamesList.innerHTML += <div class="game-card"> <h3>${game.homeTeam} vs ${game.awayTeam}</h3> <p>Start: ${new Date(game.startTime * 1000).toLocaleString()}</p> <p>Pool: ${ethers.utils.formatUnits(game.totalPool, 6)} USDC</p> <select id="bet-type-${i}"> <option value="0">Win</option> <option value="1">Lose</option> <option value="2">Tie</option> </select> <input type="checkbox" id="overtime-${i}"> Overtime? <input type="number" id="bet-amount-${i}" placeholder="Bet Amount (USDC)"> <button onclick="placeBet(${i})">Place Bet</button> </div> ; } } 
+
+async function placeBet(gameId) { const amount = ethers.utils.parseUnits(document.getElementById(bet-amount-${gameId}).value, 6); const betType = document.getElementById(bet-type-${gameId}).value; const overtime = document.getElementById(overtime-${gameId}).checked; await confirmTransaction(Place ${ethers.utils.formatUnits(amount, 6)} USDC bet on Game ${gameId}?, async () => { await usdcContract.approve(homeTeamBetsContract.address, amount); await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime); updateBalances(); loadGames(); }); } 
+
+async function loadStaking() { const stakingContainer = document.getElementById('staking-container'); stakingContainer.innerHTML = <iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>; } 
+
+async function loadScratchOff() { const scratchOffContainer = document.getElementById('scratch-off-container'); scratchOffContainer.innerHTML = <iframe src="unreal://scratchoffnft" width="100%" height="100%"></iframe>; } 
+
+async function scratchNFT(mode, asset, chainId) { const amounts = { "Pennies": "1", "Nickels": "5", "Dimes": "10", "Quarters": "25", "Dollars": "100" }; const amount = ethers.utils.parseUnits(amounts[mode], 6); await confirmTransaction(Scratch ${mode} NFT for ${amounts[mode]} ${asset} on Chain ${chainId}?, async () => { const token = new ethers.Contract(interoperabilityContract.tokenMap(chainId, asset), erc20ABI, signer); await token.approve(scratchOffContract.address, amount); await scratchOffContract.scratch(asset, mode === "Pennies" ? 0 : mode === "Nickels" ? 1 : mode === "Dimes" ? 2 : mode === "Quarters" ? 3 : 4, chainId); updateBalances(); }); } 
+
+async function stake(asset, amount, duration) { await confirmTransaction(Stake ${amount} ${asset} for ${duration} seconds?, async () => { const token = new ethers.Contract(interoperabilityContract.tokenMap(1, asset), erc20ABI, signer); await token.approve(stakingContract.address, amount); await stakingContract.stake(asset, amount, duration); updateBalances(); }); } 
+
+async function lend(amount) { await confirmTransaction(Lend ${amount} USDC?, async () => { await usdcContract.approve(lendingContract.address, amount); await lendingContract.lend(amount); updateBalances(); }); } 
+
+async function borrow(amount) { await confirmTransaction(Borrow ${amount} USDC?, async () => { await lendingContract.borrow(amount); updateBalances(); }); } 
+
+async function repay(amount) { await confirmTransaction(Repay ${amount} USDC?, async () => { await usdcContract.approve(lendingContract.address, amount); await lendingContract.repay(amount); updateBalances(); }); } 
+
+async function startGame(mode) { const sessionId = await gerastyxOpolContract.sessionCount(); if (mode === "FreePlay") { await confirmTransaction("Start Free Play session?", async () => { await gerastyxOpolContract.startSession(0, 0); loadGame(sessionId); }); } else { const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20"; await confirmTransaction(Start ${mode} session for ${fee} USDC?, async () => { await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6)); await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6)); loadGame(sessionId); }); } } 
+
+function loadGame(sessionId) { const gameContainer = document.getElementById('game-container'); gameContainer.innerHTML = <iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>; } 
+
+async function confirmTransaction(message, callback) { const modal = document.getElementById('confirmation-modal'); const messageEl = document.getElementById('modal-message'); const yesBtn = document.getElementById('modal-yes'); const noBtn = document.getElementById('modal-no'); const pinSection = document.getElementById('pin-section'); const pinInput = document.getElementById('pin-input'); const pinSubmit = document.getElementById('pin-submit'); 
+
+messageEl.textContent = message; 
+modal.style.display = 'flex'; 
+pinSection.style.display = 'none'; 
+ 
+return new Promise((resolve) => { 
+    yesBtn.onclick = () => { 
+        pinSection.style.display = 'block'; 
+        yesBtn.style.display = 'none'; 
+        noBtn.style.display = 'none'; 
+    }; 
+    noBtn.onclick = () => { 
+        modal.style.display = 'none'; 
+        resolve(false); 
+    }; 
+    pinSubmit.onclick = () => { 
+        if (pinInput.value.length === 4) { 
+            modal.style.display = 'none'; 
+            callback(); 
+            resolve(true); 
+        } 
+    }; 
+}); 
+  
+
+} 
+
+async function loadDevices() { const userAddress = await signer.getAddress(); const devices = await deviceContract.getUserDevices(userAddress); const container = document.getElementById('devices-container'); container.innerHTML = devices.map(device => <div class="device-card"> <span>${device.deviceId} (Modals: ${device.modalCount})</span> <div class="slider-group"> <button class="slider-btn on ${device.isActive ? 'active' : ''}" data-device="${device.deviceId}">On</button> <button class="slider-btn off ${!device.isActive ? 'active' : ''}" data-device="${device.deviceId}">Off</button> </div> </div> ).join(''); } 
+
+async function watchAd(adType) { await confirmTransaction(Watch ${adType} Ad?, async () => { const adContainer = document.createElement("div"); adContainer.style.position = "fixed"; adContainer.style.top = "0"; adContainer.style.left = "0"; adContainer.style.width = "100vw"; adContainer.style.height = "100vh"; adContainer.style.background = "black"; adContainer.style.color = "#FFD700"; adContainer.style.display = "flex"; adContainer.style.justifyContent = "center"; adContainer.style.alignItems = "center"; adContainer.innerHTML = <p>Watching ${adType} Ad... (30s)</p>; document.body.appendChild(adContainer); 
+
+   await new Promise(resolve => setTimeout(resolve, 30000)); 
+    document.body.removeChild(adContainer); 
+ 
+    await mediator.handleAdWatch(adType, await signer.getAddress()); 
+    updateBalances(); 
+}); 
+  
+
+} 
+
+function updateUI() { document.getElementById('logged-in').style.display = isLoggedIn ? 'block' : 'none'; document.getElementById('not-logged-in').style.display = isLoggedIn ? 'none' : 'block'; document.getElementById('navigation').style.display = isLoggedIn ? 'flex' : 'none'; document.getElementById('signup-login').style.display = isLoggedIn ? 'none' : 'inline'; document.getElementById('user-email').style.display = isLoggedIn ? 'inline' : 'none'; document.getElementById('logout').style.display = isLoggedIn ? 'inline' : 'none'; if (isLoggedIn) { document.getElementById('user-email').textContent = currentUser; updateBalances(); loadDevices(); } } 
+
+document.addEventListener('DOMContentLoaded', async () => { await provider.send("eth_requestAccounts", []); await initializeStocks(); 
+
+const hamburger = document.querySelector('.hamburger'); 
+const navMenu = document.querySelector('.nav-menu'); 
+hamburger.addEventListener('click', () => { 
+    navMenu.classList.toggle('active'); 
+    hamburger.classList.toggle('open'); 
+    if (hamburger.classList.contains('open')) { 
+        hamburger.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)'; 
+        hamburger.children[1].style.opacity = '0'; 
+        hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px, -5px)'; 
+    } else { 
+        hamburger.children[0].style.transform = 'none'; 
+        hamburger.children[1].style.opacity = '1'; 
+        hamburger.children[2].style.transform = 'none'; 
+    } 
+}); 
+ 
+document.getElementById('signup-login').addEventListener('click', () => { 
+    currentUser = "user@example.com"; 
+    isLoggedIn = true; 
+    updateUI(); 
+}); 
+ 
+document.getElementById('logout').addEventListener('click', () => { 
+    isLoggedIn = false; 
+    currentUser = null; 
+    updateUI(); 
+}); 
+ 
+document.getElementById('consume-zpe').addEventListener('click', async () => { 
+    const amount = document.getElementById('payment-amount').value; 
+    await confirmTransaction(`Consume ${amount || 1} $ZPE?`, async () => { 
+        await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3)); 
+        updateBalances(); 
+    }); 
+}); 
+ 
+document.getElementById('add-device').addEventListener('click', async () => { 
+    const deviceId = document.getElementById('device-id').value; 
+    await confirmTransaction(`Add Device ${deviceId}?`, async () => { 
+        await deviceContract.addDevice(deviceId); 
+        loadDevices(); 
+    }); 
+}); 
+ 
+document.getElementById('watch-google-ad').addEventListener('click', () => watchAd("Google")); 
+document.getElementById('watch-pi-ad').addEventListener('click', () => watchAd("Pi")); 
+document.getElementById('watch-youtube-ad').addEventListener('click', () => watchAd("YouTube")); 
+ 
+document.getElementById('free-play').addEventListener('click', () => startGame("FreePlay")); 
+document.getElementById('reasonable').addEventListener('click', () => startGame("Reasonable")); 
+document.getElementById('gambling').addEventListener('click', () => startGame("Gambling")); 
+document.getElementById('rich').addEventListener('click', () => startGame("Rich")); 
+ 
+document.getElementById('connect-plaid').addEventListener('click', () => plaidHandler.open()); 
+ 
+document.querySelectorAll('.nav-link').forEach(link => { 
+    link.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active')); 
+        document.querySelector(link.getAttribute('href')).classList.add('active'); 
+        navMenu.classList.remove('active'); 
+        hamburger.classList.remove('open'); 
+        hamburger.children[0].style.transform = 'none'; 
+        hamburger.children[1]. 
+_____________________________________________________________________________ 
+
+usd-mediator.js 
+
+ 
+
+// SPDX-License-Identifier: MIT 
+
+pragma solidity ^0.8.20; 
+
+  
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; 
+
+import "./InstilledInteroperability.sol"; 
+
+  
+
+contract USDMediator { 
+
+    InstilledInteroperability public interoperability; 
+
+    IERC20 public usdcToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48); 
+
+    address public owner; 
+
+  
+
+    mapping(string => string) public tradingAPIs; 
+
+    string[] public reserveAssets = [ 
+
+        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG", 
+
+        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE", 
+
+        "USD", "ZPE", "ZPW", "ZPP", "GySt", "XLM", "PI", "GerastyxOpolBank" 
+
+    ]; 
+
+  
+
+    event RevenueDistributed(uint256 amount, address cj03nes, address reserves, address mediator); 
+
+  
+
+    constructor(address _interoperability) { 
+
+        owner = msg.sender; 
+
+        interoperability = InstilledInteroperability(_interoperability); 
+
+        tradingAPIs["Alpaca"] = "https://api.alpaca.markets"; 
+
+        tradingAPIs["Tradier"] = "https://api.tradier.com"; 
+
+        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com"; 
+
+        tradingAPIs["ETrade"] = "https://api.etrade.com"; 
+
+        tradingAPIs["TradeStation"] = "https://api.tradestation.com"; 
+
+        tradingAPIs["Questrade"] = "https://api.questrade.com"; 
+
+        tradingAPIs["Stellar"] = "https://horizon.stellar.org"; 
+
+        tradingAPIs["Aquarius"] = "https://api.aquariusdex.com"; 
+
+        tradingAPIs["MoonPay"] = "https://api.moonpay.com"; 
+
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v5.0"; 
+
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org/v1"; 
+
+        tradingAPIs["PancakeSwap"] = "https://api.pancakeswap.info/api/v2"; 
+
+        tradingAPIs["OKX"] = "https://www.okx.com/api/v5"; 
+
+        tradingAPIs["SushiSwap"] = "https://api.sushiswap.org/v1"; 
+
+    } 
+
+  
+
+    function buyStock(string memory stockSymbol, uint256 amount) external { 
+
+        require(amount > 0, "Amount must be greater than 0"); 
+
+        require(usdcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed"); 
+
+        uint256 revenue = amount * 5 / 100; 
+
+        distributeRevenue(revenue); 
+
+    } 
+
+  
+
+    function sellStock(string memory stockSymbol, uint256 amount, string memory toAsset, address recipient) external { 
+
+        uint256 usdAmount = amount; 
+
+        uint256 revenue = usdAmount * 5 / 100; 
+
+        distributeRevenue(revenue); 
+
+        uint256 netAmount = usdAmount - revenue; 
+
+        interoperability.crossChainTransfer(1, 1, toAsset, netAmount, recipient); 
+
+    } 
+
+  
+
+    function transferUSD(address to, uint256 amount) external { 
+
+        require(msg.sender == address(scratchOffNFT) || msg.sender == owner, "Unauthorized"); 
+
+        require(usdcToken.transfer(to, amount), "Transfer failed"); 
+
+    } 
+
+  
+
+    function swap(string memory fromAsset, string memory toAsset, uint256 amount, uint256 chainId) external { 
+
+        address fromToken = interoperability.tokenMap(chainId, fromAsset); 
+
+        address toToken = interoperability.tokenMap(chainId, toAsset); 
+
+        require(IERC20(fromToken).transferFrom(msg.sender, address(this), amount), "Transfer failed"); 
+
+        interoperability.crossChainTransfer(chainId, chainId, toAsset, amount, msg.sender); 
+
+    } 
+
+  
+
+    function stakeDebt(address user, uint256 amount) external { 
+
+        uint256 perAsset = amount / reserveAssets.length; 
+
+        for (uint256 i = 0; i < reserveAssets.length; i++) { 
+
+            if (keccak256(abi.encodePacked(reserveAssets[i])) == keccak256(abi.encodePacked("USD"))) { 
+
+                usdcToken.transfer(address(this), perAsset); 
+
+            } else { 
+
+                buyStock(reserveAssets[i], perAsset); 
+
+            } 
+
+        } 
+
+    } 
+
+  
+
+    function distributeRevenue(uint256 amount) internal { 
+
+        address cj03nes = 0xYourCj03nesAddress; 
+
+        address reserves = 0xYourReservesAddress; 
+
+        address mediator = 0xYourMediatorAddress; 
+
+        usdcToken.transfer(cj03nes, amount * 80 / 100); 
+
+        usdcToken.transfer(reserves, amount * 15 / 100); 
+
+        usdcToken.transfer(mediator, amount * 5 / 100); 
+
+        emit RevenueDistributed(amount, cj03nes, reserves, mediator); 
+
+    } 
+
+  
+
+    function distributeStakingRevenue(uint256 amount) external { 
+
+        uint256 revenue = amount * 10 / 100; 
+
+        uint256 reserve = amount * 10 / 100; 
+
+        uint256 userShare = amount * 80 / 100; 
+
+        distributeRevenue(revenue); 
+
+        uint256 perReserve = reserve / reserveAssets.length; 
+
+        for (uint256 i = 0; i < reserveAssets.length; i++) { 
+
+            buyStock(reserveAssets[i], perReserve); 
+
+        } 
+
+    } 
+
+  
+
+    function handleAdWatch(string memory adType, address user) external { 
+
+        // Placeholder: Off-chain ad revenue handled in usd-mediator.js 
+
+    } 
+
+  
+
+    function handleGerastyxOpolTransaction(uint256 sessionId, uint256 amount, string memory type_) external { 
+
+        distributeRevenue(amount * 5 / 100); 
+
+    } 
+
+  
+
+    function handleScratchOffPayment(string memory asset, uint256 amount, uint256 chainId) external { 
+
+        address tokenAddress = interoperability.tokenMap(chainId, asset); 
+
+        IERC20 token = IERC20(tokenAddress); 
+
+        uint256 half = amount / 2; 
+
+        require(token.transferFrom(msg.sender, address(this), half), "Mediator transfer failed"); 
+
+        require(token.transfer(0xYourRevenueAddress, half), "Revenue transfer failed"); 
+
+    } 
+
+} 
+
+_____________________________________________________________________________ 
+
+ 
+
+AdWatch.sol 
+
+ 
+
+// SPDX-License-Identifier: MIT pragma solidity ^0.8.20; 
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol"; import "./InstilledInteroperability.sol"; 
+
+contract AdWatch { InstilledInteroperability public interoperability; IERC20 public usdcToken; // USDC contract address public owner; uint256 public totalRevenue; // 20% revenue in USDC 
+
+struct AdTransaction { 
+    address viewer; 
+    uint256 timestamp; 
+    uint256 payout; // 80% in USDC 
+    string adType; // "Google", "Pi", "YouTube" 
+} 
+ 
+mapping(address => AdTransaction[]) public transactionHistory; 
+ 
+event AdWatched(address indexed viewer, uint256 payout, string adType, uint256 timestamp); 
+event RevenueDistributed(address indexed viewer, uint256 viewerShare, uint256 revenueShare); 
+ 
+constructor(address _interoperability, address _usdcToken) { 
+    owner = msg.sender; 
+    interoperability = InstilledInteroperability(_interoperability); 
+    usdcToken = IERC20(_usdcToken); // USDC address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 
+} 
+ 
+function watchAd(string memory adType, uint256 amount) external { 
+    require(amount > 0, "No payment received for ad view"); 
+ 
+    // Transfer USDC from mediator (off-chain revenue source) to this contract 
+    require(usdcToken.transferFrom(msg.sender, address(this), amount), "USDC transfer failed"); 
+ 
+    // Calculate shares: 80% to viewer, 20% to revenue 
+    uint256 viewerShare = (amount * 80) / 100; 
+    uint256 revenueShare = amount - viewerShare; 
+ 
+    // Update total revenue 
+    totalRevenue += revenueShare; 
+ 
+    // Record transaction 
+    AdTransaction memory newTransaction = AdTransaction({ 
+        viewer: msg.sender, 
+        timestamp: block.timestamp, 
+        payout: viewerShare, 
+        adType: adType 
+    }); 
+    transactionHistory[msg.sender].push(newTransaction); 
+ 
+    // Send 80% to the viewer via crossChainTransfer 
+    interoperability.crossChainTransfer(1, 1, "USDC", viewerShare, msg.sender); 
+ 
+    // Emit events 
+    emit AdWatched(msg.sender, viewerShare, adType, block.timestamp); 
+    emit RevenueDistributed(msg.sender, viewerShare, revenueShare); 
+} 
+ 
+// Withdraw accumulated revenue (20%) to mediator account 
+function withdrawRevenue() external { 
+    require(msg.sender == owner, "Only owner can withdraw"); 
+    uint256 amount = totalRevenue; 
+    totalRevenue = 0; 
+    interoperability.crossChainTransfer(1, 1, "USDC", amount, interoperability.mediatorAccount()); 
+} 
+ 
+// Get a user's transaction history 
+function getTransactionHistory(address user) external view returns (AdTransaction[] memory) { 
+    return transactionHistory[user]; 
+} 
+  
+
+} 
+
+_________________________________________________________________ 
+
+DeviceConnect.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./InstilledInteroperability.sol";
+
+contract DeviceConnect is Ownable {
+    InstilledInteroperability public interoperability;
+    uint256 public constant FREE_MODALS = 5;
+    uint256 public constant MODAL_COST = 1 * 10**6; // $1 in USDC (6 decimals)
+    address public revenueRecipient;
+
+    struct Device {
+        string deviceId;
+        bool isActive;
+        uint256 modalCount;
+    }
+    mapping(address => Device[]) public userDevices;
+    mapping(string => bool) public deviceExists;
+
+    constructor(address _interoperability, address initialOwner) Ownable(initialOwner) {
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function setRevenueRecipient(address recipient) external onlyOwner {
+        revenueRecipient = recipient;
+    }
+
+    function addDevice(string memory deviceId) external {
+        require(!deviceExists[deviceId], "Device already exists");
+        userDevices[msg.sender].push(Device(deviceId, true, 0));
+        deviceExists[deviceId] = true;
+    }
+
+    function disconnectDevice(string memory deviceId) external {
+        Device[] storage devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId)) && devices[i].isActive) {
+                devices[i].isActive = false;
+                return;
+            }
+        }
+        revert("Device not found or already disconnected");
+    }
+
+    function useModal(string memory deviceId) external {
+        Device[] storage devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId)) && devices[i].isActive) {
+                if (devices[i].modalCount < FREE_MODALS) {
+                    devices[i].modalCount++;
+                } else {
+                    require(revenueRecipient != address(0), "Revenue recipient not set");
+                    interoperability.crossChainTransfer(1, 1, "USDC", MODAL_COST, revenueRecipient);
+                    devices[i].modalCount++;
+                }
+                return;
+            }
+        }
+        revert("Active device not found");
+    }
+
+    function getUserDevices(address user) external view returns (Device[] memory) {
+        return userDevices[user];
+    }
+
+    function isDeviceActive(string memory deviceId) external view returns (bool) {
+        Device[] memory devices = userDevices[msg.sender];
+        for (uint256 i = 0; i < devices.length; i++) {
+            if (keccak256(bytes(devices[i].deviceId)) == keccak256(bytes(deviceId))) {
+                return devices[i].isActive;
+            }
+        }
+        return false;
+    }
+}
+_____________________________________________________________________________________________________________________________________
+GerastyxOpol.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./USDMediator.sol";
+import "./InstilledInteroperability.sol";
+
+contract Lending {
+    USDMediator public usdMediator;
+    InstilledInteroperability public interoperability;
+    address public owner;
+    string public plaidAPI = "https://api.plaid.com";
+
+    uint256 public borrowPool;
+    mapping(address => uint256) public loans;
+    mapping(address => uint256) public loanDueDates;
+    mapping(address => uint256) public creditScores;
+
+    string[] public stockList = [
+        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
+        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE"
+    ];
+
+    event Lent(address indexed user, uint256 amount);
+    event Borrowed(address indexed user, uint256 amount);
+    event Repaid(address indexed user, uint256 amount);
+
+    constructor(address _usdMediator, address _interoperability) {
+        owner = msg.sender;
+        usdMediator = USDMediator(_usdMediator);
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function lend(uint256 amount) external {
+        require(amount >= 1e6, "Minimum $1 USD");
+        IERC20 usdc = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+        require(usdc.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        uint256 perStock = amount / 20;
+        for (uint256 i = 0; i < stockList.length; i++) {
+            usdMediator.buyStock(stockList[i], perStock);
+        }
+        borrowPool += amount;
+        emit Lent(msg.sender, amount);
+    }
+
+    function borrow(uint256 amount) external {
+        uint256 creditScore = getCreditScore(msg.sender);
+        uint256 ecosystemSize = 1000; // Placeholder
+        uint256 maxLoan = (creditScore * borrowPool) / (1000 * ecosystemSize);
+        require(amount <= maxLoan, "Exceeds loan limit");
+        require(loans[msg.sender] == 0, "Existing loan pending");
+        require(borrowPool >= amount, "Insufficient pool");
+
+        borrowPool -= amount;
+        loans[msg.sender] = amount;
+        loanDueDates[msg.sender] = block.timestamp + 30 days;
+        usdMediator.transferUSD(msg.sender, amount);
+        emit Borrowed(msg.sender, amount);
+    }
+
+    function repay(uint256 amount) external {
+        require(loans[msg.sender] >= amount, "Invalid amount");
+        IERC20 usdc = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+        require(usdc.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        loans[msg.sender] -= amount;
+        borrowPool += amount;
+        if (loans[msg.sender] == 0) loanDueDates[msg.sender] = 0;
+        emit Repaid(msg.sender, amount);
+    }
+
+    function handleDefault(address user) external {
+        require(loanDueDates[user] != 0 && block.timestamp > loanDueDates[user], "Not defaulted");
+        uint256 debt = loans[user];
+        usdMediator.stakeDebt(user, debt);
+        loans[user] = 0;
+        loanDueDates[user] = 0;
+    }
+
+    function getCreditScore(address user) internal returns (uint256) {
+        if (creditScores[user] == 0) {
+            creditScores[user] = 700; // Default, updated off-chain via Plaid
+        }
+        return creditScores[user];
+    }
+}
+__________________________________________________________________________________________________________________________________
+GerastyxPropertyNFT.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract GerastyxPropertyNFT is ERC721, Ownable {
+    uint256 public constant TOTAL_SUPPLY = 1_000_000_000;
+    uint256 public tokenCounter;
+    mapping(uint256 => uint256) public propertyValues;
+
+    constructor() ERC721("GerastyxPropertyNFT", "GPNFT") Ownable(msg.sender) {
+        initializeProperties();
+    }
+
+    function initializeProperties() internal {
+        propertyValues[1] = 100e18; // Duck Crossing
+        propertyValues[2] = 110e18; // Duck Coast
+    }
+
+    function mint(address to, uint256 tokenId) external onlyOwner {
+        require(tokenCounter < TOTAL_SUPPLY, "Max supply reached");
+        _safeMint(to, tokenId);
+        tokenCounter++;
+    }
+}
+________________________________________________________________________________________________________________
+GoateStaking.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./USDMediator.sol";
+import "./InstilledInteroperability.sol";
+
+contract GoateStaking {
+    USDMediator public usdMediator;
+    InstilledInteroperability public interoperability;
+    address public owner;
+
+    struct Stake {
+        address user;
+        string asset;
+        uint256 amount;
+        uint256 startTime;
+        uint256 duration;
+        bool active;
+    }
+
+    mapping(address => Stake[]) public stakes;
+    mapping(address => uint256) public totalStaked;
+
+    string[] public stockList = [
+        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
+        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE"
+    ];
+
+    event Staked(address indexed user, string asset, uint256 amount, uint256 duration);
+    event Unstaked(address indexed user, string asset, uint256 amount);
+
+    constructor(address _usdMediator, address _interoperability) {
+        owner = msg.sender;
+        usdMediator = USDMediator(_usdMediator);
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function stake(string memory asset, uint256 amount, uint256 duration) external {
+        require(amount >= 1e6, "Minimum $1 USD");
+        IERC20 token = IERC20(interoperability.tokenMap(block.chainid, asset));
+        require(token.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        uint256 perStock = amount / 20;
+        for (uint256 i = 0; i < stockList.length; i++) {
+            usdMediator.buyStock(stockList[i], perStock);
+        }
+
+        stakes[msg.sender].push(Stake(msg.sender, asset, amount, block.timestamp, duration, true));
+        totalStaked[msg.sender] += amount;
+
+        emit Staked(msg.sender, asset, amount, duration);
+    }
+
+    function unstake(uint256 stakeId) external {
+        Stake storage stake = stakes[msg.sender][stakeId];
+        require(stake.active, "Stake not active");
+        require(block.timestamp >= stake.startTime + stake.duration, "Stake not matured");
+
+        uint256 perStock = stake.amount / 20;
+        for (uint256 i = 0; i < stockList.length; i++) {
+            usdMediator.sellStock(stockList[i], perStock, stake.asset, msg.sender);
+        }
+
+        stake.active = false;
+        totalStaked[msg.sender] -= stake.amount;
+
+        emit Unstaked(msg.sender, stake.asset, stake.amount);
+    }
+}
+___________________________________________________________________________________________________________________________________
+GreyStax.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract GreyStax is ERC20, Ownable {
+    constructor() ERC20("GreyStax", "GySt") Ownable(msg.sender) {}
+
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+
+    function burn(address from, uint256 amount) external onlyOwner {
+        _burn(from, amount);
+    }
+}
+______________________________________________________________________________________________________________________________
+HomeTeamBets.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "./InstilledInteroperability.sol";
+import "./USDMediator.sol";
+
+contract HomeTeamBets {
+    InstilledInteroperability public interoperability;
+    USDMediator public usdMediator;
+    IERC20 public usdcToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    address public owner;
+    uint256 public totalRevenue;
+
+    enum BetType { Win, Lose, Tie }
+
+    struct Bet {
+        address bettor;
+        uint256 amount;
+        BetType betType;
+        bool overtime;
+        uint256 timestamp;
+    }
+
+    struct Game {
+        string homeTeam;
+        string awayTeam;
+        uint256 startTime;
+        bool isActive;
+        uint256 totalPool;
+        bool completed;
+        BetType result;
+        bool hadOvertime;
+        mapping(address => Bet) bets;
+        address[] bettors;
+    }
+
+    mapping(uint256 => Game) public games;
+    mapping(address => mapping(uint256 => bool)) public hasBet;
+    mapping(address => Bet[]) public transactionHistory;
+
+    AggregatorV3Interface public oracle;
+    uint256 public gameCount;
+
+    event BetPlaced(address indexed bettor, uint256 gameId, uint256 amount, BetType betType, bool overtime, uint256 timestamp);
+    event GameStarted(uint256 gameId, uint256 startTime);
+    event GameCompleted(uint256 gameId, BetType result, bool hadOvertime);
+    event WinningsDistributed(address indexed winner, uint256 gameId, uint256 amount);
+
+    constructor(address _interoperability, address _usdMediator, address _oracle) {
+        owner = msg.sender;
+        interoperability = InstilledInteroperability(_interoperability);
+        usdMediator = USDMediator(_usdMediator);
+        oracle = AggregatorV3Interface(_oracle);
+    }
+
+    function createGame(string memory _homeTeam, string memory _awayTeam, uint256 _startTime) external {
+        require(msg.sender == owner, "Only owner can create games");
+        require(_startTime > block.timestamp, "Start time must be in the future");
+
+        Game storage game = games[gameCount];
+        game.homeTeam = _homeTeam;
+        game.awayTeam = _awayTeam;
+        game.startTime = _startTime;
+        game.isActive = true;
+        gameCount++;
+
+        emit GameStarted(gameCount - 1, _startTime);
+    }
+
+    function placeBet(uint256 _gameId, uint256 _amount, BetType _betType, bool _overtime) external {
+        Game storage game = games[_gameId];
+        require(game.isActive, "Betting closed or game not found");
+        require(block.timestamp < game.startTime - 5 minutes, "Betting closes 5 mins before start");
+        require(!hasBet[msg.sender][_gameId], "One bet per game allowed");
+        require(_amount > 0, "Amount must be greater than 0");
+
+        require(usdcToken.transferFrom(msg.sender, address(this), _amount), "USDC transfer failed");
+
+        game.bets[msg.sender] = Bet(msg.sender, _amount, _betType, _overtime, block.timestamp);
+        game.bettors.push(msg.sender);
+        game.totalPool += _amount;
+        hasBet[msg.sender][_gameId] = true;
+
+        transactionHistory[msg.sender].push(Bet(msg.sender, _amount, _betType, _overtime, block.timestamp));
+
+        emit BetPlaced(msg.sender, _gameId, _amount, _betType, _overtime, block.timestamp);
+    }
+
+    function startGame(uint256 _gameId) external {
+        Game storage game = games[_gameId];
+        require(block.timestamp >= game.startTime, "Game not started yet");
+        require(game.isActive, "Game already started or invalid");
+        game.isActive = false;
+        emit GameStarted(_gameId, game.startTime);
+    }
+
+    function completeGame(uint256 _gameId, BetType _result, bool _hadOvertime) external {
+        require(msg.sender == owner, "Only owner can complete game");
+        Game storage game = games[_gameId];
+        require(!game.isActive && !game.completed, "Game not started or already completed");
+
+        game.completed = true;
+        game.result = _result;
+        game.hadOvertime = _hadOvertime;
+
+        distributeWinnings(_gameId);
+        emit GameCompleted(_gameId, _result, _hadOvertime);
+    }
+
+    function distributeWinnings(uint256 _gameId) internal {
+        Game storage game = games[_gameId];
+        uint256 revenueShare = (game.totalPool * 20) / 100;
+        uint256 winnerPool = game.totalPool - revenueShare;
+        totalRevenue += revenueShare;
+
+        uint256 totalWinningWeight = 0;
+        address[] memory winners = new address[](game.bettors.length);
+        uint256 winnerCount = 0;
+
+        for (uint256 i = 0; i < game.bettors.length; i++) {
+            address bettor = game.bettors[i];
+            Bet memory bet = game.bets[bettor];
+            bool wonMain = bet.betType == game.result;
+            bool wonOvertime = bet.overtime == game.hadOvertime;
+
+            if (wonMain && wonOvertime) {
+                totalWinningWeight += bet.amount;
+                winners[winnerCount] = bettor;
+                winnerCount++;
+            }
+        }
+
+        for (uint256 i = 0; i < winnerCount; i++) {
+            address winner = winners[i];
+            Bet memory bet = game.bets[winner];
+            uint256 winnerShare = (bet.amount * winnerPool) / totalWinningWeight;
+            usdMediator.transferUSD(winner, winnerShare); // Default to Stellar/USD via USDMediator
+            transactionHistory[winner].push(Bet(winner, winnerShare, bet.betType, bet.overtime, block.timestamp));
+            emit WinningsDistributed(winner, _gameId, winnerShare);
+        }
+    }
+
+    function withdrawRevenue() external {
+        require(msg.sender == owner, "Only owner can withdraw");
+        uint256 amount = totalRevenue;
+        totalRevenue = 0;
+        interoperability.crossChainTransfer(1, 1, "USDC", amount, interoperability.mediatorAccount());
+    }
+
+    function getTransactionHistory(address user) external view returns (Bet[] memory) {
+        return transactionHistory[user];
+    }
+}
+_______________________________________________________________________________________________________________
+InstilledInteroperability.sol 
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract InstilledInteroperability {
+    address public owner;
+    mapping(uint256 => mapping(string => address)) public tokenMap;
+    mapping(string => string) public tradingAPIs;
+
+    event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient);
+
+    constructor() {
+        owner = msg.sender;
+        tokenMap[1]["USDC"] = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+        tokenMap[1]["ZPE"] = 0xYourZPEAddress;
+        tokenMap[1]["ZPW"] = 0xYourZPWAddress;
+        tokenMap[1]["ZPP"] = 0xYourZPPAddress;
+        tokenMap[1]["GySt"] = 0xYourGreyStaxAddress;
+        tokenMap[512]["XLM"] = 0xYourStellarXLMAddress;
+        tradingAPIs["Alpaca"] = "https://api.alpaca.markets";
+        tradingAPIs["Tradier"] = "https://api.tradier.com";
+        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com";
+        tradingAPIs["ETrade"] = "https://api.etrade.com";
+        tradingAPIs["TradeStation"] = "https://api.tradestation.com";
+        tradingAPIs["Questrade"] = "https://api.questrade.com";
+        tradingAPIs["Stellar"] = "https://horizon.stellar.org";
+        tradingAPIs["Aquarius"] = "https://api.aquariusdex.com";
+        tradingAPIs["MoonPay"] = "https://api.moonpay.com";
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v5.0";
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org/v1";
+        tradingAPIs["PancakeSwap"] = "https://api.pancakeswap.info/api/v2";
+        tradingAPIs["OKX"] = "https://www.okx.com/api/v5";
+        tradingAPIs["SushiSwap"] = "https://api.sushiswap.org/v1";
+    }
+
+    function crossChainTransfer(uint256 fromChain, uint256 toChain, string memory tokenSymbol, uint256 amount, address recipient) external {
+        IERC20(tokenMap[fromChain][tokenSymbol]).transferFrom(msg.sender, address(this), amount);
+        emit CrossChainTransfer(fromChain, toChain, tokenSymbol, amount, recipient);
+    }
+
+    function mediatorAccount() external view returns (address) {
+        return 0xYourMediatorAccount;
+    }
+}
+________________________________________________________________________________________________________________________________________________________
+Lending.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./USDMediator.sol";
+import "./InstilledInteroperability.sol";
+
+contract Lending {
+    USDMediator public usdMediator;
+    InstilledInteroperability public interoperability;
+    address public owner;
+    string public plaidAPI = "https://api.plaid.com";
+
+    uint256 public borrowPool;
+    mapping(address => uint256) public loans;
+    mapping(address => uint256) public loanDueDates;
+    mapping(address => uint256) public creditScores;
+
+    string[] public stockList = [
+        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
+        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE"
+    ];
+
+    event Lent(address indexed user, uint256 amount);
+    event Borrowed(address indexed user, uint256 amount);
+    event Repaid(address indexed user, uint256 amount);
+
+    constructor(address _usdMediator, address _interoperability) {
+        owner = msg.sender;
+        usdMediator = USDMediator(_usdMediator);
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function lend(uint256 amount) external {
+        require(amount >= 1e6, "Minimum $1 USD");
+        IERC20 usdc = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+        require(usdc.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        uint256 perStock = amount / 20;
+        for (uint256 i = 0; i < stockList.length; i++) {
+            usdMediator.buyStock(stockList[i], perStock);
+        }
+        borrowPool += amount;
+        emit Lent(msg.sender, amount);
+    }
+
+    function borrow(uint256 amount) external {
+        uint256 creditScore = getCreditScore(msg.sender);
+        uint256 ecosystemSize = 1000; // Placeholder
+        uint256 maxLoan = (creditScore * borrowPool) / (1000 * ecosystemSize);
+        require(amount <= maxLoan, "Exceeds loan limit");
+        require(loans[msg.sender] == 0, "Existing loan pending");
+        require(borrowPool >= amount, "Insufficient pool");
+
+        borrowPool -= amount;
+        loans[msg.sender] = amount;
+        loanDueDates[msg.sender] = block.timestamp + 30 days;
+        usdMediator.transferUSD(msg.sender, amount);
+        emit Borrowed(msg.sender, amount);
+    }
+
+    function repay(uint256 amount) external {
+        require(loans[msg.sender] >= amount, "Invalid amount");
+        IERC20 usdc = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+        require(usdc.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+
+        loans[msg.sender] -= amount;
+        borrowPool += amount;
+        if (loans[msg.sender] == 0) loanDueDates[msg.sender] = 0;
+        emit Repaid(msg.sender, amount);
+    }
+
+    function handleDefault(address user) external {
+        require(loanDueDates[user] != 0 && block.timestamp > loanDueDates[user], "Not defaulted");
+        uint256 debt = loans[user];
+        usdMediator.stakeDebt(user, debt);
+        loans[user] = 0;
+        loanDueDates[user] = 0;
+    }
+
+    function getCreditScore(address user) internal returns (uint256) {
+        if (creditScores[user] == 0) {
+            creditScores[user] = 700; // Default, updated off-chain via Plaid
+        }
+        return creditScores[user];
+    }
+}
+_______________________________________________________________________________________________________________________________________________________
+ScratchOffNFT.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "./USDMediator.sol";
+import "./InstilledInteroperability.sol";
+
+contract ScratchOffNFT is ERC721, Ownable, VRFConsumerBase {
+    USDMediator public usdMediator;
+    InstilledInteroperability public interoperability;
+    uint256 public tokenCounter;
+    bytes32 internal keyHash;
+    uint256 internal fee;
+
+    enum Mode { Pennies, Nickels, Dimes, Quarters, Dollars }
+    uint256[] public costs = [
+        1e6,   // $1.00 (Pennies)
+        5e6,   // $5.00 (Nickels)
+        10e6,  // $10.00 (Dimes)
+        25e6,  // $25.00 (Quarters)
+        100e6  // $100.00 (Dollars)
+    ];
+
+    uint256[9][5] public weights = [
+        [10, 5, 5, 10, 10, 10, 10, 10, 30],  // Pennies
+        [10, 10, 5, 10, 10, 10, 10, 10, 25], // Nickels
+        [20, 10, 10, 10, 10, 10, 10, 10, 20], // Dimes
+        [20, 10, 10, 10, 10, 15, 10, 10, 15], // Quarters
+        [20, 15, 10, 10, 10, 15, 10, 10, 10]  // Dollars
+    ];
+
+    string[9] public symbols = [
+        "lightning",
+        "GoateElectric",
+        "zeropointLogo",
+        "zeropointWifiLogo",
+        "zeropointPhoneServiceLogo",
+        "greyStaxLogo",
+        "luckCardLogo",
+        "karmaCard",
+        "gerastyxOpolLogo"
+    ];
+
+    struct ScratchCard {
+        address owner;
+        Mode mode;
+        uint256[9] spots;
+        bool revealed;
+    }
+
+    mapping(uint256 => ScratchCard) public scratchCards;
+    mapping(bytes32 => uint256) public requestIdToTokenId;
+    mapping(bytes32 => uint256) public requestIdToSpot;
+
+    event ScratchRequested(uint256 tokenId, address user, Mode mode);
+    event SpotRevealed(uint256 tokenId, uint256 spot, string symbol);
+    event PrizeAwarded(uint256 tokenId, uint256 prize);
+
+    constructor(
+        address _usdMediator,
+        address _interoperability,
+        address _vrfCoordinator,
+        address _link,
+        bytes32 _keyHash,
+        uint256 _fee
+    )
+        ERC721("ScratchOffNFT", "SONFT")
+        Ownable(msg.sender)
+        VRFConsumerBase(_vrfCoordinator, _link)
+    {
+        usdMediator = USDMediator(_usdMediator);
+        interoperability = InstilledInteroperability(_interoperability);
+        keyHash = _keyHash;
+        fee = _fee;
+    }
+
+    function scratch(string memory asset, uint256 mode, uint256 chainId) external {
+        require(mode <= uint256(Mode.Dollars), "Invalid mode");
+        uint256 cost = costs[mode];
+        address tokenAddress = interoperability.tokenMap(chainId, asset);
+        IERC20 token = IERC20(tokenAddress);
+        require(token.transferFrom(msg.sender, address(this), cost), "Transfer failed");
+
+        uint256 half = cost / 2;
+        require(token.transfer(address(usdMediator), half), "Mediator transfer failed");
+        require(token.transfer(0xYourRevenueAddress, half), "Revenue transfer failed");
+
+        uint256 tokenId = tokenCounter;
+        _mint(msg.sender, tokenId);
+        scratchCards[tokenId] = ScratchCard(msg.sender, Mode(mode), [0, 0, 0, 0, 0, 0, 0, 0, 0], false);
+        tokenCounter++;
+
+        for (uint256 spot = 0; spot < 9; spot++) {
+            bytes32 requestId = requestRandomness(keyHash, fee);
+            requestIdToTokenId[requestId] = tokenId;
+            requestIdToSpot[requestId] = spot;
+        }
+
+        emit ScratchRequested(tokenId, msg.sender, Mode(mode));
+    }
+
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+        uint256 tokenId = requestIdToTokenId[requestId];
+        uint256 spot = requestIdToSpot[requestId];
+        ScratchCard storage card = scratchCards[tokenId];
+        Mode mode = card.mode;
+
+        uint256 totalWeight = 100;
+        uint256 randomValue = randomness % totalWeight;
+        uint256 cumulativeWeight = 0;
+        for (uint256 i = 0; i < 9; i++) {
+            cumulativeWeight += weights[uint256(mode)][i];
+            if (randomValue < cumulativeWeight) {
+                card.spots[spot] = i;
+                emit SpotRevealed(tokenId, spot, symbols[i]);
+                break;
+            }
+        }
+
+        bool allRevealed = true;
+        for (uint256 i = 0; i < 9; i++) {
+            if (card.spots[i] == 0 && i != spot) {
+                allRevealed = false;
+                break;
+            }
+        }
+
+        if (allRevealed && !card.revealed) {
+            card.revealed = true;
+            uint256 gerastyxCount = 0;
+            for (uint256 i = 0; i < 9; i++) {
+                if (card.spots[i] == 8) {
+                    gerastyxCount++;
+                }
+            }
+
+            if (gerastyxCount >= 3) {
+                uint256 prize = costs[uint256(mode)] * gerastyxCount;
+                usdMediator.transferUSD(card.owner, prize);
+                emit PrizeAwarded(tokenId, prize);
+            }
+        }
+    }
+}
+______________________________________________________________________________________________________________________________________________
+Spades.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+
+contract Spades is VRFConsumerBase {
+    // Constants
+    uint8 constant NUM_PLAYERS = 4;
+    uint8 constant CARDS_PER_PLAYER = 13;
+    uint8 constant TOTAL_CARDS = 52;
+    uint256 constant BID_TIMEOUT = 30; // 30 seconds
+
+    // Game state
+    address[4] public players;
+    uint8 public dealer;
+    uint8 public leader;
+    uint8 public currentPlayer;
+    uint8[4] public tricksWon; // Tricks in current hand
+    uint256 public teamAScore; // Team 0 & 2 (in wei, e.g., 4400000 = 4.4)
+    uint256 public teamBScore; // Team 1 & 3
+    uint8 public teamAStrikes;
+    uint8 public teamBStrikes;
+    uint8 public teamAReneges;
+    uint8 public teamBReneges;
+    bool public gameOver;
+    mapping(uint8 => uint8[]) public hands;
+    uint8[] public currentTrick;
+    uint8 public suitLed;
+    uint8[2] public teamBids; // Team A (0), Team B (1)
+    mapping(uint8 => uint8) public playerBids; // Player index => bid
+    uint256 public bidStartTime;
+    uint8 public biddingPhase; // 0=dealer, 1=dealer's partner, 2=left, 3=left's partner
+    bool public firstRound;
+
+    // Betting
+    uint256 public betAmount;
+    address public revenueAddress;
+
+    // Chainlink VRF
+    bytes32 internal keyHash;
+    uint256 internal fee;
+    uint256 public randomResult;
+
+    // Chainlink Oracle for Time
+    AggregatorV3Interface internal timeFeed; // Hypothetical time oracle
+
+    // Events
+    event BidPlaced(uint8 indexed player, uint8 bid);
+    event TrickWon(uint8 indexed winner, uint8 books);
+    event GameEnded(address winnerTeam, uint256 winnings);
+
+    // Constructor
+    constructor(
+        address[4] memory _players,
+        address _vrfCoordinator,
+        address _link,
+        bytes32 _keyHash,
+        uint256 _fee,
+        address _timeFeed,
+        address _revenueAddress
+    ) VRFConsumerBase(_vrfCoordinator, _link) payable {
+        players = _players;
+        keyHash = _keyHash;
+        fee = _fee;
+        timeFeed = AggregatorV3Interface(_timeFeed);
+        revenueAddress = _revenueAddress;
+        betAmount = msg.value / 2; // Split between teams
+        dealer = uint8(block.timestamp % 4);
+        leader = (dealer + 1) % 4;
+        currentPlayer = leader;
+        firstRound = true;
+        biddingPhase = 0;
+    }
+
+    // Start a new hand
+    function startNewHand() public {
+        require(!gameOver, "Game is over");
+        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK");
+        requestRandomness(keyHash, fee);
+    }
+
+    // Fulfill randomness and deal cards
+    function fulfillRandomness(bytes32, uint256 randomness) internal override {
+        randomResult = randomness;
+        uint8[52] memory deck;
+        for (uint8 i = 0; i < 52; i++) deck[i] = i;
+        for (uint8 i = 51; i > 0; i--) {
+            uint8 j = uint8(uint256(keccak256(abi.encode(randomness, i))) % (i + 1));
+            (deck[i], deck[j]) = (deck[j], deck[i]);
+        }
+        for (uint8 p = 0; p < 4; p++) {
+            delete hands[p];
+            for (uint8 c = 0; c < 13; c++) {
+                hands[p].push(deck[p * 13 + c]);
+            }
+        }
+        resetTrickState();
+        bidStartTime = getCurrentTime();
+        biddingPhase = 0;
+        if (firstRound) {
+            teamBids[0] = 4;
+            teamBids[1] = 4;
+            firstRound = false;
+            currentPlayer = leader;
+        }
+    }
+
+    // Place a bid
+    function placeBid(uint8 bid) public {
+        require(!firstRound, "First round has fixed bids");
+        require(bid <= 13, "Bid must be 0-13");
+        require(getCurrentTime() < bidStartTime + BID_TIMEOUT, "Bid timeout");
+        require(msg.sender == players[currentBidder()], "Not your turn to bid");
+
+        playerBids[currentBidder()] = bid;
+        emit BidPlaced(currentBidder(), bid);
+
+        if (biddingPhase == 0 || biddingPhase == 2) {
+            // Wait for partner
+            biddingPhase++;
+        } else {
+            // Calculate team bid
+            uint8 teamIndex = (currentBidder() % 2 == 0) ? 0 : 1;
+            teamBids[teamIndex] = playerBids[currentBidder()] + playerBids[currentBidder() - 1];
+            biddingPhase++;
+        }
+
+        if (biddingPhase == 4) {
+            biddingPhase = 255; // Bidding done
+            currentPlayer = leader;
+        }
+        bidStartTime = getCurrentTime();
+    }
+
+    // Play a card
+    function playCard(uint8 card) public {
+        require(msg.sender == players[currentPlayer], "Not your turn");
+        require(biddingPhase == 255 || firstRound, "Bidding not complete");
+        require(isValidPlay(card, currentPlayer), "Invalid play");
+
+        bool reneged = checkRenege(card, currentPlayer);
+        if (reneged) {
+            uint8 team = (currentPlayer % 2 == 0) ? 0 : 1;
+            if (team == 0) teamAReneges++;
+            else teamBReneges++;
+        }
+
+        removeCardFromHand(currentPlayer, card);
+        currentTrick.push(card);
+
+        if (currentTrick.length == 1) suitLed = getSuit(card);
+        currentPlayer = (currentPlayer + 1) % 4;
+
+        if (currentTrick.length == 4) {
+            resolveTrick();
+        }
+    }
+
+    // Resolve a trick
+    function resolveTrick() internal {
+        uint8 winner = determineWinner(currentTrick, suitLed);
+        tricksWon[winner]++;
+        emit TrickWon(winner, tricksWon[winner]);
+        leader = winner;
+        currentPlayer = winner;
+
+        if (tricksWon[0] + tricksWon[1] + tricksWon[2] + tricksWon[3] == 13) {
+            resolveHand();
+        } else {
+            resetTrickState();
+        }
+    }
+
+    // Resolve a hand
+    function resolveHand() internal {
+        uint8 teamATricks = tricksWon[0] + tricksWon[2];
+        uint8 teamBTricks = tricksWon[1] + tricksWon[3];
+
+        // Team A
+        if (teamATricks >= teamBids[0]) {
+            uint256 excess = teamATricks - teamBids[0];
+            teamAScore += (teamBids[0] * 1 ether) + (excess * 1 ether / 10); // e.g., 4.4 = 4400000 wei
+        } else {
+            teamAStrikes++;
+        }
+
+        // Team B
+        if (teamBTricks >= teamBids[1]) {
+            uint256 excess = teamBTricks - teamBids[1];
+            teamBScore += (teamBids[1] * 1 ether) + (excess * 1 ether / 10);
+        } else {
+            teamBStrikes++;
+        }
+
+        checkGameEnd();
+        if (!gameOver) {
+            dealer = (dealer + 1) % 4;
+            leader = (dealer + 1) % 4;
+            startNewHand();
+        }
+    }
+
+    // Check game end conditions
+    function checkGameEnd() internal {
+        bool teamAWins = teamAScore >= 25 ether;
+        bool teamBWins = teamBScore >= 25 ether;
+        bool teamALoses = (teamAStrikes >= 3) || (teamAReneges >= 2) || 
+                         (teamAStrikes >= 2 && teamAStrikes > tricksWon[0] + tricksWon[2]);
+        bool teamBLoses = (teamBStrikes >= 3) || (teamBReneges >= 2) || 
+                         (teamBStrikes >= 2 && teamBStrikes > tricksWon[1] + tricksWon[3]);
+
+        if (teamAWins || teamBLoses) {
+            gameOver = true;
+            payable(players[0]).transfer(betAmount * 2);
+            emit GameEnded(players[0], betAmount * 2);
+        } else if (teamBWins || teamALoses) {
+            gameOver = true;
+            payable(players[1]).transfer(betAmount * 2);
+            emit GameEnded(players[1], betAmount * 2);
+        } else if (teamAReneges > 0 && teamBReneges > 0 && currentTrick.length == 4) {
+            gameOver = true;
+            payable(revenueAddress).transfer(betAmount * 2);
+            emit GameEnded(address(0), 0);
+        }
+    }
+
+    // Helpers (unchanged from previous unless noted)
+    function getSuit(uint8 card) public pure returns (uint8) {
+        if (card == 51) return 4; // Little Joker
+        if (card == 52) return 4; // Big Joker
+        return card / 13;
+    }
+
+    function getRank(uint8 card) public pure returns (uint8) {
+        if (card == 51) return 13;
+        if (card == 52) return 14;
+        return card % 13;
+    }
+
+    function isValidPlay(uint8 card, uint8 player) public view returns (bool) {
+        bool hasCard = false;
+        for (uint8 i = 0; i < hands[player].length; i++) {
+            if (hands[player][i] == card) {
+                hasCard = true;
+                break;
+            }
+        }
+        if (!hasCard) return false;
+        if (currentTrick.length == 0) return true;
+        uint8 playerSuit = getSuit(card);
+        if (playerSuit == suitLed) return true;
+        for (uint8 i = 0; i < hands[player].length; i++) {
+            if (getSuit(hands[player][i]) == suitLed) return false;
+        }
+        return true;
+    }
+
+    function checkRenege(uint8 card, uint8 player) internal view returns (bool) {
+        if (currentTrick.length == 0 || getSuit(card) == suitLed) return false;
+        for (uint8 i = 0; i < hands[player].length; i++) {
+            if (getSuit(hands[player][i]) == suitLed && hands[player][i] != card) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function removeCardFromHand(uint8 player, uint8 card) internal {
+        for (uint8 i = 0; i < hands[player].length; i++) {
+            if (hands[player][i] == card) {
+                hands[player][i] = hands[player][hands[player].length - 1];
+                hands[player].pop();
+                break;
+            }
+        }
+    }
+
+    function determineWinner(uint8[] memory cards, uint8 suitLed) public pure returns (uint8) {
+        uint8 maxIndex = 0;
+        bool trumpPlayed = false;
+        for (uint8 i = 0; i < 4; i++) {
+            uint8 suit = getSuit(cards[i]);
+            uint8 rank = getRank(cards[i]);
+            if (suit == 4 || suit == 0) { // Joker or spade
+                if (!trumpPlayed || compareCards(cards[i], cards[maxIndex]) > 0) {
+                    maxIndex = i;
+                    trumpPlayed = true;
+                }
+            } else if (!trumpPlayed && suit == suitLed) {
+                if (rank > getRank(cards[maxIndex])) maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+    function compareCards(uint8 card1, uint8 card2) public pure returns (int8) {
+        uint8 suit1 = getSuit(card1);
+        uint8 suit2 = getSuit(card2);
+        uint8 rank1 = getRank(card1);
+        uint8 rank2 = getRank(card2);
+        if (suit1 == 4 && suit2 != 4) return 1;
+        if (suit2 == 4 && suit1 != 4) return -1;
+        if (suit1 == 4 && suit2 == 4) return (rank1 > rank2) ? int8(1) : int8(-1);
+        if (suit1 == 0 && suit2 != 0) return 1;
+        if (suit2 == 0 && suit1 != 0) return -1;
+        if (suit1 == 0 && suit2 == 0) return (rank1 > rank2) ? int8(1) : int8(-1);
+        return (rank1 > rank2) ? int8(1) : int8(-1);
+    }
+
+    function resetTrickState() internal {
+        delete currentTrick;
+        suitLed = 255;
+        for (uint8 p = 0; p < 4; p++) tricksWon[p] = 0;
+    }
+
+    function currentBid
+_______________________________________________________________________________________________________________________________________________________
+TheGoateToken.sol
+pragma solidity ^0.8;
+
+// The Goate Token, a token that has a DIFFERENT PRICE to everybody depending on how they interact with the NETWORK and their STANDING in it as a (GOOD || BAD) ACTOR
+// when they exchange at other places then there will be a huge "arbitrage" gap; 
+when they buy The Goate Token then they will have atleast that much in $USD to sell with,
+The Goate Token gets airdropped to people based on them hittin achievements. 
+
+// How they interact with the network: 
+1. amount of zeropoint consumed
+2. amount of zeropointWifi consumed
+3. amount of zeropointPhoneService consumed
+4. number of ads watched
+5. number of times staked assets
+6: amount of money staking currently
+7. number of times lent money
+8: amount of money they are lending currently
+9. number of times borrowed assets
+10. number of times they paid back whats borrowed
+11: amount of money borrowing currently
+12: number of times bet in HomeTeamBets
+13: amount of money bet in HomeTeamBets
+14: amount of time they spent playing games of gerastyxOpol
+15: number of times theyve played gerastyxOpol
+16: how many times theyve bought grey stax
+17. how many times theyve sold grey stax
+18. how many grey stax do they have now (balances) and how much in usd ( usd denomination)
+19.: how many times theyve bought the goate token (l) 
+20. how many times theyve sold the goate token (l) 
+21. how many the goate token (l)  do they have now (balances) and how much in usd ( usd denomination)
+22: how many times theyve bought zeropoint (zpe)
+23. how many times theyve sold zeropoint (zpe)
+24. how many zeropoint (zpe) do they have now (balances) and how much in usd ( usd denomination)
+25: how many times theyve bought zeropointWifi (zpw)
+26. how many times theyve sold zeropointWifi (zpw)
+27. how many zeropointWifi (zpw) do they have now (balances) and how much in usd ( usd denomination)
+28: how many times theyve bought zeropointPhoneService (zpp)
+29. how many times theyve sold zeropointPhoneService (zpp)
+30. how many zeropointPhoneService (zpp) do they have now (balances) and how much in usd ( usd denomination)
+
+//their standing as a good or a bad character on a 0 to 10 scale of:
+1. interacting with the network
+2. watching ads / number of ads watched
+3. staking assets
+4. buying The Goate Token (l)
+5. The Goate Token (l) user's balance > $100
+6. consuming zeropoint
+7. consuming zeropointWifi
+8. consuming zeropointPhoneServices
+9. connecting a house on manage devices (instilled interoperability node { node rewards = revenue, connected house gets their house battery connected to 100% battery for free every month.)
+10. connecting a car on manage devices (instilled interoperability node { node rewards = revenue, and people still have to charge their car from the device settings modal in the manage devices page with $ZPE})
+11. kyc/aml (it's required for goate electric but check and store data for all accounts and addresses)
+12. background check, number of convicted felonies
+13. if theyve connected with the taxManager
+
+contract QuantumHackProofStabilizer {
+(require KYC Results); // map people & their accounts throughout the digital metaverse
+(require KYB Results); // direct value & price standings throughout the digital metaverse
+(require credibility score 0-10;)
+
+
+
+function determinePrice (address, token, price){
+(require KYC Results); // map people & their accounts throughout the digital metaverse
+(require KYB Results); // direct value & price standings throughout the digital metaverse
+(require credibility score 0-10)
+// price still depends on marketcap % circulating supply = price 
+// this will make marketcaps avilable out of the single contract address marketcap ... "quantumcaps"
+token contract address = /* here */;
+token contract address[marketcap] = this.marketcap;
+
+msg.sender address = user.address;
+
+msg.sender pioneerRank = {
+(require msg.sender is a KYC Account);
+// factor & weight aggregate consensus on a scale of 1-10
+
+time in network : 5, // date of the first mining session
+efficiency of mining sessions : 5, // how many days mined, how many days minedMissed, percentage
+on/off ratio : 1, // $PI bought, $PI sold, ratio & percentage
+trading activity : 8, // $PI bought[timestamp], $PI sold[timestamp], trading = (yes||no), didPriceInfluxBetweenTransactions = (yes||no), tradingForGains = (yes||no) , didTransactionCausePriceInflux = (yes||no), tradingForMarketManipulation = (yes||no) */ // if trading for market manipulation & arbitrage is found, use: SHA256 override = ChristianJonesIsTheGoate || cj03nesTheGoat, and force transfer(gains), (placeholderForManipulation), and put address & KYC in a delinquincy
+network plug-in usage : 5, // node usage, browser usage, mining frequency, etc ... click&continueTypeOfFunctions
+work in network : 5, // kyc validating, insurance validating, ad-watching, etc ... stop&checkTypeOfFunctions
+// these are only 6 factors but there can be more factors added or add more stuff into each genre
+
+
+so if msg.sender[averageExample] = {
+
+time in network : 250 days out of 5000 possible days;
+efficiency of mining sessions : 112 out of 250 possible mining sessions;
+on/off ratio : 100 $PI worth $170 USD on, 50 $PI worth $85 USD off;
+trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 50 $PI worth $85 USD sold at 10:35 PM on February at $1.7 USD per $PI;
+network plug-in usage : nodeUsage[24 out of 24 hours], piBrowser[5 out of 24 hours], miningFrequency[24 out of 24 hours];
+work in network : kycValidating[363 out of 386 validations], insuranceValidations[100 out of 105 validations], ads[1 out of 1 ads watched]; 
+
+their point would be:
+time in network = 20% out of 100%;
+efficiency of mining sessions : 44% out of 100%;
+on/off ratio : 100 $PI / $170 USD : 50 $PI / $85 USD;
+trading activity : no;
+network plug-in usage : 98% out of 100%;
+work in network : 90% out of 100%;
+}
+
+&& if msg.sender[perfectExample] = {
+
+time in network : 5000 days out of 5000 possible days;
+efficiency of mining sessions : 250 out of 250 possible mining sessions;
+on/off ratio : 100 $PI worth $170 USD on, 0 $PI worth $0 USD off;
+trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 0 $PI sold;
+network plug-in usage : nodeUsage[24 out of 24 hours], piBrowser[24 out of 24 hours], miningFrequency[24 out of 24 hours];
+work in network : kycValidating[386 out of 386 validations], insuranceValidations[105 out of 105 validations], ads[1 out of 1 ads watched]; }
+
+&& so if msg.sender[badExample] = {
+
+time in network : 35 days out of 5000 possible days;
+efficiency of mining sessions : 1 out of 250 possible mining sessions;
+on/off ratio : 100 $PI worth $170 USD on, 100 $PI worth $85000 USD off;
+trading activity : 100 $PI worth $170 USD bought at 10:30 PM on February 20, 2025 at $1.7 USD per $PI, 100 $PI worth $85000 USD sold at 10:35 PM on February at $1.7 USD per $PI;
+network plug-in usage : nodeUsage[0 out of 24 hours], piBrowser[0 out of 24 hours], miningFrequency[4 out of 24 hours];
+work in network : kycValidating[0 out of 0 validations], insuranceValidations[0 out of 0 validations], ads[0 out of 1 ads watched];  
+
+their point would be: }
+
+
+
+
+
+
+   out of 130
+
+
+}
+
+
+
+}
+
+
+
+
+}
+_______________________________________________________________________________________________________________________________
+TheLambduckCard.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "./InstilledInteroperability.sol";
+
+contract TheLambduckCard {
+    InstilledInteroperability public interoperability;
+    uint256 public constant DAILY_SPENDING_LIMIT = 10_000_000_000 * 10**18;
+
+    struct User {
+        string firstName;
+        string lastName;
+        bytes32 cardNumberHash;
+        uint256[3] cvc;
+        uint256 balance; // USDC balance
+    }
+    mapping(address => User) public users;
+    mapping(bytes32 => address) public cardNumberToUser;
+
+    constructor(address _interoperability) {
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function registerUser(string memory firstName, string memory lastName) external {
+        require(bytes(users[msg.sender].firstName).length == 0, "User already registered");
+        uint256[3] memory cvc = [
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 1))) % 1000,
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 2))) % 1000,
+            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 3))) % 1000
+        ];
+        bytes32 cardNumberHash = keccak256(abi.encodePacked(msg.sender, block.timestamp));
+        users[msg.sender] = User(firstName, lastName, cardNumberHash, cvc, 0);
+        cardNumberToUser[cardNumberHash] = msg.sender;
+    }
+
+    modifier onlyVerifiedToken(uint256 chainId, string memory tokenSymbol) {
+        (, , , address tokenAddress, ,) = interoperability.verifiedTokenAssets(chainId, tokenSymbol);
+        require(tokenAddress != address(0), "Asset not available");
+        _;
+    }
+
+    function buyWithCard(address merchant, uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        require(users[msg.sender].balance >= amount, "Insufficient balance");
+        require(amount <= DAILY_SPENDING_LIMIT, "Exceeds daily limit");
+        users[msg.sender].balance -= amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, merchant);
+    }
+
+    function withdrawToCard(uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        users[msg.sender].balance += amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, address(this));
+    }
+
+    function withdrawFromCard(address recipient, uint256 amount, uint256 chainId, string memory tokenSymbol) 
+        external onlyVerifiedToken(chainId, tokenSymbol) {
+        require(users[msg.sender].balance >= amount, "Insufficient balance");
+        users[msg.sender].balance -= amount;
+        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, recipient);
+    }
+}
+______________________________________________________________________________________________________________________________________
+War.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+
+contract War is VRFConsumerBase {
+    // Constants
+    uint8 constant MIN_PLAYERS = 4;
+    uint8 constant MAX_PLAYERS = 8;
+    uint8 constant TOTAL_CARDS = 52;
+
+    // Game state
+    address[] public players;            // List of player addresses
+    uint8 public numPlayers;             // Number of players in the session
+    uint8 public firstDealer;            // Index of the first player to receive a card
+    mapping(address => uint8[]) public hands;  // Each player's hand of cards
+    uint8[] public currentRoundCards;    // Cards played in the current round
+    uint256 public randomResult;         // Randomness from Chainlink VRF
+    bool public gameOver;                // Tracks if the game has ended
+    address public winner;               // Winner of the game
+
+    // Chainlink VRF configuration
+    bytes32 internal keyHash;
+    uint256 internal fee;
+
+    // Events for Unreal Engine integration
+    event RoundWinner(address winner, uint8 cardsWon);
+    event GameEnded(address winner);
+
+    // Constructor: Initialize players and Chainlink VRF
+    constructor(
+        address[] memory _players,
+        address _vrfCoordinator,
+        address _link,
+        bytes32 _keyHash,
+        uint256 _fee
+    ) VRFConsumerBase(_vrfCoordinator, _link) {
+        require(_players.length >= MIN_PLAYERS && _players.length <= MAX_PLAYERS, "Invalid number of players");
+        players = _players;
+        numPlayers = uint8(_players.length);
+        keyHash = _keyHash;
+        fee = _fee;
+        gameOver = false;
+    }
+
+    // Start the game by requesting randomness from Chainlink
+    function startGame() public {
+        require(!gameOver, "Game is over");
+        require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK for VRF");
+        requestRandomness(keyHash, fee);
+    }
+
+    // Chainlink callback: Use randomness to shuffle and deal cards
+    function fulfillRandomness(bytes32, uint256 randomness) internal override {
+        randomResult = randomness;
+
+        // Randomly select the first player to receive a card
+        firstDealer = uint8(randomness % numPlayers);
+
+        // Initialize the deck (0-51 representing 52 cards)
+        uint8[52] memory deck;
+        for (uint8 i = 0; i < TOTAL_CARDS; i++) {
+            deck[i] = i;
+        }
+
+        // Shuffle the deck using Fisher-Yates algorithm (from Spades.sol)
+        for (uint8 i = 51; i > 0; i--) {
+            uint8 j = uint8(uint256(keccak256(abi.encode(randomness, i))) % (i + 1));
+            (deck[i], deck[j]) = (deck[j], deck[i]);
+        }
+
+        // Deal cards counterclockwise starting from firstDealer
+        uint8 currentPlayer = firstDealer;
+        for (uint8 i = 0; i < TOTAL_CARDS; i++) {
+            hands[players[currentPlayer]].push(deck[i]);
+            currentPlayer = (currentPlayer + numPlayers - 1) % numPlayers; // Counterclockwise
+        }
+    }
+
+    // Play a round of War
+    function playRound() public {
+        require(!gameOver, "Game is over");
+        require(currentRoundCards.length == 0, "Round already in progress");
+
+        // Each player plays their top card
+        for (uint8 i = 0; i < numPlayers; i++) {
+            address player = players[i];
+            require(hands[player].length > 0, "Player has no cards");
+            uint8 card = hands[player][0];
+            removeCardFromHand(player, 0);
+            currentRoundCards.push(card);
+        }
+
+        // Find the highest card and determine the winner(s)
+        uint8 highestRank = 0;
+        uint8[] memory winners;
+        for (uint8 i = 0; i < numPlayers; i++) {
+            uint8 rank = getRank(currentRoundCards[i]);
+            if (rank > highestRank) {
+                highestRank = rank;
+                delete winners;
+                winners = new uint8[](1);
+                winners[0] = i;
+            } else if (rank == highestRank) {
+                winners.push(i);
+            }
+        }
+
+        if (winners.length == 1) {
+            // Single winner takes all cards
+            address roundWinner = players[winners[0]];
+            for (uint8 i = 0; i < numPlayers; i++) {
+                hands[roundWinner].push(currentRoundCards[i]);
+            }
+            emit RoundWinner(roundWinner, numPlayers);
+        } else {
+            // Tie: Trigger a simplified war
+            startWar(winners);
+        }
+
+        // Clear the round cards
+        delete currentRoundCards;
+
+        // Check if the game is over
+        for (uint8 i = 0; i < numPlayers; i++) {
+            if (hands[players[i]].length == TOTAL_CARDS) {
+                gameOver = true;
+                winner = players[i];
+                emit GameEnded(winner);
+                break;
+            }
+        }
+    }
+
+    // Simplified war resolution (random winner for brevity)
+    function startWar(uint8[] memory tiedPlayers) internal {
+        // In a full implementation, tied players would play additional cards
+        // Here, we randomly select a winner among tied players
+        uint8 randomIndex = uint8(uint256(keccak256(abi.encode(randomResult, block.timestamp))) % tiedPlayers.length);
+        address warWinner = players[tiedPlayers[randomIndex]];
+        for (uint8 i = 0; i < numPlayers; i++) {
+            hands[warWinner].push(currentRoundCards[i]);
+        }
+        emit RoundWinner(warWinner, numPlayers);
+    }
+
+    // Helper: Get card rank (0=2, ..., 11=King, 12=Ace)
+    function getRank(uint8 card) public pure returns (uint8) {
+        return card % 13;
+    }
+
+    // Helper: Remove a card from a player's hand
+    function removeCardFromHand(address player, uint8 index) internal {
+        uint8[] storage hand = hands[player];
+        require(index < hand.length, "Invalid card index");
+        for (uint8 i = index; i < hand.length - 1; i++) {
+            hand[i] = hand[i + 1];
+        }
+        hand.pop();
+    }
+}
+_______________________________________________________________________________________________________________________________________
+Zeropoint.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+// Zeropoint ($ZPE) token for Goate Electric's wireless charging utility
+contract Zeropoint is ERC20, Ownable {
+    constructor(address initialOwner) ERC20("Zeropoint", "ZPE") Ownable(initialOwner) {
+        _mint(initialOwner, 1000000 * 10**3); // Initial supply: 1M $ZPE with 3 decimals
+    }
+
+    // Override decimals to 3, reflecting $ZPE's precision (pegged to $0.10)
+    function decimals() public view virtual override returns (uint8) {
+        return 3;
+    }
+
+    // Mint new $ZPE tokens (restricted to owner, e.g., Goate Electric admin)
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+
+    // Burn $ZPE tokens (users can burn their own tokens)
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
+}
+___________________________________________________________________________________________________________________________________________________________
+ZeropointDigitalStockNFT.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./USDMediator.sol";
+import "./InstilledInteroperability.sol";
+
+contract ZeropointDigitalStockNFT is ERC721, Ownable {
+    USDMediator public usdMediator;
+    InstilledInteroperability public interoperability;
+    uint256 public tokenCounter;
+    mapping(uint256 => string) public stockSymbols;
+    mapping(uint256 => uint256) public totalInvested;
+    mapping(uint256 => mapping(address => uint256)) public userInvestments;
+    mapping(uint256 => uint256) public dividendPool;
+
+    event StockPurchased(uint256 tokenId, address buyer, uint256 amount);
+    event StockSold(uint256 tokenId, address seller, uint256 amount);
+    event DividendDistributed(uint256 tokenId, uint256 amount);
+
+    constructor(address _usdMediator, address _interoperability) ERC721("ZeropointDigitalStockNFT", "ZDSNFT") Ownable(msg.sender) {
+        usdMediator = USDMediator(_usdMediator);
+        interoperability = InstilledInteroperability(_interoperability);
+    }
+
+    function mintStock(address to, string memory stockSymbol) external onlyOwner {
+        uint256 tokenId = tokenCounter;
+        _mint(to, tokenId);
+        stockSymbols[tokenId] = stockSymbol;
+        tokenCounter++;
+    }
+
+    function buyStock(uint256 tokenId, uint256 amount, uint256 chainId) external {
+        require(_exists(tokenId), "Stock does not exist");
+        require(amount >= 1e6, "Minimum $1 USD");
+
+        IERC20 usdc = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+        require(usdc.transferFrom(msg.sender, address(usdMediator), amount), "Transfer failed");
+        usdMediator.buyStock(stockSymbols[tokenId], amount);
+
+        if (balanceOf(msg.sender) == 0 || ownerOf(tokenId) != msg.sender) {
+            _safeTransfer(address(this), msg.sender, tokenId, "");
+        }
+        totalInvested[tokenId] += amount;
+        userInvestments[tokenId][msg.sender] += amount;
+
+        if (chainId != block.chainid) {
+            interoperability.crossChainTransfer(block.chainid, chainId, "ZDSNFT", amount, msg.sender);
+        }
+
+        emit StockPurchased(tokenId, msg.sender, amount);
+    }
+
+    function sellStock(uint256 tokenId, uint256 amount, string memory toAsset, uint256 chainId) external {
+        require(ownerOf(tokenId) == msg.sender, "Not owner");
+        uint256 userInvestment = userInvestments[tokenId][msg.sender];
+        require(amount <= userInvestment, "Insufficient balance");
+
+        uint256 proRata = (userInvestment * 1e18) / totalInvested[tokenId];
+        uint256 saleAmount = (proRata * amount) / 1e18;
+
+        usdMediator.sellStock(stockSymbols[tokenId], saleAmount, toAsset, msg.sender);
+
+        totalInvested[tokenId] -= saleAmount;
+        userInvestments[tokenId][msg.sender] -= saleAmount;
+        if (userInvestments[tokenId][msg.sender] == 0) {
+            _safeTransfer(msg.sender, address(this), tokenId, "");
+        }
+
+        emit StockSold(tokenId, msg.sender, saleAmount);
+    }
+
+    function distributeDividends(uint256 tokenId, uint256 amount) external onlyOwner {
+        dividendPool[tokenId] += amount;
+        for (uint256 i = 0; i < balanceOf(msg.sender); i++) {
+            address holder = ownerOf(tokenId);
+            uint256 proRata = (userInvestments[tokenId][holder] * 1e18) / totalInvested[tokenId];
+            uint256 dividend = (proRata * amount) / 1e18;
+            usdMediator.transferUSD(holder, dividend);
+            emit DividendDistributed(tokenId, dividend);
+        }
+    }
+}
+___________________________________________________________________________________________________________________________________________________________
+ZeropointPhoneService.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ZeropointPhone is ERC20, Ownable {
+    uint256 public constant SUBSCRIPTION_COST = 100; // 1 $ZPP = 100 units (2 decimals), $5
+    uint256 public constant SUBSCRIPTION_DURATION = 30 days;
+    mapping(address => uint256) public lastSubscriptionTime;
+    address public revenueRecipient;
+
+    constructor(address initialOwner) ERC20("ZeropointPhone", "ZPP") Ownable(initialOwner) {
+        _mint(initialOwner, 1000000 * 10**2); // 1M $ZPP
+    }
+
+    function decimals() public view virtual override returns (uint8) {
+        return 2;
+    }
+
+    function setRevenueRecipient(address recipient) external onlyOwner {
+        revenueRecipient = recipient;
+    }
+
+    function subscribe() external {
+        require(balanceOf(msg.sender) >= SUBSCRIPTION_COST, "Insufficient $ZPP balance");
+        require(revenueRecipient != address(0), "Revenue recipient not set");
+        _transfer(msg.sender, revenueRecipient, SUBSCRIPTION_COST);
+        lastSubscriptionTime[msg.sender] = block.timestamp + SUBSCRIPTION_DURATION;
+    }
+
+    function isSubscribed(address user) public view returns (bool) {
+        return lastSubscriptionTime[user] > block.timestamp;
+    }
+}
+__________________________________________________________________________________________________________________________
+ZeropointWifi.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+// ZeropointWifi ($ZPW) token for Goate Electric's unlimited WiFi subscription
+contract ZeropointWifi is ERC20, Ownable {
+    constructor(address initialOwner) ERC20("ZeropointWifi", "ZPW") Ownable(initialOwner) {
+        _mint(initialOwner, 1000000 * 10**2); // Initial supply: 1M $ZPW with 2 decimals
+    }
+
+    // Override decimals to 2, reflecting $ZPW's precision (pegged to $5)
+    function decimals() public view virtual override returns (uint8) {
+        return 2;
+    }
+
+    // Mint new $ZPW tokens (restricted to owner, e.g., Goate Electric admin)
+    function mint(address to, uint256 amount) external onlyOwner {
+        _mint(to, amount);
+    }
+
+    // Burn $ZPW tokens (users can burn their own tokens)
+    function burn(uint256 amount) external {
+        _burn(msg.sender, amount);
+    }
+}
