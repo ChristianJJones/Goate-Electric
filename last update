@@ -2,7 +2,7 @@ Can you make a solidity contract called PityPat.sol. It is played with all the c
 
  
 
- 
+ make  sure the settings is last in the navigation.
 
 I was doing some research & with SHA-256 and Quantum Computing; everything is initiated by the user (msg.sender) & stored by the network (databases) on-chain. You only interact with youre own stuff / what youre authorized to 
 
