@@ -1,11 +1,15 @@
 # Goate-Electric
 THE LAMBDUCK, INC. - Goate Electric: digital utilities
 
-1) add the custom background image gray with flying goats, $ZPE logo, and $ZPW logo
-2) npm install @openzeppelin/contracts @chainlink/contracts
-3) npx hardhat compile
-4)npx hardhat run scripts/deploy.js --network mainnet
-5) replace placeholders with $ZPE, $ZPW, usdMediator, mainnet $USD address, and chainlink pricefeeds contract addresses in instilled interoperability.sol
-6) update index.js and usd-mediator.js with deployed contract addresses and ABIs
+
+1) npm install @openzeppelin/contracts @chainlink/contracts
+2) npx hardhat compile
+3)npx hardhat run scripts/deploy.js --network mainnet
+4) replace placeholders with $ZPE, $ZPW, usdMediator, mainnet $USD address, and chainlink pricefeeds contract addresses in instilled interoperability.sol
+5) import ABIs for each contract
+6) test code
 7) deploy to goateelectric.com
-8) ads, promo, etc
+8) ads, marketing, and get user engagement
+
+
+
