@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goate Electric</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index.css"> <!-- Updated to match provided filename -->
     <link href="https://fonts.googleapis.com/css2?family=Avenir-Roman&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -56,6 +56,7 @@
                     <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
                     <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div>
                     <div class="balance gyst-balance"><h3>GreyStax Balance</h3><p id="gyst-balance">0</p></div>
+                    <div class="balance goate-balance"><h3>Goate Token Balance</h3><p id="goate-balance">0</p></div> <!-- Added -->
                 </div>
                 <div class="payment-container">
                     <select id="payment-asset" class="payment-dropdown">
@@ -65,6 +66,7 @@
                         <option value="ZPP">$ZPP</option>
                         <option value="GySt">$GySt</option>
                         <option value="XLM">$XLM</option>
+                        <option value="GOATE">$GOATE</option> <!-- Added -->
                     </select>
                     <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
                 </div>
@@ -72,6 +74,7 @@
                     <button id="consume-zpe">Consume $ZPE</button>
                     <button id="consume-zpw">Consume $ZPW</button>
                     <button id="subscribe-zpp">Consume $ZPP</button>
+                    <button id="airdrop-goate">Airdrop $GOATE</button> <!-- Added -->
                 </div>
             </div>
         </section>
@@ -125,6 +128,8 @@
         <section id="hometeambets" class="page hidden">
             <h2>HomeTeamBets</h2>
             <p>Bet on your favorite sports games!</p>
+            <input type="text" id="sports-search" placeholder="Search Sports Data (e.g., ESPN)..."> <!-- Added -->
+            <div id="sports-data-result"></div> <!-- Added -->
             <div id="games-list"></div>
             <div id="bet-transaction-history">
                 <h3>Transaction History</h3>
