@@ -1,5 +1,8 @@
+// Web3 provider and signer setup
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
+
+// Contract instances (placeholders for addresses and ABIs to be filled in)
 const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer);
 const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer);
 const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer);
@@ -14,11 +17,15 @@ const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateSt
 const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer);
 const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer);
 const scratchOffContract = new ethers.Contract("0xYourScratchOffNFTAddress", scratchOffABI, signer);
-const mediator = new USDMediator();
+const goateTokenContract = new ethers.Contract("0xYourGoateTokenAddress", goateABI, signer); // New
+const usdMediatorContract = new ethers.Contract("0xYourUSDMediatorAddress", usdMediatorABI, signer); // New
+const mediator = new USDMediator(); // Assuming USDMediator is a JS class from usd-mediator.js
 
+// State variables
 let currentUser, isLoggedIn = false;
 const db = { users: {}, devices: {}};
 
+// Plaid integration
 const plaidHandler = Plaid.create({
     token: "YOUR_PLAID_PUBLIC_TOKEN",
     onSuccess: async (publicToken) => {
@@ -39,6 +46,7 @@ const plaidHandler = Plaid.create({
     onExit: (err) => console.error(err)
 });
 
+// Update user balances including Goate Token
 async function updateBalances() {
     const userAddress = await signer.getAddress();
     document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
@@ -46,8 +54,10 @@ async function updateBalances() {
     document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2);
     document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2);
     document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18);
+    document.getElementById('goate-balance').textContent = ethers.utils.formatUnits(await goateTokenContract.balanceOf(userAddress), 18);
 }
 
+// Initialize digital stocks
 async function initializeStocks() {
     const response = await fetch('https://api.alpaca.markets/v2/assets', {
         headers: { 
@@ -61,6 +71,7 @@ async function initializeStocks() {
     }
 }
 
+// Load stock list
 async function loadStocks() {
     const stockList = document.getElementById('stock-list');
     stockList.innerHTML = '';
@@ -82,6 +93,7 @@ async function loadStocks() {
     }
 }
 
+// Buy stock
 async function buyStock(tokenId) {
     const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
     const chainId = document.getElementById(`chain-${tokenId}`).value;
@@ -93,6 +105,7 @@ async function buyStock(tokenId) {
     });
 }
 
+// Sell stock
 async function sellStock(tokenId) {
     const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
     await confirmTransaction(`Sell ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
@@ -102,6 +115,7 @@ async function sellStock(tokenId) {
     });
 }
 
+// Load HomeTeamBets games
 async function loadGames() {
     const gamesList = document.getElementById('games-list');
     gamesList.innerHTML = '';
@@ -126,6 +140,7 @@ async function loadGames() {
     }
 }
 
+// Place a bet
 async function placeBet(gameId) {
     const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
     const betType = document.getElementById(`bet-type-${gameId}`).value;
@@ -138,16 +153,19 @@ async function placeBet(gameId) {
     });
 }
 
+// Load staking iframe
 async function loadStaking() {
     const stakingContainer = document.getElementById('staking-container');
     stakingContainer.innerHTML = `<iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>`;
 }
 
+// Load scratch-off iframe
 async function loadScratchOff() {
     const scratchOffContainer = document.getElementById('scratch-off-container');
     scratchOffContainer.innerHTML = `<iframe src="unreal://scratchoffnft" width="100%" height="100%"></iframe>`;
 }
 
+// Scratch an NFT
 async function scratchNFT(mode, asset, chainId) {
     const amounts = { "Pennies": "1", "Nickels": "5", "Dimes": "10", "Quarters": "25", "Dollars": "100" };
     const amount = ethers.utils.parseUnits(amounts[mode], 6);
@@ -159,6 +177,7 @@ async function scratchNFT(mode, asset, chainId) {
     });
 }
 
+// Stake assets
 async function stake(asset, amount, duration) {
     await confirmTransaction(`Stake ${amount} ${asset} for ${duration} seconds?`, async () => {
         const token = new ethers.Contract(interoperabilityContract.tokenMap(1, asset), erc20ABI, signer);
@@ -168,6 +187,7 @@ async function stake(asset, amount, duration) {
     });
 }
 
+// Lending functions
 async function lend(amount) {
     await confirmTransaction(`Lend ${amount} USDC?`, async () => {
         await usdcContract.approve(lendingContract.address, amount);
@@ -191,6 +211,7 @@ async function repay(amount) {
     });
 }
 
+// Start GerastyxOpol game
 async function startGame(mode) {
     const sessionId = await gerastyxOpolContract.sessionCount();
     if (mode === "FreePlay") {
@@ -208,11 +229,13 @@ async function startGame(mode) {
     }
 }
 
+// Load GerastyxOpol game iframe
 function loadGame(sessionId) {
     const gameContainer = document.getElementById('game-container');
     gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
 }
 
+// Confirmation modal logic
 async function confirmTransaction(message, callback) {
     const modal = document.getElementById('confirmation-modal');
     const messageEl = document.getElementById('modal-message');
@@ -246,6 +269,7 @@ async function confirmTransaction(message, callback) {
     });
 }
 
+// Load user devices
 async function loadDevices() {
     const userAddress = await signer.getAddress();
     const devices = await deviceContract.getUserDevices(userAddress);
@@ -261,6 +285,7 @@ async function loadDevices() {
     `).join('');
 }
 
+// Watch ads
 async function watchAd(adType) {
     await confirmTransaction(`Watch ${adType} Ad?`, async () => {
         const adContainer = document.createElement("div");
@@ -285,6 +310,27 @@ async function watchAd(adType) {
     });
 }
 
+// Airdrop Goate Tokens
+async function airdropGoate() {
+    const achievementPoints = 1; // Example value, could be dynamic
+    await confirmTransaction(`Airdrop ${achievementPoints * 10} $GOATE for ${achievementPoints} achievement points?`, async () => {
+        await goateTokenContract.recordAchievement(await signer.getAddress(), achievementPoints);
+        updateBalances();
+    });
+}
+
+// Search sports data
+async function searchSportsData(query) {
+    const resultDiv = document.getElementById('sports-data-result');
+    try {
+        const data = await usdMediatorContract.readSportsData(query);
+        resultDiv.innerHTML = `<p>Sports Data API: ${data}</p>`;
+    } catch (error) {
+        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+    }
+}
+
+// Update UI based on login state
 function updateUI() {
     document.getElementById('logged-in').style.display = isLoggedIn ? 'block' : 'none';
     document.getElementById('not-logged-in').style.display = isLoggedIn ? 'none' : 'block';
@@ -299,6 +345,7 @@ function updateUI() {
     }
 }
 
+// DOM content loaded event listener
 document.addEventListener('DOMContentLoaded', async () => {
     await provider.send("eth_requestAccounts", []);
     await initializeStocks();
@@ -339,6 +386,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    document.getElementById('consume-zpw').addEventListener('click', async () => {
+        const amount = document.getElementById('payment-amount').value;
+        await confirmTransaction(`Consume ${amount || 1} $ZPW?`, async () => {
+            await zpwContract.burn(ethers.utils.parseUnits(amount || "1", 2));
+            updateBalances();
+        });
+    });
+
+    document.getElementById('subscribe-zpp').addEventListener('click', async () => {
+        await confirmTransaction(`Subscribe with $ZPP?`, async () => {
+            await zppContract.subscribe();
+            updateBalances();
+        });
+    });
+
     document.getElementById('add-device').addEventListener('click', async () => {
         const deviceId = document.getElementById('device-id').value;
         await confirmTransaction(`Add Device ${deviceId}?`, async () => {
@@ -358,12 +420,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('connect-plaid').addEventListener('click', () => plaidHandler.open());
 
+    // New event listeners
+    document.getElementById('airdrop-goate').addEventListener('click', airdropGoate);
+    document.getElementById('sports-search').addEventListener('input', (e) => searchSportsData(e.target.value));
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelector(link.getAttribute('href')).classList.add('active');
+            const section = document.querySelector(link.getAttribute('href'));
+            section.classList.add('active');
             navMenu.classList.remove('active');
             hamburger.classList.remove('open');
             hamburger.children[0].style.transform = 'none';
-            hamburger.children[1].
+            hamburger.children[1].style.opacity = '1';
+            hamburger.children[2].style.transform = 'none';
+
+            // Load section-specific content
+            if (link.getAttribute('href') === '#digital-stocks') loadStocks();
+            if (link.getAttribute('href') === '#hometeambets') loadGames();
+            if (link.getAttribute('href') === '#goate-staking') loadStaking();
+            if (link.getAttribute('href') === '#scratch-off') loadScratchOff();
+        });
+    });
+});
