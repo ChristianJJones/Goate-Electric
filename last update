@@ -1,1 +1,1191 @@
-  
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer);
+const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer);
+const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer);
+const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceABI, signer);
+const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer);
+const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer);
+const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer);
+const gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, signer);
+const greyStaxContract = new ethers.Contract("0xYourGreyStaxAddress", greyStaxABI, signer);
+const digitalStockNFTContract = new ethers.Contract("0xYourDigitalStockNFTAddress", digitalStockNFTABI, signer);
+const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateStakingABI, signer);
+const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer);
+const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer);
+const scratchOffContract = new ethers.Contract("0xYourScratchOffNFTAddress", scratchOffABI, signer);
+const mediator = new USDMediator();
+
+let currentUser, isLoggedIn = false;
+const db = { users: {}, devices: {}};
+
+const plaidHandler = Plaid.create({
+    token: "YOUR_PLAID_PUBLIC_TOKEN",
+    onSuccess: async (publicToken) => {
+        const response = await fetch('/plaid/exchange_public_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ public_token: publicToken })
+        });
+        const { access_token } = await response.json();
+        const creditResponse = await fetch('/plaid/credit_report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ access_token })
+        });
+        const creditData = await creditResponse.json();
+        console.log("Credit Score:", creditData.credit_score);
+    },
+    onExit: (err) => console.error(err)
+});
+
+async function updateBalances() {
+    const userAddress = await signer.getAddress();
+    document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
+    document.getElementById('zeropoint-balance').textContent = ethers.utils.formatUnits(await zpeContract.balanceOf(userAddress), 3);
+    document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2);
+    document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2);
+    document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18);
+}
+
+async function initializeStocks() {
+    const response = await fetch('https://api.alpaca.markets/v2/assets', {
+        headers: { 
+            'APCA-API-KEY-ID': 'YOUR_ALPACA_KEY', 
+            'APCA-API-SECRET-KEY': 'YOUR_ALPACA_SECRET' 
+        }
+    });
+    const stocks = await response.json();
+    for (const stock of stocks) {
+        await digitalStockNFTContract.mintStock("0xYourOwnerAddress", stock.symbol);
+    }
+}
+
+async function loadStocks() {
+    const stockList = document.getElementById('stock-list');
+    stockList.innerHTML = '';
+    const tokenCount = await digitalStockNFTContract.tokenCounter();
+    for (let i = 0; i < tokenCount; i++) {
+        const symbol = await digitalStockNFTContract.stockSymbols(i);
+        stockList.innerHTML += `
+            <div class="stock-card">
+                <h3>${symbol}</h3>
+                <input type="number" id="amount-${i}" placeholder="Amount (USDC)">
+                <select id="chain-${i}">
+                    <option value="1">Ethereum</option>
+                    <option value="512">Stellar</option>
+                </select>
+                <button onclick="buyStock(${i})">Buy</button>
+                <button onclick="sellStock(${i})">Sell</button>
+            </div>
+        `;
+    }
+}
+
+async function buyStock(tokenId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
+    const chainId = document.getElementById(`chain-${tokenId}`).value;
+    await confirmTransaction(`Buy ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await usdcContract.approve(digitalStockNFTContract.address, amount);
+        await digitalStockNFTContract.buyStock(tokenId, amount, chainId);
+        updateBalances();
+        loadStocks();
+    });
+}
+
+async function sellStock(tokenId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`amount-${tokenId}`).value, 6);
+    await confirmTransaction(`Sell ${await digitalStockNFTContract.stockSymbols(tokenId)} for ${ethers.utils.formatUnits(amount, 6)} USDC?`, async () => {
+        await digitalStockNFTContract.sellStock(tokenId, amount, "USDC", 1);
+        updateBalances();
+        loadStocks();
+    });
+}
+
+async function loadGames() {
+    const gamesList = document.getElementById('games-list');
+    gamesList.innerHTML = '';
+    const gameCount = await homeTeamBetsContract.gameCount();
+    for (let i = 0; i < gameCount; i++) {
+        const game = await homeTeamBetsContract.games(i);
+        gamesList.innerHTML += `
+            <div class="game-card">
+                <h3>${game.homeTeam} vs ${game.awayTeam}</h3>
+                <p>Start: ${new Date(game.startTime * 1000).toLocaleString()}</p>
+                <p>Pool: ${ethers.utils.formatUnits(game.totalPool, 6)} USDC</p>
+                <select id="bet-type-${i}">
+                    <option value="0">Win</option>
+                    <option value="1">Lose</option>
+                    <option value="2">Tie</option>
+                </select>
+                <input type="checkbox" id="overtime-${i}"> Overtime?
+                <input type="number" id="bet-amount-${i}" placeholder="Bet Amount (USDC)">
+                <button onclick="placeBet(${i})">Place Bet</button>
+            </div>
+        `;
+    }
+}
+
+async function placeBet(gameId) {
+    const amount = ethers.utils.parseUnits(document.getElementById(`bet-amount-${gameId}`).value, 6);
+    const betType = document.getElementById(`bet-type-${gameId}`).value;
+    const overtime = document.getElementById(`overtime-${gameId}`).checked;
+    await confirmTransaction(`Place ${ethers.utils.formatUnits(amount, 6)} USDC bet on Game ${gameId}?`, async () => {
+        await usdcContract.approve(homeTeamBetsContract.address, amount);
+        await homeTeamBetsContract.placeBet(gameId, amount, betType, overtime);
+        updateBalances();
+        loadGames();
+    });
+}
+
+async function loadStaking() {
+    const stakingContainer = document.getElementById('staking-container');
+    stakingContainer.innerHTML = `<iframe src="unreal://goatestaking" width="100%" height="100%"></iframe>`;
+}
+
+async function loadScratchOff() {
+    const scratchOffContainer = document.getElementById('scratch-off-container');
+    scratchOffContainer.innerHTML = `<iframe src="unreal://scratchoffnft" width="100%" height="100%"></iframe>`;
+}
+
+async function scratchNFT(mode, asset, chainId) {
+    const amounts = { "Pennies": "1", "Nickels": "5", "Dimes": "10", "Quarters": "25", "Dollars": "100" };
+    const amount = ethers.utils.parseUnits(amounts[mode], 6);
+    await confirmTransaction(`Scratch ${mode} NFT for ${amounts[mode]} ${asset} on Chain ${chainId}?`, async () => {
+        const token = new ethers.Contract(interoperabilityContract.tokenMap(chainId, asset), erc20ABI, signer);
+        await token.approve(scratchOffContract.address, amount);
+        await scratchOffContract.scratch(asset, mode === "Pennies" ? 0 : mode === "Nickels" ? 1 : mode === "Dimes" ? 2 : mode === "Quarters" ? 3 : 4, chainId);
+        updateBalances();
+    });
+}
+
+async function stake(asset, amount, duration) {
+    await confirmTransaction(`Stake ${amount} ${asset} for ${duration} seconds?`, async () => {
+        const token = new ethers.Contract(interoperabilityContract.tokenMap(1, asset), erc20ABI, signer);
+        await token.approve(stakingContract.address, amount);
+        await stakingContract.stake(asset, amount, duration);
+        updateBalances();
+    });
+}
+
+async function lend(amount) {
+    await confirmTransaction(`Lend ${amount} USDC?`, async () => {
+        await usdcContract.approve(lendingContract.address, amount);
+        await lendingContract.lend(amount);
+        updateBalances();
+    });
+}
+
+async function borrow(amount) {
+    await confirmTransaction(`Borrow ${amount} USDC?`, async () => {
+        await lendingContract.borrow(amount);
+        updateBalances();
+    });
+}
+
+async function repay(amount) {
+    await confirmTransaction(`Repay ${amount} USDC?`, async () => {
+        await usdcContract.approve(lendingContract.address, amount);
+        await lendingContract.repay(amount);
+        updateBalances();
+    });
+}
+
+async function startGame(mode) {
+    const sessionId = await gerastyxOpolContract.sessionCount();
+    if (mode === "FreePlay") {
+        await confirmTransaction("Start Free Play session?", async () => {
+            await gerastyxOpolContract.startSession(0, 0);
+            loadGame(sessionId);
+        });
+    } else {
+        const fee = mode === "Reasonable" ? "1" : mode === "Gambling" ? "5" : "20";
+        await confirmTransaction(`Start ${mode} session for ${fee} USDC?`, async () => {
+            await usdcContract.approve(gerastyxOpolContract.address, ethers.utils.parseUnits(fee, 6));
+            await gerastyxOpolContract.startSession(mode === "Reasonable" ? 1 : mode === "Gambling" ? 2 : 3, ethers.utils.parseUnits(fee, 6));
+            loadGame(sessionId);
+        });
+    }
+}
+
+function loadGame(sessionId) {
+    const gameContainer = document.getElementById('game-container');
+    gameContainer.innerHTML = `<iframe src="unreal://gerastyxopol?session=${sessionId}" width="100%" height="100%"></iframe>`;
+}
+
+async function confirmTransaction(message, callback) {
+    const modal = document.getElementById('confirmation-modal');
+    const messageEl = document.getElementById('modal-message');
+    const yesBtn = document.getElementById('modal-yes');
+    const noBtn = document.getElementById('modal-no');
+    const pinSection = document.getElementById('pin-section');
+    const pinInput = document.getElementById('pin-input');
+    const pinSubmit = document.getElementById('pin-submit');
+
+    messageEl.textContent = message;
+    modal.style.display = 'flex';
+    pinSection.style.display = 'none';
+
+    return new Promise((resolve) => {
+        yesBtn.onclick = () => {
+            pinSection.style.display = 'block';
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+        };
+        noBtn.onclick = () => {
+            modal.style.display = 'none';
+            resolve(false);
+        };
+        pinSubmit.onclick = () => {
+            if (pinInput.value.length === 4) {
+                modal.style.display = 'none';
+                callback();
+                resolve(true);
+            }
+        };
+    });
+}
+
+async function loadDevices() {
+    const userAddress = await signer.getAddress();
+    const devices = await deviceContract.getUserDevices(userAddress);
+    const container = document.getElementById('devices-container');
+    container.innerHTML = devices.map(device => `
+        <div class="device-card">
+            <span>${device.deviceId} (Modals: ${device.modalCount})</span>
+            <div class="slider-group">
+                <button class="slider-btn on ${device.isActive ? 'active' : ''}" data-device="${device.deviceId}">On</button>
+                <button class="slider-btn off ${!device.isActive ? 'active' : ''}" data-device="${device.deviceId}">Off</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function watchAd(adType) {
+    await confirmTransaction(`Watch ${adType} Ad?`, async () => {
+        const adContainer = document.createElement("div");
+        adContainer.style.position = "fixed";
+        adContainer.style.top = "0";
+        adContainer.style.left = "0";
+        adContainer.style.width = "100vw";
+        adContainer.style.height = "100vh";
+        adContainer.style.background = "black";
+        adContainer.style.color = "#FFD700";
+        adContainer.style.display = "flex";
+        adContainer.style.justifyContent = "center";
+        adContainer.style.alignItems = "center";
+        adContainer.innerHTML = `<p>Watching ${adType} Ad... (30s)</p>`;
+        document.body.appendChild(adContainer);
+
+        await new Promise(resolve => setTimeout(resolve, 30000));
+        document.body.removeChild(adContainer);
+
+        await mediator.handleAdWatch(adType, await signer.getAddress());
+        updateBalances();
+    });
+}
+
+function updateUI() {
+    document.getElementById('logged-in').style.display = isLoggedIn ? 'block' : 'none';
+    document.getElementById('not-logged-in').style.display = isLoggedIn ? 'none' : 'block';
+    document.getElementById('navigation').style.display = isLoggedIn ? 'flex' : 'none';
+    document.getElementById('signup-login').style.display = isLoggedIn ? 'none' : 'inline';
+    document.getElementById('user-email').style.display = isLoggedIn ? 'inline' : 'none';
+    document.getElementById('logout').style.display = isLoggedIn ? 'inline' : 'none';
+    if (isLoggedIn) {
+        document.getElementById('user-email').textContent = currentUser;
+        updateBalances();
+        loadDevices();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await provider.send("eth_requestAccounts", []);
+    await initializeStocks();
+
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('open');
+        if (hamburger.classList.contains('open')) {
+            hamburger.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            hamburger.children[1].style.opacity = '0';
+            hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+        } else {
+            hamburger.children[0].style.transform = 'none';
+            hamburger.children[1].style.opacity = '1';
+            hamburger.children[2].style.transform = 'none';
+        }
+    });
+
+    document.getElementById('signup-login').addEventListener('click', () => {
+        currentUser = "user@example.com";
+        isLoggedIn = true;
+        updateUI();
+    });
+
+    document.getElementById('logout').addEventListener('click', () => {
+        isLoggedIn = false;
+        currentUser = null;
+        updateUI();
+    });
+
+    document.getElementById('consume-zpe').addEventListener('click', async () => {
+        const amount = document.getElementById('payment-amount').value;
+        await confirmTransaction(`Consume ${amount || 1} $ZPE?`, async () => {
+            await zpeContract.consumeForService(ethers.utils.parseUnits(amount || "1", 3));
+            updateBalances();
+        });
+    });
+
+    document.getElementById('add-device').addEventListener('click', async () => {
+        const deviceId = document.getElementById('device-id').value;
+        await confirmTransaction(`Add Device ${deviceId}?`, async () => {
+            await deviceContract.addDevice(deviceId);
+            loadDevices();
+        });
+    });
+
+    document.getElementById('watch-google-ad').addEventListener('click', () => watchAd("Google"));
+    document.getElementById('watch-pi-ad').addEventListener('click', () => watchAd("Pi"));
+    document.getElementById('watch-youtube-ad').addEventListener('click', () => watchAd("YouTube"));
+
+    document.getElementById('free-play').addEventListener('click', () => startGame("FreePlay"));
+    document.getElementById('reasonable').addEventListener('click', () => startGame("Reasonable"));
+    document.getElementById('gambling').addEventListener('click', () => startGame("Gambling"));
+    document.getElementById('rich').addEventListener('click', () => startGame("Rich"));
+
+    document.getElementById('connect-plaid').addEventListener('click', () => plaidHandler.open());
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelector(link.getAttribute('href')).classList.add('active');
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('open');
+            hamburger.children[0].style.transform = 'none';
+            hamburger.children[1].  
+
+
+
+__________________________________________________________________
+
+// Navigation
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+        const sectionId = link.getAttribute('href').substring(1);
+        document.getElementById(sectionId).classList.remove('hidden');
+    });
+});
+
+// Placeholder Web3 integration (assumes MetaMask)
+async function connectWallet() {
+    if (window.ethereum) {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        return new ethers.providers.Web3Provider(window.ethereum);
+    }
+    alert('Please install MetaMask!');
+}
+
+// Load revenue totals (placeholder)
+async function loadRevenueTotals() {
+    const provider = await connectWallet();
+    // Replace with actual contract calls
+    document.getElementById('node-rewards').textContent = "1000";
+    document.getElementById('pi-revenue').textContent = "20";
+    document.getElementById('total-revenue').textContent = "1020";
+    document.getElementById('mediator-balance').textContent = "5000";
+    document.getElementById('goate-balance').textContent = "10000";
+}
+loadRevenueTotals();
+
+// Database search (placeholder)
+document.getElementById('database-search').addEventListener('input', async (e) => {
+    const query = e.target.value;
+    // Call USDMediator.readSportsData(query) via contract interaction
+    console.log(`Searching for sports data: ${query}`);
+});
+
+// Play game (placeholder)
+async function playGame(gameName) {
+    const provider = await connectWallet();
+    // Interact with PityPat contract
+    alert(`Playing ${gameName}!`);
+}
+
+// Airdrop Go ascendancy (placeholder)
+async function airdropGoate() {
+    const provider = await connectWallet();
+    // Interact with TheGoateToken.recordAchievement
+    alert('Airdropping Goate Tokens!');
+}
+
+
+_______________________________________________________________
+____________________________________________________________________________________________
+html { scroll-behavior: smooth; }
+* { box-sizing: border-box; }
+body { 
+    font-family: 'Avenir-Roman', sans-serif; 
+    background: #000000; 
+    color: #FFD700; 
+    margin: 0; 
+    padding: 0; 
+}
+
+header { background: #000000; padding: 20px; text-align: center; }
+.banner { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+.logo img { width: 200px; height: auto; }
+.title h1 { margin: 0; font-size: 24px; color: #FFD700; }
+.user-section button { 
+    padding: 8px 16px; 
+    background: #FFD700; 
+    color: #000000; 
+    border: none; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+.user-section button:hover { background: #E6C200; }
+
+nav { background: #000000; padding: 0 20px; height: 60px; display: flex; align-items: center; position: relative; }
+.hamburger { display: none; flex-direction: column; cursor: pointer; padding: 10px; }
+.hamburger span { width: 25px; height: 3px; background: #FFD700; margin: 2px 0; transition: 0.3s; }
+.nav-menu { list-style: none; padding: 0; margin: 0; display: flex; }
+.nav-menu li { margin: 0 15px; }
+.nav-menu a { 
+    color: #FFD700; 
+    text-decoration: none; 
+    padding: 10px 20px; 
+    display: block; 
+    font-family: 'Avenir-Roman', sans-serif; 
+    border-radius: 20px; 
+}
+.nav-menu a:hover { background: #1a1a1a; }
+
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .nav-menu { 
+        display: none; 
+        flex-direction: column; 
+        width: 100%; 
+        position: absolute; 
+        top: 60px; 
+        left: 0; 
+        background: #000000; 
+        border-top: 1px solid #FFD700; 
+    }
+    .nav-menu.active { display: flex; }
+    .nav-menu li { margin: 10px 0; text-align: center; }
+}
+
+.page { display: none; padding: 20px; color: #FFD700; }
+.page.active { display: block; }
+
+.balances-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
+.usd-balance { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.zpe-balance { position: absolute; top: 0; left: 50%; transform: translateX(-50%); text-align: center; }
+.zpw-balance { position: absolute; bottom: 0; left: 25%; transform: translateX(-50%); text-align: center; }
+.zpp-balance { position: absolute; bottom: 0; right: 25%; transform: translateX(50%); text-align: center; }
+.gyst-balance { position: absolute; top: 25%; right: 0; transform: translateX(-50%); text-align: center; }
+
+.payment-container { margin: 20px auto; text-align: center; }
+.payment-dropdown { 
+    padding: 10px; 
+    background: #1a1a1a; 
+    color: #FFD700; 
+    border: 1px solid #FFD700; 
+    border-radius: 8px; 
+    font-size: 16px; 
+    width: 200px; 
+    cursor: pointer; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+.payment-input { 
+    padding: 10px; 
+    width: 200px; 
+    background: #1a1a1a; 
+    color: #FFD700; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 24px; 
+    text-align: center; 
+    box-shadow: 0 2px 5px rgba(255, 215, 0, 0.2); 
+    transition: all 0.3s ease; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+.payment-input:focus { 
+    outline: none; 
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4); 
+}
+
+.button-section { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+button { 
+    padding: 10px 20px; 
+    background: #FFD700; 
+    color: #000000; 
+    border: none; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+button:hover { background: #E6C200; }
+
+.disney-modal { 
+    background: rgba(0, 0, 0, 0.9); 
+    border-radius: 15px; 
+    backdrop-filter: blur(5px); 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+.disney-modal-content { 
+    background: #1a1a1a; 
+    padding: 30px; 
+    border-radius: 15px; 
+    color: #FFD700; 
+    font-family: 'Avenir-Roman', sans-serif; 
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); 
+    width: 400px; 
+}
+.modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+.disney-button { 
+    background: #FFD700; 
+    color: #000000; 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-family: 'Avenir-Roman', sans-serif; 
+    transition: transform 0.2s; 
+}
+.disney-button:hover { 
+    background: #E6C200; 
+    transform: scale(1.05); 
+}
+#pin-input { 
+    background: #1a1a1a; 
+    color: #FFD700; 
+    border: 1px solid #FFD700; 
+    border-radius: 10px; 
+    padding: 8px; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+
+#stock-search { 
+    width: 100%; 
+    padding: 10px; 
+    margin: 20px 0; 
+    background: #1a1a1a; 
+    color: #FFD700; 
+    border: 1px solid #FFD700; 
+    border-radius: 10px; 
+    font-family: 'Avenir-Roman', sans-serif; 
+}
+#stock-list { display: flex; flex-wrap: wrap; gap: 20px; }
+.stock-card { 
+    background: #1a1a1a; 
+    padding: 15px; 
+    border-radius: 10px; 
+    width: 200px; 
+    text-align: center; 
+    border: 1px solid #FFD700; 
+}
+#staking-container, #game-container, #scratch-off-container, #games-list { 
+    width: 100%; 
+    height: 600px; 
+    border: 1px solid #FFD700; 
+    border-radius: 10px; 
+}
+#game-modes { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+
+_______________________________________________________________________________________________-
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+nav {
+    background-color: #333;
+    padding: 1rem;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-right: 1rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #ddd;
+}
+
+.page {
+    padding: 2rem;
+}
+
+.hidden {
+    display: none;
+}
+
+#database-search {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#revenue-totals, #asset-management {
+    margin-top: 1rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
+___________________________________________________________________________________________-
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goate Electric</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Avenir-Roman&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="banner">
+            <div class="logo"><img src="GoateElectricLogo.jpg" alt="Goate Electric Logo"></div>
+            <div class="title"><h1>Goate Electric</h1></div>
+            <div class="user-section" id="user-section">
+                <button id="signup-login">Signup/Login</button>
+                <span id="user-email" style="display: none;"></span>
+                <button id="logout" style="display: none;">Logout</button>
+            </div>
+        </div>
+        <nav class="navigation" id="navigation" style="display: none;">
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+                <li><a href="#zeropoint" class="nav-link">Zeropoint</a></li>
+                <li><a href="#zeropointwifi" class="nav-link">ZeropointWifi</a></li>
+                <li><a href="#zeropointphoneservice" class="nav-link">ZeropointPhoneService</a></li>
+                <li><a href="#digital-stocks" class="nav-link">ZeropointDigitalStocks</a></li>
+                <li><a href="#swap" class="nav-link">Swap</a></li>
+                <li><a href="#goate-staking" class="nav-link">Goate Staking</a></li>
+                <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li>
+                <li><a href="#scratch-off" class="nav-link">Scratch Off NFT</a></li>
+                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li>
+                <li><a href="#earn" class="nav-link">Earn</a></li>
+                <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li>
+                <li><a href="#settings" class="nav-link">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="page active">
+            <div id="not-logged-in">
+                <h2>WELCOME TO GOATE ELECTRIC</h2>
+                <p>Access digital utilities that make everyday life easier.</p>
+            </div>
+            <div id="logged-in" style="display: none;">
+                <div class="balances-container">
+                    <div class="balance usd-balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
+                    <div class="balance zpe-balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
+                    <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
+                    <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div>
+                    <div class="balance gyst-balance"><h3>GreyStax Balance</h3><p id="gyst-balance">0</p></div>
+                </div>
+                <div class="payment-container">
+                    <select id="payment-asset" class="payment-dropdown">
+                        <option value="USDC">USDC</option>
+                        <option value="ZPE">$ZPE</option>
+                        <option value="ZPW">$ZPW</option>
+                        <option value="ZPP">$ZPP</option>
+                        <option value="GySt">$GySt</option>
+                        <option value="XLM">$XLM</option>
+                    </select>
+                    <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
+                </div>
+                <div class="button-section">
+                    <button id="consume-zpe">Consume $ZPE</button>
+                    <button id="consume-zpw">Consume $ZPW</button>
+                    <button id="subscribe-zpp">Consume $ZPP</button>
+                </div>
+            </div>
+        </section>
+        <section id="zeropoint" class="page hidden"><h2>Zeropoint</h2><p>Wireless charging utility, pegged to $0.10.</p></section>
+        <section id="zeropointwifi" class="page hidden"><h2>ZeropointWifi</h2><p>Unlimited WiFi, pegged to $5.</p></section>
+        <section id="zeropointphoneservice" class="page hidden"><h2>ZeropointPhoneService</h2><p>Phone service utility, pegged to $10.</p></section>
+        <section id="earn" class="page hidden">
+            <h2>Earn</h2>
+            <p>Earn USDC by watching ads.</p>
+            <div class="earn-container">
+                <button id="watch-google-ad">Watch Google Ad</button>
+                <button id="watch-pi-ad">Watch Pi Ad</button>
+                <button id="watch-youtube-ad">Watch YouTube Ad</button>
+            </div>
+            <div id="ad-transaction-history">
+                <h3>Transaction History</h3>
+                <ul id="history-list"></ul>
+            </div>
+        </section>
+        <section id="swap" class="page hidden">
+            <h2>Swap Assets</h2>
+            <div id="swap-container">
+                <select id="from-asset"></select>
+                <input type="number" id="swap-amount" placeholder="Amount">
+                <select id="to-asset"></select>
+                <select id="to-chain"></select>
+                <button id="swap-button">Swap</button>
+            </div>
+        </section>
+        <section id="portfolio" class="page hidden"><h2>Portfolio</h2><ul id="portfolio-list"></ul></section>
+        <section id="settings" class="page hidden">
+            <h2>Settings</h2>
+            <div class="settings-container">
+                <div class="bank-actions">
+                    <button id="bank-to-goate">Bank to Goate Electric (Deposit)</button>
+                    <button id="goate-to-bank">Goate Electric to Bank (Withdraw)</button>
+                </div>
+                <div class="settings-modal">
+                    <h3>Connect Bank</h3>
+                    <button id="connect-plaid">Connect with Plaid</button>
+                </div>
+            </div>
+        </section>
+        <section id="manage-devices" class="page hidden">
+            <h2>Manage Devices</h2>
+            <div id="devices-container"></div>
+            <input id="device-id" placeholder="Device ID" />
+            <button id="add-device">Add Device</button>
+            <button id="use-modal">Use Modal</button>
+        </section>
+        <section id="hometeambets" class="page hidden">
+            <h2>HomeTeamBets</h2>
+            <p>Bet on your favorite sports games!</p>
+            <div id="games-list"></div>
+            <div id="bet-transaction-history">
+                <h3>Transaction History</h3>
+                <ul id="bet-history-list"></ul>
+            </div>
+        </section>
+        <section id="scratch-off" class="page hidden">
+            <h2>Scratch Off NFT</h2>
+            <div id="scratch-off-container">
+                <iframe id="scratch-off-iframe" src="unreal://scratchoffnft" width="100%" height="100%"></iframe>
+            </div>
+        </section>
+        <section id="gerastyxopol" class="page hidden">
+            <h2>GerastyxOpol</h2>
+            <p>Play a blockchain-based Monopoly game!</p>
+            <div id="game-modes">
+                <button id="free-play">Free Play</button>
+                <button id="reasonable">Reasonable</button>
+                <button id="gambling">Gambling</button>
+                <button id="rich">Rich</button>
+            </div>
+            <div id="game-container"></div>
+        </section>
+        <section id="digital-stocks" class="page hidden">
+            <h2>Digital Stocks</h2>
+            <input type="text" id="stock-search" placeholder="Search Stocks...">
+            <div id="stock-list"></div>
+        </section>
+        <section id="goate-staking" class="page hidden">
+            <h2>Goate Staking</h2>
+            <div id="staking-container"></div>
+        </section>
+    </main>
+
+    <div id="confirmation-modal" class="modal disney-modal" style="display: none;">
+        <div class="modal-content disney-modal-content">
+            <h3>Confirm Transaction</h3>
+            <p id="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="modal-yes" class="disney-button">Yes</button>
+                <button id="modal-no" class="disney-button">No</button>
+            </div>
+            <div id="pin-section" style="display: none;">
+                <input type="password" id="pin-input" maxlength="4" placeholder="Enter PIN">
+                <button id="pin-submit" class="disney-button">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script>
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+    <script src="usd-mediator.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
+
+REAL index.html to use, update this with: 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goate Electric</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#games" class="nav-link">Games</a></li>
+            <li><a href="#manage-goate" class="nav-link">Manage Goate Electric</a></li>
+        </ul>
+    </nav>
+
+    <section id="home" class="page">
+        <h1>Welcome to Goate Electric</h1>
+        <p>Experience the future of gaming and finance.</p>
+    </section>
+
+    <section id="games" class="page hidden">
+        <h2>Games</h2>
+        <div id="game-list">
+            <p>PityPat - <button onclick="playGame('PityPat')">Play Now</button></p>
+        </div>
+    </section>
+
+    <section id="manage-goate" class="page hidden">
+        <h2>Manage Goate Electric</h2>
+        <input type="text" id="database-search" placeholder="Search Database (e.g., ESPN)...">
+        <div id="revenue-totals">
+            <p>Node Rewards Revenue: <span id="node-rewards">0</span> USDC</p>
+            <p>PI Allocation: <span id="pi-revenue">0</span> USDC</p>
+            <p>Total Revenue: <span id="total-revenue">0</span> USDC</p>
+        </div>
+        <div id="asset-management">
+            <h3>Manage Assets</h3>
+            <p>USDMediator Balance: <span id="mediator-balance">0</span> USDC</p>
+            <p>Goate Token Holdings: <span id="goate-balance">0</span> GOATE</p>
+            <button onclick="airdropGoate()">Airdrop Goate Tokens</button>
+        </div>
+    </section>
+
+    <script src="index.js"></script>
+</body>
+</html>
+____________________________________________________________
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract InstilledInteroperability {
+    address public owner;
+    mapping(uint256 => mapping(string => address)) public tokenMap;
+    mapping(string => string) public tradingAPIs;
+
+    event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient);
+
+    constructor() {
+        owner = msg.sender;
+        tokenMap[1]["USDC"] = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+        tokenMap[1]["ZPE"] = 0xYourZPEAddress;
+        tokenMap[1]["ZPW"] = 0xYourZPWAddress;
+        tokenMap[1]["ZPP"] = 0xYourZPPAddress;
+        tokenMap[1]["GySt"] = 0xYourGreyStaxAddress;
+        tokenMap[512]["XLM"] = 0xYourStellarXLMAddress;
+        tradingAPIs["Alpaca"] = "https://api.alpaca.markets";
+        tradingAPIs["Tradier"] = "https://api.tradier.com";
+        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com";
+        tradingAPIs["ETrade"] = "https://api.etrade.com";
+        tradingAPIs["TradeStation"] = "https://api.tradestation.com";
+        tradingAPIs["Questrade"] = "https://api.questrade.com";
+        tradingAPIs["Stellar"] = "https://horizon.stellar.org";
+        tradingAPIs["Aquarius"] = "https://api.aquariusdex.com";
+        tradingAPIs["MoonPay"] = "https://api.moonpay.com";
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v5.0";
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org/v1";
+        tradingAPIs["PancakeSwap"] = "https://api.pancakeswap.info/api/v2";
+        tradingAPIs["OKX"] = "https://www.okx.com/api/v5";
+        tradingAPIs["SushiSwap"] = "https://api.sushiswap.org/v1";
+    }
+
+    function crossChainTransfer(uint256 fromChain, uint256 toChain, string memory tokenSymbol, uint256 amount, address recipient) external {
+        IERC20(tokenMap[fromChain][tokenSymbol]).transferFrom(msg.sender, address(this), amount);
+        emit CrossChainTransfer(fromChain, toChain, tokenSymbol, amount, recipient);
+    }
+
+    function mediatorAccount() external view returns (address) {
+        return 0xYourMediatorAccount;
+    }
+}
+
+UPGRADE  THIS INSTILLEDINTEROPERABUILITY>SOL with this:
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "./TheGoateToken.sol";
+
+contract InstilledInteroperability {
+    address public owner;
+    TheGoateToken public goateToken;
+    mapping(uint256 => mapping(string => address)) public tokenMap;
+    mapping(string => string) public tradingAPIs;
+    mapping(string => string) public sportsDataAPIs;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    constructor(address _goateToken) {
+        owner = msg.sender;
+        goateToken = TheGoateToken(_goateToken);
+        // Initialize tokenMap and APIs
+        tokenMap[1]["USDC"] = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48; // Example USDC address
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org";
+        sportsDataAPIs["ESPN"] = "https://api.espn.com";
+        sportsDataAPIs["SportsRadar"] = "https://api.sportsradar.com";
+    }
+
+    // Add a token to the map
+    function setToken(uint256 chainId, string memory symbol, address tokenAddress) external onlyOwner {
+        tokenMap[chainId][symbol] = tokenAddress;
+    }
+
+    // Get sports data API endpoint
+    function getSportsDataAPI(string memory apiName) external view returns (string memory) {
+        return sportsDataAPIs[apiName];
+    }
+}
+_____________________________________________________________________________
+_____________________________________________________________________________________
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./InstilledInteroperability.sol";
+
+contract USDMediator {
+    InstilledInteroperability public interoperability;
+    IERC20 public usdcToken = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    address public owner;
+
+    mapping(string => string) public tradingAPIs;
+    string[] public reserveAssets = [
+        "WMT", "KMB", "MO", "WPC", "CSCO", "T", "BX", "AAPL", "CAT", "SPG",
+        "LMT", "AVY", "MCD", "TGT", "TTWO", "DIS", "BAC", "BBY", "MGY", "NKE",
+        "USD", "ZPE", "ZPW", "ZPP", "GySt", "XLM", "PI", "GerastyxOpolBank"
+    ];
+
+    event RevenueDistributed(uint256 amount, address cj03nes, address reserves, address mediator);
+
+    constructor(address _interoperability) {
+        owner = msg.sender;
+        interoperability = InstilledInteroperability(_interoperability);
+        tradingAPIs["Alpaca"] = "https://api.alpaca.markets";
+        tradingAPIs["Tradier"] = "https://api.tradier.com";
+        tradingAPIs["SnapTrade"] = "https://api.snaptrade.com";
+        tradingAPIs["ETrade"] = "https://api.etrade.com";
+        tradingAPIs["TradeStation"] = "https://api.tradestation.com";
+        tradingAPIs["Questrade"] = "https://api.questrade.com";
+        tradingAPIs["Stellar"] = "https://horizon.stellar.org";
+        tradingAPIs["Aquarius"] = "https://api.aquariusdex.com";
+        tradingAPIs["MoonPay"] = "https://api.moonpay.com";
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v5.0";
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org/v1";
+        tradingAPIs["PancakeSwap"] = "https://api.pancakeswap.info/api/v2";
+        tradingAPIs["OKX"] = "https://www.okx.com/api/v5";
+        tradingAPIs["SushiSwap"] = "https://api.sushiswap.org/v1";
+    }
+
+    function buyStock(string memory stockSymbol, uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(usdcToken.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        uint256 revenue = amount * 5 / 100;
+        distributeRevenue(revenue);
+    }
+
+    function sellStock(string memory stockSymbol, uint256 amount, string memory toAsset, address recipient) external {
+        uint256 usdAmount = amount;
+        uint256 revenue = usdAmount * 5 / 100;
+        distributeRevenue(revenue);
+        uint256 netAmount = usdAmount - revenue;
+        interoperability.crossChainTransfer(1, 1, toAsset, netAmount, recipient);
+    }
+
+    function transferUSD(address to, uint256 amount) external {
+        require(msg.sender == address(scratchOffNFT) || msg.sender == owner, "Unauthorized");
+        require(usdcToken.transfer(to, amount), "Transfer failed");
+    }
+
+    function swap(string memory fromAsset, string memory toAsset, uint256 amount, uint256 chainId) external {
+        address fromToken = interoperability.tokenMap(chainId, fromAsset);
+        address toToken = interoperability.tokenMap(chainId, toAsset);
+        require(IERC20(fromToken).transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        interoperability.crossChainTransfer(chainId, chainId, toAsset, amount, msg.sender);
+    }
+
+    function stakeDebt(address user, uint256 amount) external {
+        uint256 perAsset = amount / reserveAssets.length;
+        for (uint256 i = 0; i < reserveAssets.length; i++) {
+            if (keccak256(abi.encodePacked(reserveAssets[i])) == keccak256(abi.encodePacked("USD"))) {
+                usdcToken.transfer(address(this), perAsset);
+            } else {
+                buyStock(reserveAssets[i], perAsset);
+            }
+        }
+    }
+
+    function distributeRevenue(uint256 amount) internal {
+        address cj03nes = 0xYourCj03nesAddress;
+        address reserves = 0xYourReservesAddress;
+        address mediator = 0xYourMediatorAddress;
+        usdcToken.transfer(cj03nes, amount * 80 / 100);
+        usdcToken.transfer(reserves, amount * 15 / 100);
+        usdcToken.transfer(mediator, amount * 5 / 100);
+        emit RevenueDistributed(amount, cj03nes, reserves, mediator);
+    }
+
+    function distributeStakingRevenue(uint256 amount) external {
+        uint256 revenue = amount * 10 / 100;
+        uint256 reserve = amount * 10 / 100;
+        uint256 userShare = amount * 80 / 100;
+        distributeRevenue(revenue);
+        uint256 perReserve = reserve / reserveAssets.length;
+        for (uint256 i = 0; i < reserveAssets.length; i++) {
+            buyStock(reserveAssets[i], perReserve);
+        }
+    }
+
+    function handleAdWatch(string memory adType, address user) external {
+        // Placeholder: Off-chain ad revenue handled in usd-mediator.js
+    }
+
+    function handleGerastyxOpolTransaction(uint256 sessionId, uint256 amount, string memory type_) external {
+        distributeRevenue(amount * 5 / 100);
+    }
+
+    function handleScratchOffPayment(string memory asset, uint256 amount, uint256 chainId) external {
+        address tokenAddress = interoperability.tokenMap(chainId, asset);
+        IERC20 token = IERC20(tokenAddress);
+        uint256 half = amount / 2;
+        require(token.transferFrom(msg.sender, address(this), half), "Mediator transfer failed");
+        require(token.transfer(0xYourRevenueAddress, half), "Revenue transfer failed");
+    }
+}
+
+
+USE THIS USDMediator.sol and upgrade it with this:
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./InstilledInteroperability.sol";
+import "./TheGoateToken.sol";
+
+contract USDMediator {
+    InstilledInteroperability public interoperability;
+    IERC20 public usdcToken;
+    TheGoateToken public goateToken;
+    address public owner;
+    address public piAddress = 0x1234567890abcdef1234567890abcdef12345678; // Replace with actual $PI address
+
+    mapping(string => string) public tradingAPIs;
+    mapping(string => string) public sportsDataAPIs;
+    mapping(address => bool) public allowedViewers; // For personal account view
+
+    event RevenueDistributed(uint256 amount, address cj03nes, address reserves, address mediator, address piAddress);
+    event DataRead(address indexed reader, string dataType, string data); // For manual database reads
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    modifier onlyAllowedViewer() {
+        require(allowedViewers[msg.sender] || msg.sender == owner, "Not allowed to view");
+        _;
+    }
+
+    constructor(address _interoperability, address _usdcToken, address _goateToken) {
+        owner = msg.sender;
+        interoperability = InstilledInteroperability(_interoperability);
+        usdcToken = IERC20(_usdcToken);
+        goateToken = TheGoateToken(_goateToken);
+        allowedViewers[owner] = true;
+        // Initialize APIs
+        tradingAPIs["Uniswap"] = "https://api.uniswap.org";
+        sportsDataAPIs["ESPN"] = "https://api.espn.com";
+        sportsDataAPIs["SportsRadar"] = "https://api.sportsradar.com";
+    }
+
+    // Revenue distribution with $PI allocation
+    function distributeRevenue(uint256 amount) external onlyOwner {
+        address cj03nes = 0xabcdef1234567890abcdef1234567890abcdef12; // Replace with actual address
+        address reserves = 0x7890abcdef1234567890abcdef1234567890abcd; // Replace with actual address
+        address mediator = 0x4567890abcdef1234567890abcdef12345678ab; // Replace with actual address
+        uint256 piShare = amount * 2 / 100; // 2% to $PI
+        uint256 remaining = amount - piShare;
+        usdcToken.transfer(cj03nes, remaining * 80 / 100);
+        usdcToken.transfer(reserves, remaining * 15 / 100);
+        usdcToken.transfer(mediator, remaining * 5 / 100);
+        usdcToken.transfer(piAddress, piShare);
+        emit RevenueDistributed(amount, cj03nes, reserves, mediator, piAddress);
+    }
+
+    // Quantum hack-proof: Manual database read with event logging
+    function readSportsData(string memory apiName) external onlyAllowedViewer returns (string memory) {
+        string memory data = sportsDataAPIs[apiName];
+        emit DataRead(msg.sender, "sports", data);
+        return data;
+    }
+
+    // Manage allowed viewers
+    function setViewer(address viewer, bool allowed) external onlyOwner {
+        allowedViewers[viewer] = allowed;
+    }
+
+    // Hack defense: Restrict unauthorized transfers
+    function safeTransfer(address recipient, uint256 amount) external onlyOwner {
+        require(recipient != address(0), "Invalid recipient");
+        usdcToken.transfer(recipient, amount);
+    }
+}
+
+
