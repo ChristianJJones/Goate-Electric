@@ -6,7 +6,7 @@ change the balances to be 1. Zeroppoint $ZPE, 2. ZeropointWifi $ZPW, 3, $Zeropoi
 take the navigation tabs and turn them into modals and buttons inside of them.
 3x3 modals. 3 by 3 boxes.
 when people create their account; generate addresses for them and map those addresses to their username/phone number/ email address they signed up with, and when the login they can access and manage their assets within the wallet too; even if they receive funds from external addresses and chains. the wallets will be able to direct them to the correct wallet or send them back with it's quantum HackProof Defense and Systems
-
+Every contract & page should be made using the USDMediator, InstilledInteroperability, and the Unreal Engine; 
 
 *logo* {refreshes and goes to the home page when clicked}
 Goate Electric {refreshes the page when clicked}
@@ -92,6 +92,8 @@ description: Transfer digital assets & digital utilities with your friends
 instilledInteroperability and USDMediator:
 when they transfer their assets to someone else then that person receives it 
 ]
+
+And under the transaction button; the transaction button should be the only button by itself and it should be rectangle and reach both ends of the page; but under the transfer button should be the Transaction History: and it should get posted for everything and is color-coded.
 
 
 
