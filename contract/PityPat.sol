@@ -17,7 +17,6 @@ contract PityPat {
         mediator = USDMediator(_mediator);
     }
 
-    // Example game function using USDMediator
     function playGame(uint256 betAmount) external {
         require(mediator.usdcToken().transferFrom(msg.sender, address(mediator), betAmount), "Transfer failed");
         // Game logic here
