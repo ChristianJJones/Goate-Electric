@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goate Electric</title>
-    <link rel="stylesheet" href="index.css"> <!-- Updated to match provided filename -->
+    <title>THE LAMBDUCK, INC.</title>
+    <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css2?family=Avenir-Roman&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="banner">
-            <div class="logo"><img src="GoateElectricLogo.jpg" alt="Goate Electric Logo"></div>
-            <div class="title"><h1>Goate Electric</h1></div>
+            <div class="logo"><img src="LambduckLogo.jpg" alt="THE LAMBDUCK, INC. Logo" onclick="location.reload();"></div>
+            <div class="title"><h1 onclick="location.reload();">THE LAMBDUCK, INC.</h1></div>
             <div class="user-section" id="user-section">
                 <button id="signup-login">Signup/Login</button>
-                <span id="user-email" style="display: none;"></span>
+                <span id="user-email" style="display: none;" onclick="location.reload();"></span>
                 <button id="logout" style="display: none;">Logout</button>
+                <button id="connect-device" style="display: none;">Connect Device</button>
+                <button id="settings" style="display: none;">Settings</button>
             </div>
         </div>
         <nav class="navigation" id="navigation" style="display: none;">
@@ -46,143 +48,93 @@
     <main>
         <section id="home" class="page active">
             <div id="not-logged-in">
-                <h2>WELCOME TO GOATE ELECTRIC</h2>
+                <h2>WELCOME TO THE LAMBDUCK, INC.</h2>
                 <p>Access digital utilities that make everyday life easier.</p>
             </div>
             <div id="logged-in" style="display: none;">
                 <div class="balances-container">
-                    <div class="balance usd-balance"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
-                    <div class="balance zpe-balance"><h3>Zeropoint Balance</h3><p id="zeropoint-balance">0</p></div>
-                    <div class="balance zpw-balance"><h3>ZeropointWifi Balance</h3><p id="zeropointwifi-balance">0</p></div>
-                    <div class="balance zpp-balance"><h3>ZeropointPhone Balance</h3><p id="zeropointphone-balance">0</p></div>
-                    <div class="balance gyst-balance"><h3>GreyStax Balance</h3><p id="gyst-balance">0</p></div>
-                    <div class="balance goate-balance"><h3>Goate Token Balance</h3><p id="goate-balance">0</p></div> <!-- Added -->
+                    <div class="balance asset-balance" data-asset="USD"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="ZPE"><h3>Zeropoint ($ZPE)</h3><p id="zeropoint-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="ZPW"><h3>ZeropointWifi ($ZPW)</h3><p id="zeropointwifi-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="ZPP"><h3>ZeropointPhoneService ($ZPP)</h3><p id="zeropointphone-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="ZDNFT"><h3>ZeropointDigitalStockNFT</h3><p id="zdnft-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="GOATE"><h3>TheGoateToken ($GOATE)</h3><p id="goate-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="GySt"><h3>GresyStx ($GySt)</h3><p id="gyst-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="GPNFT"><h3>GerastyxPropertyNFT</h3><p id="gpnft-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="ZGI"><h3>ZeropointGoateInsurance ($ZGI)</h3><p id="zgi-balance">0</p></div>
+                    <div class="balance asset-balance" data-asset="SDM"><h3>S.H.I.E.L.D. Mode ($SDM)</h3><p id="sdm-balance">0</p></div>
                 </div>
-                <div class="payment-container">
-                    <select id="payment-asset" class="payment-dropdown">
-                        <option value="USDC">USDC</option>
-                        <option value="ZPE">$ZPE</option>
-                        <option value="ZPW">$ZPW</option>
-                        <option value="ZPP">$ZPP</option>
-                        <option value="GySt">$GySt</option>
-                        <option value="XLM">$XLM</option>
-                        <option value="GOATE">$GOATE</option> <!-- Added -->
-                    </select>
-                    <input type="number" id="payment-amount" class="payment-input" placeholder="0.00">
-                </div>
-                <div class="button-section">
-                    <button id="consume-zpe">Consume $ZPE</button>
-                    <button id="consume-zpw">Consume $ZPW</button>
-                    <button id="subscribe-zpp">Consume $ZPP</button>
-                    <button id="airdrop-goate">Airdrop $GOATE</button> <!-- Added -->
+                <div class="features-grid">
+                    <button class="feature-btn" data-feature="portfolio">Portfolio</button>
+                    <button class="feature-btn" data-feature="zeropoint">Zeropoint</button>
+                    <button class="feature-btn" data-feature="zeropointwifi">ZeropointWifi</button>
+                    <button class="feature-btn" data-feature="zeropointphoneservice">ZeropointPhoneService</button>
+                    <button class="feature-btn" data-feature="digital-stocks">Digital Stocks</button>
+                    <button class="feature-btn" data-feature="swap">Swap</button>
+                    <button class="feature-btn" data-feature="goate-staking">Goate Staking</button>
+                    <button class="feature-btn" data-feature="hometeambets">HomeTeamBets</button>
+                    <button class="feature-btn" data-feature="earn">Earn</button>
                 </div>
             </div>
         </section>
-        <section id="zeropoint" class="page hidden"><h2>Zeropoint</h2><p>Wireless charging utility, pegged to $0.10.</p></section>
-        <section id="zeropointwifi" class="page hidden"><h2>ZeropointWifi</h2><p>Unlimited WiFi, pegged to $5.</p></section>
-        <section id="zeropointphoneservice" class="page hidden"><h2>ZeropointPhoneService</h2><p>Phone service utility, pegged to $10.</p></section>
-        <section id="earn" class="page hidden">
-            <h2>Earn</h2>
-            <p>Earn USDC by watching ads.</p>
-            <div class="earn-container">
-                <button id="watch-google-ad">Watch Google Ad</button>
-                <button id="watch-pi-ad">Watch Pi Ad</button>
-                <button id="watch-youtube-ad">Watch YouTube Ad</button>
-            </div>
-            <div id="ad-transaction-history">
-                <h3>Transaction History</h3>
-                <ul id="history-list"></ul>
+        <section id="zeropointgoateinsurance" class="page hidden">
+            <h2>ZeropointGoateInsurance</h2>
+            <p>Manage your insured assets with $ZGI.</p>
+            <button id="consume-zgi">Consume $ZGI</button>
+            <button id="pay-with-ads">Pay with Ads</button>
+            <div id="insured-assets-manager">
+                <h3>Insured Assets</h3>
+                <div id="insured-assets-list"></div>
+                <button id="make-claim">Make a Claim</button>
             </div>
         </section>
-        <section id="swap" class="page hidden">
-            <h2>Swap Assets</h2>
-            <div id="swap-container">
-                <select id="from-asset"></select>
-                <input type="number" id="swap-amount" placeholder="Amount">
-                <select id="to-asset"></select>
-                <select id="to-chain"></select>
-                <button id="swap-button">Swap</button>
+        <section id="validation-portal" class="page hidden">
+            <h2>Validation Portal</h2>
+            <button id="validate-identity">Validate Identity</button>
+            <button id="validate-icer">Validate Icer Self-Defense</button>
+        </section>
+        <section id="zeropointholographicview" class="page hidden">
+            <h2>ZeropointHolographicView</h2>
+            <button id="subscribe-zhv">Subscribe ($2/month)</button>
+            <div class="slider-group">
+                <button class="slider-btn zhv-on">On</button>
+                <button class="slider-btn zhv-off active">Off</button>
             </div>
-        </section>
-        <section id="portfolio" class="page hidden"><h2>Portfolio</h2><ul id="portfolio-list"></ul></section>
-        <section id="settings" class="page hidden">
-            <h2>Settings</h2>
-            <div class="settings-container">
-                <div class="bank-actions">
-                    <button id="bank-to-goate">Bank to Goate Electric (Deposit)</button>
-                    <button id="goate-to-bank">Goate Electric to Bank (Withdraw)</button>
-                </div>
-                <div class="settings-modal">
-                    <h3>Connect Bank</h3>
-                    <button id="connect-plaid">Connect with Plaid</button>
-                </div>
+            <div id="media-tabs">
+                <button data-tab="movies">Movies</button>
+                <button data-tab="tvshows">TV Shows</button>
+                <button data-tab="videos">Videos</button>
             </div>
+            <div id="media-content"></div>
         </section>
-        <section id="manage-devices" class="page hidden">
-            <h2>Manage Devices</h2>
-            <div id="devices-container"></div>
-            <input id="device-id" placeholder="Device ID" />
-            <button id="add-device">Add Device</button>
-            <button id="use-modal">Use Modal</button>
-        </section>
-        <section id="hometeambets" class="page hidden">
-            <h2>HomeTeamBets</h2>
-            <p>Bet on your favorite sports games!</p>
-            <input type="text" id="sports-search" placeholder="Search Sports Data (e.g., ESPN)..."> <!-- Added -->
-            <div id="sports-data-result"></div> <!-- Added -->
-            <div id="games-list"></div>
-            <div id="bet-transaction-history">
-                <h3>Transaction History</h3>
-                <ul id="bet-history-list"></ul>
-            </div>
-        </section>
-        <section id="scratch-off" class="page hidden">
-            <h2>Scratch Off NFT</h2>
-            <div id="scratch-off-container">
-                <iframe id="scratch-off-iframe" src="unreal://scratchoffnft" width="100%" height="100%"></iframe>
-            </div>
-        </section>
-        <section id="gerastyxopol" class="page hidden">
-            <h2>GerastyxOpol</h2>
-            <p>Play a blockchain-based Monopoly game!</p>
-            <div id="game-modes">
-                <button id="free-play">Free Play</button>
-                <button id="reasonable">Reasonable</button>
-                <button id="gambling">Gambling</button>
-                <button id="rich">Rich</button>
-            </div>
-            <div id="game-container"></div>
-        </section>
-        <section id="digital-stocks" class="page hidden">
-            <h2>Digital Stocks</h2>
-            <input type="text" id="stock-search" placeholder="Search Stocks...">
-            <div id="stock-list"></div>
-        </section>
-        <section id="goate-staking" class="page hidden">
-            <h2>Goate Staking</h2>
-            <div id="staking-container"></div>
+        <section id="shieldmode" class="page hidden">
+            <h2>S.H.I.E.L.D. Mode</h2>
+            <button id="activate-sdm">Activate ($1/shot)</button>
         </section>
     </main>
 
-    <div id="confirmation-modal" class="modal disney-modal" style="display: none;">
-        <div class="modal-content disney-modal-content">
-            <h3>Confirm Transaction</h3>
-            <p id="modal-message"></p>
-            <div class="modal-buttons">
-                <button id="modal-yes" class="disney-button">Yes</button>
-                <button id="modal-no" class="disney-button">No</button>
+    <div id="asset-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-asset-title"></h3>
+            <div id="asset-options">
+                <button id="buy-btn">Buy</button>
+                <button id="sell-btn">Sell</button>
+                <button id="swap-btn">Swap</button>
+                <button id="transfer-btn">Transfer</button>
+                <button id="consume-btn" style="display: none;">Consume</button>
             </div>
-            <div id="pin-section" style="display: none;">
-                <input type="password" id="pin-input" maxlength="4" placeholder="Enter PIN">
-                <button id="pin-submit" class="disney-button">Submit</button>
-            </div>
+            <button id="close-modal">Close</button>
+        </div>
+    </div>
+
+    <div id="feature-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="feature-title"></h3>
+            <div id="feature-content"></div>
+            <button id="close-feature-modal">Close</button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script>
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
-    <script src="usd-mediator.js"></script>
-    <script src="index.js"></script>
-</body>
-</html>
