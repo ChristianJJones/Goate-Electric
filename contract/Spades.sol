@@ -117,10 +117,8 @@ contract Spades is VRFConsumerBase {
         emit BidPlaced(currentBidder(), bid);
 
         if (biddingPhase == 0 || biddingPhase == 2) {
-            // Wait for partner
             biddingPhase++;
         } else {
-            // Calculate team bid
             uint8 teamIndex = (currentBidder() % 2 == 0) ? 0 : 1;
             teamBids[teamIndex] = playerBids[currentBidder()] + playerBids[currentBidder() - 1];
             biddingPhase++;
@@ -177,15 +175,13 @@ contract Spades is VRFConsumerBase {
         uint8 teamATricks = tricksWon[0] + tricksWon[2];
         uint8 teamBTricks = tricksWon[1] + tricksWon[3];
 
-        // Team A
         if (teamATricks >= teamBids[0]) {
             uint256 excess = teamATricks - teamBids[0];
-            teamAScore += (teamBids[0] * 1 ether) + (excess * 1 ether / 10); // e.g., 4.4 = 4400000 wei
+            teamAScore += (teamBids[0] * 1 ether) + (excess * 1 ether / 10);
         } else {
             teamAStrikes++;
         }
 
-        // Team B
         if (teamBTricks >= teamBids[1]) {
             uint256 excess = teamBTricks - teamBids[1];
             teamBScore += (teamBids[1] * 1 ether) + (excess * 1 ether / 10);
@@ -225,7 +221,7 @@ contract Spades is VRFConsumerBase {
         }
     }
 
-    // Helpers (unchanged from previous unless noted)
+    // Helper functions
     function getSuit(uint8 card) public pure returns (uint8) {
         if (card == 51) return 4; // Little Joker
         if (card == 52) return 4; // Big Joker
@@ -314,4 +310,15 @@ contract Spades is VRFConsumerBase {
         for (uint8 p = 0; p < 4; p++) tricksWon[p] = 0;
     }
 
-    function currentBid
+    function getCurrentTime() internal view returns (uint256) {
+        (, int256 time, , ,) = timeFeed.latestRoundData();
+        return uint256(time);
+    }
+
+    function currentBidder() internal view returns (uint8) {
+        if (biddingPhase == 0) return dealer;
+        if (biddingPhase == 1) return (dealer + 2) % 4;
+        if (biddingPhase == 2) return (dealer + 1) % 4;
+        return (dealer + 3) % 4;
+    }
+}
