@@ -136,7 +136,7 @@ contract HomeTeamBets {
             address winner = winners[i];
             Bet memory bet = game.bets[winner];
             uint256 winnerShare = (bet.amount * winnerPool) / totalWinningWeight;
-            usdMediator.transferUSD(winner, winnerShare); // Default to Stellar/USD via USDMediator
+            usdMediator.transferUSD(winner, winnerShare);
             transactionHistory[winner].push(Bet(winner, winnerShare, bet.betType, bet.overtime, block.timestamp));
             emit WinningsDistributed(winner, _gameId, winnerShare);
         }
