@@ -63,7 +63,7 @@ contract War is VRFConsumerBase {
             deck[i] = i;
         }
 
-        // Shuffle the deck using Fisher-Yates algorithm (from Spades.sol)
+        // Shuffle the deck using Fisher-Yates algorithm
         for (uint8 i = 51; i > 0; i--) {
             uint8 j = uint8(uint256(keccak256(abi.encode(randomness, i))) % (i + 1));
             (deck[i], deck[j]) = (deck[j], deck[i]);
