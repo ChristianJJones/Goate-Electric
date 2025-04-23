@@ -1,213 +1,248 @@
-// Web3 provider and signer setup
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
+const supportedAssets = ['USD', 'Pi', 'ZPE', 'ZPP', 'ZPW', 'GySt', 'GOATE', 'ZHV', 'SD'];
+let currentUser = null;
+let userPin = null;
 
-// Contract instances (replace addresses with deployed contract addresses)
-const zpeContract = new ethers.Contract("0xYourZPEAddress", zpeABI, signer);
-const zpwContract = new ethers.Contract("0xYourZPWAddress", zpwABI, signer);
-const zppContract = new ethers.Contract("0xYourZPPAddress", zppABI, signer);
-const deviceContract = new ethers.Contract("0xYourDeviceConnectAddress", deviceABI, signer);
-const usdcContract = new ethers.Contract("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", usdcABI, signer);
-const adWatchContract = new ethers.Contract("0xYourAdWatchAddress", adWatchABI, signer);
-const homeTeamBetsContract = new ethers.Contract("0xYourHomeTeamBetsAddress", homeTeamBetsABI, signer);
-const gerastyxOpolContract = new ethers.Contract("0xYourGerastyxOpolAddress", gerastyxOpolABI, signer);
-const greyStaxContract = new ethers.Contract("0xYourGreyStaxAddress", greyStaxABI, signer);
-const digitalStockNFTContract = new ethers.Contract("0xYourDigitalStockNFTAddress", digitalStockNFTABI, signer);
-const stakingContract = new ethers.Contract("0xYourGoateStakingAddress", goateStakingABI, signer);
-const lendingContract = new ethers.Contract("0xYourLendingAddress", lendingABI, signer);
-const interoperabilityContract = new ethers.Contract("0xYourInteroperabilityAddress", interoperabilityABI, signer);
-const scratchOffContract = new ethers.Contract("0xYourScratchOffNFTAddress", scratchOffABI, signer);
-const goateTokenContract = new ethers.Contract("0xYourGoateTokenAddress", goateABI, signer);
-const usdMediatorContract = new ethers.Contract("0xYourUSDMediatorAddress", usdMediatorABI, signer);
-const zgiContract = new ethers.Contract("0xYourZGIAddress", zgiABI, signer);
-const sdmContract = new ethers.Contract("0xYourSDMAddress", sdmABI, signer);
-const zhvContract = new ethers.Contract("0xYourZHVAddress", zhvABI, signer);
-const validationPortalContract = new ethers.Contract("0xYourValidationPortalAddress", validationPortalABI, signer);
+// Pi SDK Authentication
+window.onload = async () => {
+    await Pi.init({ version: "2.0" });
+    Pi.authenticate()
+        .then(async (auth) => {
+            currentUser = auth.user.username;
+            document.getElementById('settings').onclick = () => showSettings();
+            await updateBalances();
+            if (!userPin) {
+                userPin = prompt("Create a 4-digit PIN:");
+                while (!/^\d{4}$/.test(userPin)) {
+                    userPin = prompt("Invalid PIN. Create a 4-digit PIN:");
+                }
+            }
+        })
+        .catch((error) => {
+            console.error("Pi Authentication failed:", error);
+            alert("Authentication failed. Please try again.");
+        });
+};
 
-// State variables
-let currentUser, isLoggedIn = false;
-const db = { users: {}, devices: {}};
-
-// Update UI based on login state
-function updateUI() {
-    document.getElementById('logged-in').style.display = isLoggedIn ? 'block' : 'none';
-    document.getElementById('not-logged-in').style.display = isLoggedIn ? 'none' : 'block';
-    document.getElementById('navigation').style.display = isLoggedIn ? 'flex' : 'none';
-    document.getElementById('signup-login').style.display = isLoggedIn ? 'none' : 'inline';
-    document.getElementById('user-email').style.display = isLoggedIn ? 'inline' : 'none';
-    document.getElementById('logout').style.display = isLoggedIn ? 'inline' : 'none';
-    document.getElementById('connect-device').style.display = isLoggedIn ? 'inline' : 'none';
-    document.getElementById('settings').style.display = isLoggedIn ? 'inline' : 'none';
-    if (isLoggedIn) {
-        document.getElementById('user-email').textContent = currentUser;
-        updateBalances();
-        loadDevices();
+// Update Balances
+async function updateBalances() {
+    for (const asset of supportedAssets) {
+        const balance = await getBalance(asset); // Fetch from InstilledInteroperability
+        document.getElementById(`${asset.toLowerCase()}-balance`).textContent = balance.toFixed(2);
     }
 }
 
-// Update asset balances
-async function updateBalances() {
-    const userAddress = await signer.getAddress();
-    document.getElementById('usd-balance').textContent = ethers.utils.formatUnits(await usdcContract.balanceOf(userAddress), 6);
-    document.getElementById('zeropoint-balance').textContent = ethers.utils.formatUnits(await zpeContract.balanceOf(userAddress), 3);
-    document.getElementById('zeropointwifi-balance').textContent = ethers.utils.formatUnits(await zpwContract.balanceOf(userAddress), 2);
-    document.getElementById('zeropointphone-balance').textContent = ethers.utils.formatUnits(await zppContract.balanceOf(userAddress), 2);
-    document.getElementById('zdnft-balance').textContent = await digitalStockNFTContract.balanceOf(userAddress);
-    document.getElementById('goate-balance').textContent = ethers.utils.formatUnits(await goateTokenContract.balanceOf(userAddress), 18);
-    document.getElementById('gyst-balance').textContent = ethers.utils.formatUnits(await greyStaxContract.balanceOf(userAddress), 18);
-    document.getElementById('gpnft-balance').textContent = await gerastyxPropertyNFTContract.balanceOf(userAddress);
-    document.getElementById('zgi-balance').textContent = ethers.utils.formatUnits(await zgiContract.balanceOf(userAddress), 18);
-    document.getElementById('sdm-balance').textContent = ethers.utils.formatUnits(await sdmContract.balanceOf(userAddress), 18);
+async function getBalance(asset) {
+    // Placeholder: Fetch balance from InstilledInteroperability
+    return Math.random() * 100; // Mock balance
 }
 
-// Asset modal handling
-document.querySelectorAll('.asset-balance').forEach(balance => {
-    balance.addEventListener('click', () => {
-        const asset = balance.getAttribute('data-asset');
-        showAssetModal(asset);
-    });
-});
-
-function showAssetModal(asset) {
-    const modal = document.getElementById('asset-modal');
-    const title = document.getElementById('modal-asset-title');
-    const consumeBtn = document.getElementById('consume-btn');
-    title.textContent = `${asset} Options`;
-    consumeBtn.style.display = ['ZPE', 'ZPW', 'ZPP', 'ZGI', 'SDM'].includes(asset) ? 'inline' : 'none';
-    modal.style.display = 'flex';
-
-    document.getElementById('buy-btn').onclick = () => handleBuy(asset);
-    document.getElementById('sell-btn').onclick = () => handleSell(asset);
-    document.getElementById('swap-btn').onclick = () => handleSwap(asset);
-    document.getElementById('transfer-btn').onclick = () => handleTransfer(asset);
-    document.getElementById('consume-btn').onclick = () => handleConsume(asset);
-    document.getElementById('close-modal').onclick = () => modal.style.display = 'none';
+// Navigation
+function navigateTo(asset) {
+    showFeatureModal(asset);
 }
 
-// Feature modal handling
-document.querySelectorAll('.feature-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const feature = btn.getAttribute('data-feature');
-        showFeatureModal(feature);
-    });
-});
-
+// Feature Modal
 function showFeatureModal(feature) {
     const modal = document.getElementById('feature-modal');
     const title = document.getElementById('feature-title');
     const content = document.getElementById('feature-content');
     title.textContent = feature.charAt(0).toUpperCase() + feature.slice(1);
-    content.innerHTML = document.querySelector(`#${feature}`).innerHTML;
+
+    if (feature === 'wallet') {
+        content.innerHTML = `
+            <button onclick="validate()">Validate</button>
+            <button onclick="watchAd()">Watch Ad</button>
+            <p>${currentUser}</p>
+            <p>Pi Address: ${getPiAddress()}</p>
+            <button onclick="deposit()">Deposit</button>
+            <button onclick="withdraw()">Withdraw</button>
+            <input type="text" id="asset-search" placeholder="Search crypto, stocks, fiat">
+            ${supportedAssets.map(asset => `
+                <div class="asset-tab">
+                    <p>${asset}: $${getAssetPrice(asset)}</p>
+                    <p>Balance: ${getBalance(asset).toFixed(2)}</p>
+                    <button onclick="stakeAsset('${asset}')">Stake</button>
+                    <button onclick="swapAsset('${asset}')">Swap</button>
+                    <button onclick="transferAsset('${asset}')">Transfer</button>
+                    <button onclick="lendAsset('${asset}')">Lend</button>
+                    <button onclick="borrowAsset('${asset}')">Borrow</button>
+                    ${['ZPE', 'ZPW', 'ZPP'].includes(asset) ? `<button onclick="consumeAsset('${asset}')">Consume</button>` : ''}
+                    <div class="card-slider ${getCardStatus(asset) ? 'on' : 'off'}" onclick="toggleCard('${asset}')"></div>
+                </div>
+            `).join('')}
+            <h3>Transaction History</h3>
+            <div id="transaction-history"></div>
+        `;
+    } else if (feature === 'gerastyx') {
+        content.innerHTML = `
+            <button onclick="navigateTo('hometeambets')">HomeTeamBets</button>
+            <h3>Gerastyx Opol Mode</h3>
+            <button onclick="startGame('gerastyxopol', 'Free')">Free</button>
+            <button onclick="startGame('gerastyxopol', 'OneDollar')">Civilian</button>
+            <button onclick="startGame('gerastyxopol', 'TwentyDollar')">Banker</button>
+            <button onclick="startGame('gerastyxopol', 'HundredDollar')">Monopoly</button>
+            <button onclick="navigateTo('estates')">GerastyxOpol Estates</button>
+            <h3>Spades Mode</h3>
+            <button onclick="startGame('spades', 'Free')">Free</button>
+            <button onclick="startGame('spades', 'OneDollar')">$1</button>
+            <button onclick="startGame('spades', 'TwentyDollar')">$20</button>
+            <button onclick="startGame('spades', 'HundredDollar')">$100</button>
+            <h3>Pity Pat Mode</h3>
+            <button onclick="startGame('pitypat', 'Free')">Free</button>
+            <button onclick="startGame('pitypat', 'OneDollar')">$1</button>
+            <button onclick="startGame('pitypat', 'TwentyDollar')">$20</button>
+            <button onclick="startGame('pitypat', 'HundredDollar')">$100</button>
+            <h3>War Mode</h3>
+            <button onclick="startGame('war', 'Free')">Free</button>
+            <button onclick="startGame('war', 'OneDollar')">$1</button>
+            <button onclick="startGame('war', 'TwentyDollar')">$20</button>
+            <button onclick="startGame('war', 'HundredDollar')">$100</button>
+        `;
+    } else if (feature === 'estates') {
+        content.innerHTML = `
+            <p>${currentUser}</p>
+            <p>Pi Address: ${getPiAddress()}</p>
+            <p>Total GerastyxPropertyNFT: ${getNFTCount()}</p>
+            ${getNFTs().map(nft => `
+                <div class="nft-tab">
+                    <p>${nft.name}: $${nft.price}</p>
+                    <p>Balance: ${nft.balance}</p>
+                    <button onclick="sellNFT(${nft.id})">Sell</button>
+                    <button onclick="auctionNFT(${nft.id})">Auction</button>
+                    <button onclick="stakeNFT(${nft.id})">Stake</button>
+                </div>
+            `).join('')}
+        `;
+    } else {
+        content.innerHTML = `<p>${feature} Page</p>`;
+    }
     modal.style.display = 'flex';
-    document.getElementById('close-feature-modal').onclick = () => modal.style.display = 'none';
 }
 
-// Connect device
-document.getElementById('connect-device').addEventListener('click', async () => {
-    const deviceId = prompt("Enter Device ID:");
-    if (deviceId) {
-        await confirmTransaction(`Connect Device ${deviceId}?`, async () => {
-            await deviceContract.addDevice(deviceId);
-            loadDevices();
-        });
+function getPiAddress() { return "G..."; } // Fetch from InstilledInteroperability
+function getAssetPrice(asset) { return Math.random() * 100; } // Fetch from USDMediator
+function getCardStatus(asset) { return true; } // Fetch from TheLambduckCard
+function getNFTCount() { return 0; } // Fetch from GerastyxPropertyNFT
+function getNFTs() { return []; } // Fetch from GerastyxPropertyNFT
+
+async function toggleCard(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        // Toggle card status via TheLambduckCard.sol
+        console.log(`Toggled card for ${asset}`);
+    } else {
+        alert("Invalid PIN");
     }
-});
-
-// Settings
-document.getElementById('settings').addEventListener('click', () => {
-    showFeatureModal('settings');
-});
-
-// ZGI functions
-document.getElementById('consume-zgi').addEventListener('click', async () => {
-    const amount = prompt("How many $ZGI to consume?");
-    if (amount) {
-        await confirmTransaction(`Consume ${amount} $ZGI?`, async () => {
-            const deviceId = prompt("Enter Device ID to insure:");
-            await zgiContract.subscribe(deviceId, ethers.utils.parseUnits(amount, 18));
-            updateBalances();
-            loadInsuredAssets();
-        });
-    }
-});
-
-document.getElementById('pay-with-ads').addEventListener('click', () => watchAd("Google"));
-
-async function loadInsuredAssets() {
-    const userAddress = await signer.getAddress();
-    const assets = await zgiContract.getInsuredDevices(userAddress);
-    const list = document.getElementById('insured-assets-list');
-    list.innerHTML = assets.map(asset => `
-        <div>
-            <p>Device: ${asset.deviceId}</p>
-            <p>Holder: ${userAddress}</p>
-            <div class="slider-group">
-                <button class="slider-btn ${asset.isInsured ? 'active' : ''}" disabled>On</button>
-                <button class="slider-btn ${!asset.isInsured ? 'active' : ''}" disabled>Off</button>
-            </div>
-        </div>
-    `).join('');
 }
 
-document.getElementById('make-claim').addEventListener('click', async () => {
-    const deviceId = prompt("Device ID:");
-    const description = prompt("What happened?");
-    const amount = prompt("Claim amount ($USD):");
-    if (deviceId && description && amount) {
-        await confirmTransaction(`File claim for ${amount} USD?`, async () => {
-            await zgiContract.makeClaim(deviceId, description, ethers.utils.parseUnits(amount, 6));
-            updateBalances();
-        });
-    }
-});
-
-// Validation Portal
-document.getElementById('validate-identity').addEventListener('click', async () => {
-    await confirmTransaction("Validate an identity?", async () => {
-        await validationPortalContract.validateTask(/* taskId fetched dynamically */);
-        updateBalances();
-    });
-});
-
-document.getElementById('validate-icer').addEventListener('click', async () => {
-    await confirmTransaction("Validate an icer incident?", async () => {
-        await validationPortalContract.validateIncident(/* incidentId fetched dynamically */);
-        updateBalances();
-    });
-});
-
-// ZHV
-document.getElementById('subscribe-zhv').addEventListener('click', async () => {
-    await confirmTransaction("Subscribe to $ZHV for $2/month?", async () => {
-        await zhvContract.subscribe();
-        updateBalances();
-    });
-});
-
-// SDM
-document.getElementById('activate-sdm').addEventListener('click', async () => {
-    await confirmTransaction("Activate S.H.I.E.L.D. Mode ($1/shot)?", async () => {
-        await sdmContract.useSDM();
-        updateBalances();
-    });
-});
-
-// Initial setup
-document.addEventListener('DOMContentLoaded', async () => {
-    await provider.send("eth_requestAccounts", []);
-    await initializeStocks();
-    // Add other initialization logic as needed
-});
-
-// Placeholder functions (implement as needed)
-async function confirmTransaction(message, callback) {
-    if (confirm(message)) await callback();
+async function validate() { console.log("Validate"); }
+async function watchAd() {
+    // Call AdWatch.sol
+    console.log("Watch Ad");
 }
-async function loadDevices() { /* Implement device loading */ }
-async function initializeStocks() { /* Implement stock initialization */ }
-function watchAd(adType) { console.log(`Watching ${adType} ad`); }
-async function handleBuy(asset) { console.log(`Buy ${asset}`); }
-async function handleSell(asset) { console.log(`Sell ${asset}`); }
-async function handleSwap(asset) { console.log(`Swap ${asset}`); }
-async function handleTransfer(asset) { console.log(`Transfer ${asset}`); }
-async function handleConsume(asset) { console.log(`Consume ${asset}`); }
+async function deposit() {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log("Deposit");
+    }
+}
+async function withdraw() {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log("Withdraw");
+    }
+}
+async function stakeAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Stake ${asset}`);
+    }
+}
+async function swapAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Swap ${asset}`);
+    }
+}
+async function transferAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Transfer ${asset}`);
+    }
+}
+async function lendAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Lend ${asset}`);
+    }
+}
+async function borrowAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Borrow ${asset}`);
+    }
+}
+async function consumeAsset(asset) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Consume ${asset}`);
+    }
+}
+async function sellNFT(id) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Sell NFT ${id}`);
+    }
+}
+async function auctionNFT(id) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Auction NFT ${id}`);
+    }
+}
+async function stakeNFT(id) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Stake NFT ${id}`);
+    }
+}
+async function startGame(game, mode) {
+    const pin = prompt("Enter 4-digit PIN:");
+    if (pin === userPin) {
+        console.log(`Start ${game} in ${mode} mode`);
+    }
+}
+
+function showSettings() {
+    const modal = document.getElementById('feature-modal');
+    const title = document.getElementById('feature-title');
+    const content = document.getElementById('feature-content');
+    title.textContent = "Settings";
+    content.innerHTML = `
+        <p>Username: ${currentUser}</p>
+        <p>Pi Address: ${getPiAddress()}</p>
+        <button onclick="connectBank()">Connect Bank</button>
+        <button onclick="connectCard()">Connect Card</button>
+        <p>TheLambduckCard: ${getCardInfo()}</p>
+        <button onclick="changePin()">Change PIN</button>
+    `;
+    modal.style.display = 'flex';
+}
+
+function connectBank() { console.log("Connect Bank"); }
+function connectCard() { console.log("Connect Card"); }
+function getCardInfo() { return "**** **** **** 1234"; } // Fetch from TheLambduckCard
+function changePin() {
+    const newPin = prompt("Enter new 4-digit PIN:");
+    if (/^\d{4}$/.test(newPin)) {
+        userPin = newPin;
+        alert("PIN updated");
+    } else {
+        alert("Invalid PIN");
+    }
+}
+
+// Close Modal
+document.querySelector('.close').onclick = () => {
+    document.getElementById('feature-modal').style.display = 'none';
+};
