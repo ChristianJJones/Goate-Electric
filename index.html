@@ -3,138 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE LAMBDUCK, INC.</title>
+    <title>THE LAMBDUCK, INC. - GOATE ELECTRIC</title>
     <link rel="stylesheet" href="index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Avenir-Roman&display=swap" rel="stylesheet">
+    <script src="https://pi-sdk.com/pi-sdk.js"></script> <!-- Pi SDK -->
 </head>
 <body>
     <header>
-        <div class="banner">
-            <div class="logo"><img src="LambduckLogo.jpg" alt="THE LAMBDUCK, INC. Logo" onclick="location.reload();"></div>
-            <div class="title"><h1 onclick="location.reload();">THE LAMBDUCK, INC.</h1></div>
-            <div class="user-section" id="user-section">
-                <button id="signup-login">Signup/Login</button>
-                <span id="user-email" style="display: none;" onclick="location.reload();"></span>
-                <button id="logout" style="display: none;">Logout</button>
-                <button id="connect-device" style="display: none;">Connect Device</button>
-                <button id="settings" style="display: none;">Settings</button>
-            </div>
-        </div>
-        <nav class="navigation" id="navigation" style="display: none;">
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
-                <li><a href="#zeropoint" class="nav-link">Zeropoint</a></li>
-                <li><a href="#zeropointwifi" class="nav-link">ZeropointWifi</a></li>
-                <li><a href="#zeropointphoneservice" class="nav-link">ZeropointPhoneService</a></li>
-                <li><a href="#digital-stocks" class="nav-link">ZeropointDigitalStocks</a></li>
-                <li><a href="#swap" class="nav-link">Swap</a></li>
-                <li><a href="#goate-staking" class="nav-link">Goate Staking</a></li>
-                <li><a href="#hometeambets" class="nav-link">HomeTeamBets</a></li>
-                <li><a href="#scratch-off" class="nav-link">Scratch Off NFT</a></li>
-                <li><a href="#gerastyxopol" class="nav-link">GerastyxOpol</a></li>
-                <li><a href="#earn" class="nav-link">Earn</a></li>
-                <li><a href="#manage-devices" class="nav-link">Manage Devices</a></li>
-                <li><a href="#settings" class="nav-link">Settings</a></li>
-            </ul>
-        </nav>
+        <img src="logo.png" alt="Logo" class="logo">
+        <h1>Goate Electric</h1>
+        <button id="connect-device">Connect Device</button>
+        <button id="settings">Settings</button>
     </header>
-
     <main>
-        <section id="home" class="page active">
-            <div id="not-logged-in">
-                <h2>WELCOME TO THE LAMBDUCK, INC.</h2>
-                <p>Access digital utilities that make everyday life easier.</p>
-            </div>
-            <div id="logged-in" style="display: none;">
-                <div class="balances-container">
-                    <div class="balance asset-balance" data-asset="USD"><h3>USD Balance</h3><p id="usd-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="ZPE"><h3>Zeropoint ($ZPE)</h3><p id="zeropoint-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="ZPW"><h3>ZeropointWifi ($ZPW)</h3><p id="zeropointwifi-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="ZPP"><h3>ZeropointPhoneService ($ZPP)</h3><p id="zeropointphone-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="ZDNFT"><h3>ZeropointDigitalStockNFT</h3><p id="zdnft-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="GOATE"><h3>TheGoateToken ($GOATE)</h3><p id="goate-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="GySt"><h3>GresyStx ($GySt)</h3><p id="gyst-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="GPNFT"><h3>GerastyxPropertyNFT</h3><p id="gpnft-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="ZGI"><h3>ZeropointGoateInsurance ($ZGI)</h3><p id="zgi-balance">0</p></div>
-                    <div class="balance asset-balance" data-asset="SDM"><h3>S.H.I.E.L.D. Mode ($SDM)</h3><p id="sdm-balance">0</p></div>
-                </div>
-                <div class="features-grid">
-                    <button class="feature-btn" data-feature="portfolio">Portfolio</button>
-                    <button class="feature-btn" data-feature="zeropoint">Zeropoint</button>
-                    <button class="feature-btn" data-feature="zeropointwifi">ZeropointWifi</button>
-                    <button class="feature-btn" data-feature="zeropointphoneservice">ZeropointPhoneService</button>
-                    <button class="feature-btn" data-feature="digital-stocks">Digital Stocks</button>
-                    <button class="feature-btn" data-feature="swap">Swap</button>
-                    <button class="feature-btn" data-feature="goate-staking">Goate Staking</button>
-                    <button class="feature-btn" data-feature="hometeambets">HomeTeamBets</button>
-                    <button class="feature-btn" data-feature="earn">Earn</button>
-                </div>
-            </div>
-        </section>
-        <section id="zeropointgoateinsurance" class="page hidden">
-            <h2>ZeropointGoateInsurance</h2>
-            <p>Manage your insured assets with $ZGI.</p>
-            <button id="consume-zgi">Consume $ZGI</button>
-            <button id="pay-with-ads">Pay with Ads</button>
-            <div id="insured-assets-manager">
-                <h3>Insured Assets</h3>
-                <div id="insured-assets-list"></div>
-                <button id="make-claim">Make a Claim</button>
-            </div>
-        </section>
-        <section id="validation-portal" class="page hidden">
-            <h2>Validation Portal</h2>
-            <button id="validate-identity">Validate Identity</button>
-            <button id="validate-icer">Validate Icer Self-Defense</button>
-        </section>
-        <section id="zeropointholographicview" class="page hidden">
-            <h2>ZeropointHolographicView</h2>
-            <button id="subscribe-zhv">Subscribe ($2/month)</button>
-            <div class="slider-group">
-                <button class="slider-btn zhv-on">On</button>
-                <button class="slider-btn zhv-off active">Off</button>
-            </div>
-            <div id="media-tabs">
-                <button data-tab="movies">Movies</button>
-                <button data-tab="tvshows">TV Shows</button>
-                <button data-tab="videos">Videos</button>
-            </div>
-            <div id="media-content"></div>
-        </section>
-        <section id="shieldmode" class="page hidden">
-            <h2>S.H.I.E.L.D. Mode</h2>
-            <button id="activate-sdm">Activate ($1/shot)</button>
-        </section>
+        <div class="balances">
+            <div class="balance" onclick="navigateTo('usd')">$USD: <span id="usd-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('pi')">$Pi: <span id="pi-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('zpe')">$ZPE: <span id="zpe-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('zpp')">$ZPP: <span id="zpp-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('zpw')">$ZPW: <span id="zpw-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('gyst')">$GySt: <span id="gyst-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('goate')">$GOATE: <span id="goate-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('zhv')">$ZHV: <span id="zhv-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('sd')">$SD: <span id="sd-balance">0</span></div>
+        </div>
+        <button id="manage-devices">Manage Devices</button>
+        <div class="actions">
+            <button onclick="showFeatureModal('wallet')">Wallet</button>
+            <button onclick="showFeatureModal('gerastyx')">Gerastyx Playground</button>
+        </div>
     </main>
-
-    <div id="asset-modal" class="modal" style="display: none;">
+    <footer>
+        <p>THE LAMBDUCK, INC.</p>
+        <p>@thelambduckinc</p>
+        <p>Goate Electric</p>
+    </footer>
+    <div id="feature-modal" class="modal">
         <div class="modal-content">
-            <h3 id="modal-asset-title"></h3>
-            <div id="asset-options">
-                <button id="buy-btn">Buy</button>
-                <button id="sell-btn">Sell</button>
-                <button id="swap-btn">Swap</button>
-                <button id="transfer-btn">Transfer</button>
-                <button id="consume-btn" style="display: none;">Consume</button>
-            </div>
-            <button id="close-modal">Close</button>
-        </div>
-    </div>
-
-    <div id="feature-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3 id="feature-title"></h3>
+            <span class="close">&times;</span>
+            <h2 id="feature-title"></h2>
             <div id="feature-content"></div>
-            <button id="close-feature-modal">Close</button>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <script src="https://unpkg.com/stellar-sdk@10.0.1/dist/stellar-sdk.js"></script>
-    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
