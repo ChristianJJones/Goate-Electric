@@ -1,3 +1,4 @@
+sandbox flag = true;
 const supportedAssets = ['USD', 'PI', 'ZPE', 'ZPP', 'ZPW', 'ZHV', 'GOATE', 'GySt', 'SD', 'ZGI', 'GP', 'zS'];
 let currentUser = null;
 let userPin = null;
