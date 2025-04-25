@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE LAMBDUCK, INC. - GOATE ELECTRIC</title>
     <link rel="stylesheet" href="index.css">
-    <script src="https://pi-sdk.com/pi-sdk.js"></script> <!-- Pi SDK -->
+    <script src="https://pi-sdk.com/pi-sdk.js"></script>
 </head>
 <body>
     <header>
@@ -16,15 +16,62 @@
     </header>
     <main>
         <div class="balances">
-            <div class="balance" onclick="navigateTo('usd')">$USD: <span id="usd-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('pi')">$Pi: <span id="pi-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('zpe')">$ZPE: <span id="zpe-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('zpp')">$ZPP: <span id="zpp-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('zpw')">$ZPW: <span id="zpw-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('gyst')">$GySt: <span id="gyst-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('goate')">$GOATE: <span id="goate-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('zhv')">$ZHV: <span id="zhv-balance">0</span></div>
-            <div class="balance" onclick="navigateTo('sd')">$SD: <span id="sd-balance">0</span></div>
+            <div class="balance" onclick="navigateTo('usd')">
+                <img src="usd_logo.png" class="token-logo" alt="$USD Logo">
+                $USD: <span id="usd-balance">0</span>
+            </div>
+            <div class="balance" onclick="navigateTo('pi')">
+                <img src="pi_logo.png" class="token-logo" alt="$PI Logo">
+                $PI: <span id="pi-balance">0</span>
+            </div>
+            <div class="balance" onclick="navigateTo('zpe')">
+                <img src="zpe_logo.png" class="token-logo" alt="$ZPE Logo">
+                $ZPE: <span id="zpe-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('zpe')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('zpp')">
+                <img src="zpp_logo.png" class="token-logo" alt="$ZPP Logo">
+                $ZPP: <span id="zpp-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('zpp')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('zpw')">
+                <img src="zpw_logo.png" class="token-logo" alt="$ZPW Logo">
+                $ZPW: <span id="zpw-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('zpw')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('zhv')">
+                <img src="zhv_logo.png" class="token-logo" alt="$ZHV Logo">
+                $ZHV: <span id="zhv-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('zhv')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('goate')">
+                <img src="goate_logo.png" class="token-logo" alt="$GOATE Logo">
+                $GOATE: <span id="goate-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('goate')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('gyst')">
+                <img src="gyst_logo.png" class="token-logo" alt="$GySt Logo">
+                $GySt: <span id="gyst-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('gyst')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('sd')">
+                <img src="sd_logo.png" class="token-logo" alt="$SD Logo">
+                $SD: <span id="sd-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('sd')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('zgi')">
+                <img src="zgi_logo.png" class="token-logo" alt="$ZGI Logo">
+                $ZGI: <span id="zgi-balance">0</span>
+            </div>
+            <div class="balance" onclick="navigateTo('gp')">
+                <img src="gp_logo.png" class="token-logo" alt="$GP Logo">
+                $GP: <span id="gp-balance">0</span>
+                <div class="slider on" onclick="toggleSlider('gp')"></div>
+            </div>
+            <div class="balance" onclick="navigateTo('zs')">
+                <img src="zs_logo.png" class="token-logo" alt="$zS Logo">
+                $zS: <span id="zs-balance">0</span>
+            </div>
         </div>
         <button id="manage-devices">Manage Devices</button>
         <div class="actions">
@@ -39,7 +86,7 @@
     </footer>
     <div id="feature-modal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close">×</span>
             <h2 id="feature-title"></h2>
             <div id="feature-content"></div>
         </div>
