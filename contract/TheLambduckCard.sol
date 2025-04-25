@@ -1,62 +1,40 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./InstilledInteroperability.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TheLambduckCard {
-    InstilledInteroperability public interoperability;
-    uint256 public constant DAILY_SPENDING_LIMIT = 10_000_000_000 * 10**18;
-
-    struct User {
-        string firstName;
-        string lastName;
-        bytes32 cardNumberHash;
-        uint256[3] cvc;
-        uint256 balance; // USDC balance
-    }
-    mapping(address => User) public users;
-    mapping(bytes32 => address) public cardNumberToUser;
-
-    constructor(address _interoperability) {
-        interoperability = InstilledInteroperability(_interoperability);
+contract TheLambduckCard is Ownable {
+    struct Card {
+        string cardNumber;
+        string expirationDate;
+        string cvc;
+        string nftDesign;
     }
 
-    function registerUser(string memory firstName, string memory lastName) external {
-        require(bytes(users[msg.sender].firstName).length == 0, "User already registered");
-        uint256[3] memory cvc = [
-            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 1))) % 1000,
-            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 2))) % 1000,
-            uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, 3))) % 1000
-        ];
-        bytes32 cardNumberHash = keccak256(abi.encodePacked(msg.sender, block.timestamp));
-        users[msg.sender] = User(firstName, lastName, cardNumberHash, cvc, 0);
-        cardNumberToUser[cardNumberHash] = msg.sender;
+    mapping(address => Card) public userCards;
+    string[] public nftDesigns = [
+        "Goat1", "Goat2", "Duck1", "Duck2", "Sheep1", "Sheep2", "Lightning1", "Lightning2",
+        "DollarSign1", "DollarSign2", "PlainBlack1", "PlainBlack2", "PlainWhite1", "PlainWhite2",
+        "Goat3", "Goat4", "Duck3", "Duck4", "Sheep3", "Sheep4"
+    ];
+
+    constructor(address initialOwner) Ownable(initialOwner) {}
+
+    function generateCard(address user, uint256 designIndex) external {
+        require(designIndex < nftDesigns.length, "Invalid design index");
+        string memory cardNumber = generateCardNumber(user);
+        string memory expirationDate = "12/28"; // Mock
+        string memory cvc = generateCVC(user);
+        userCards[user] = Card(cardNumber, expirationDate, cvc, nftDesigns[designIndex]);
     }
 
-    modifier onlyVerifiedToken(uint256 chainId, string memory tokenSymbol) {
-        (, , , address tokenAddress, ,) = interoperability.verifiedTokenAssets(chainId, tokenSymbol);
-        require(tokenAddress != address(0), "Asset not available");
-        _;
+    function generateCardNumber(address user) internal view returns (string memory) {
+        bytes32 hash = keccak256(abi.encodePacked(user, block.timestamp));
+        return string(abi.encodePacked("4", uint256(hash) % 10**15)); // ISO 20022 compliant (mock)
     }
 
-    function buyWithCard(address merchant, uint256 amount, uint256 chainId, string memory tokenSymbol) 
-        external onlyVerifiedToken(chainId, tokenSymbol) {
-        require(users[msg.sender].balance >= amount, "Insufficient balance");
-        require(amount <= DAILY_SPENDING_LIMIT, "Exceeds daily limit");
-        users[msg.sender].balance -= amount;
-        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, merchant);
-    }
-
-    function withdrawToCard(uint256 amount, uint256 chainId, string memory tokenSymbol) 
-        external onlyVerifiedToken(chainId, tokenSymbol) {
-        users[msg.sender].balance += amount;
-        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, address(this));
-    }
-
-    function withdrawFromCard(address recipient, uint256 amount, uint256 chainId, string memory tokenSymbol) 
-        external onlyVerifiedToken(chainId, tokenSymbol) {
-        require(users[msg.sender].balance >= amount, "Insufficient balance");
-        users[msg.sender].balance -= amount;
-        interoperability.crossChainTransfer(chainId, chainId, tokenSymbol, amount, recipient);
+    function generateCVC(address user) internal view returns (string memory) {
+        bytes32 hash = keccak256(abi.encodePacked(user, block.timestamp));
+        return string(abi.encodePacked(uint256(hash) % 1000)); // 3-digit CVC
     }
 }
