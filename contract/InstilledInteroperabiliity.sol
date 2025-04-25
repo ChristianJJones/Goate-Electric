@@ -10,45 +10,116 @@ contract QuantumInstilledInteroperability {
     mapping(uint256 => mapping(string => address)) public tokenMap;
     mapping(string => string) public tradingAPIs;
     mapping(string => string) public sportsDataAPIs;
-    mapping(address => mapping(string => uint256)) public userBalances; // User => Asset => Balance
-
+    mapping(string => string) public streamingAPIs;
+    mapping(address => mapping(string => uint256)) public activeBalances;
+    mapping(address => mapping(string => uint256)) public reserveBalances;
+    mapping(address => mapping(string => uint256)) public stakingBalances;
     string[] public supportedAssets = [
-        "USDC", "ZPE", "ZPW", "ZPP", "GySt", "GOATE", "ZGI", "SDM", "ZHV",
+        "USDC", "ZPE", "ZPW", "ZPP", "GySt", "GOATE", "ZHV", "SD", "ZGI", "GP", "zS",
         "AQUA", "XLM", "yUSD", "yXLM", "yBTC", "WFM", "TTWO", "BBY", "SFM", "DOLE",
-        "WMT", "AAPL", "T", "VZ"
+        "WMT", "AAPL", "T", "VZ", "VVS", "CRO", "PYUSD"
     ];
+    address public goatePigReserve = 0xGoatePigReserve; // #!GoatePig
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
-        _;
+    struct PriceData {
+        uint256 contractPrice;
+        uint256 coinMarketCapPrice;
+        uint256 coinGeckoPrice;
+        uint256 aggregatedPrice;
     }
+    mapping(string => PriceData) public assetPrices;
 
     constructor(address _goateToken) {
         owner = msg.sender;
         goateToken = TheGoateToken(_goateToken);
-        // Initialize token mappings and APIs as before
+        initializeAPIs();
     }
 
-    function payWithAsset(
+    function initializeAPIs() internal {
+        // Trading APIs
+        tradingAPIs["uniswap"] = "https://api.uniswap.org/v1";
+        tradingAPIs["pancakeswap"] = "https://api.pancakeswap.info/api/v2";
+        tradingAPIs["cryptocom"] = "https://api.crypto.com/v2";
+        tradingAPIs["1inch"] = "https://api.1inch.exchange/v3.0";
+        tradingAPIs["okx"] = "https://www.okx.com/api/v5";
+        tradingAPIs["dydx"] = "https://api.dydx.exchange/v3";
+        tradingAPIs["sushiswap"] = "https://api.sushiswap.fi/v1";
+        tradingAPIs["curve"] = "https://api.curve.fi/v1";
+        tradingAPIs["balancer"] = "https://api.balancer.fi/v1";
+        tradingAPIs["mastercard"] = "https://api.mastercard.com/v1";
+        tradingAPIs["visa"] = "https://api.visa.com/v1";
+        tradingAPIs["zelle"] = "https://api.zellepay.com/v1";
+        tradingAPIs["stripe"] = "https://api.stripe.com/v1";
+        tradingAPIs["plaid"] = "https://api.plaid.com/v1";
+
+        // Streaming APIs
+        streamingAPIs["luxplayer"] = "https://api.luxplayer.com/v1";
+        streamingAPIs["netflix"] = "https://api.netflix.com/v1";
+        streamingAPIs["flixtor"] = "https://api.flixtor.to/v1";
+        streamingAPIs["disneyplus"] = "https://api.disneyplus.com/v1";
+        streamingAPIs["peacock"] = "https://api.peacock.com/v1";
+        streamingAPIs["hulu"] = "https://api.hulu.com/v1";
+    }
+
+    function updatePrice(string memory asset) external {
+        require(isSupportedAsset(asset), "Unsupported asset");
+        // Fetch prices (mocked for implementation)
+        uint256 contractPrice = fetchContractPrice(asset);
+        uint256 cmcPrice = fetchCoinMarketCapPrice(asset);
+        uint256 cgPrice = fetchCoinGeckoPrice(asset);
+        uint256 aggregated = (contractPrice + cmcPrice + cgPrice) / 3;
+        assetPrices[asset] = PriceData(contractPrice, cmcPrice, cgPrice, aggregated);
+    }
+
+    function fetchContractPrice(string memory asset) internal pure returns (uint256) {
+        // Placeholder: Fetch from contract (e.g., market cap / circulating supply)
+        return 100 * 10**6; // $100 (mock)
+    }
+
+    function fetchCoinMarketCapPrice(string memory asset) internal pure returns (uint256) {
+        // Placeholder: Fetch from CoinMarketCap API
+        return 105 * 10**6; // $105 (mock)
+    }
+
+    function fetchCoinGeckoPrice(string memory asset) internal pure returns (uint256) {
+        // Placeholder: Fetch from CoinGecko API
+        return 110 * 10**6; // $110 (mock)
+    }
+
+    function quantumSwap(
         uint256 fromChain,
         uint256 toChain,
-        string memory tokenSymbol,
+        string memory fromAsset,
+        string memory toAsset,
         uint256 amount,
-        address recipient,
-        string memory targetAsset
+        address sender,
+        address recipient
     ) external {
-        require(isSupportedAsset(tokenSymbol), "Unsupported asset");
-        require(userBalances[msg.sender][tokenSymbol] >= amount, "Insufficient balance");
+        require(isSupportedAsset(fromAsset) && isSupportedAsset(toAsset), "Unsupported asset");
+        require(activeBalances[sender][fromAsset] >= amount, "Insufficient balance");
+        require(amount >= 0.01 * 10**6, "Minimum transaction amount is $0.01");
 
-        userBalances[msg.sender][tokenSymbol] -= amount;
-        if (keccak256(bytes(tokenSymbol)) != keccak256(bytes(targetAsset))) {
-            // Swap assets via USDMediator
-            // (Placeholder for swap logic, integrated with USDMediator)
+        activeBalances[sender][fromAsset] -= amount;
+        uint256 convertedAmount = convertAmount(fromAsset, toAsset, amount);
+        activeBalances[recipient][toAsset] += convertedAmount;
+
+        emit QuantumTransaction(sender, recipient, fromAsset, toAsset, amount, convertedAmount);
+    }
+
+    function convertAmount(string memory fromAsset, string memory toAsset, uint256 amount) internal view returns (uint256) {
+        uint256 fromPrice = assetPrices[fromAsset].aggregatedPrice;
+        uint256 toPrice = assetPrices[toAsset].aggregatedPrice;
+        return (amount * fromPrice) / toPrice;
+    }
+
+    function switchToReserves() external {
+        require(msg.sender == owner || msg.sender == address(this), "Unauthorized");
+        for (uint256 i = 0; i < supportedAssets.length; i++) {
+            string memory asset = supportedAssets[i];
+            uint256 amount = activeBalances[address(this)][asset] / 4; // 25%
+            activeBalances[address(this)][asset] -= amount;
+            reserveBalances[address(this)][asset] += amount;
         }
-        userBalances[recipient][targetAsset] += amount;
-
-        IERC20(tokenMap[fromChain][targetAsset]).transferFrom(msg.sender, recipient, amount);
-        emit CrossChainTransfer(fromChain, toChain, targetAsset, amount, recipient);
     }
 
     function isSupportedAsset(string memory asset) internal view returns (bool) {
@@ -60,14 +131,5 @@ contract QuantumInstilledInteroperability {
         return false;
     }
 
-    function updateBalance(address user, string memory asset, uint256 amount, bool add) external onlyOwner {
-        if (add) {
-            userBalances[user][asset] += amount;
-        } else {
-            require(userBalances[user][asset] >= amount, "Insufficient balance");
-            userBalances[user][asset] -= amount;
-        }
-    }
-
-    event CrossChainTransfer(uint256 fromChain, uint256 toChain, string tokenSymbol, uint256 amount, address recipient);
+    event QuantumTransaction(address indexed sender, address indexed recipient, string fromAsset, string toAsset, uint256 amount, uint256 convertedAmount);
 }
