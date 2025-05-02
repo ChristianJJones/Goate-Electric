@@ -5,19 +5,26 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Zeropoint is ERC20, Ownable {
-    constructor(address initialOwner) ERC20("Zeropoint", "ZPE") Ownable(initialOwner) {
-        _mint(initialOwner, 1000000 * 10**3); // Initial supply: 1M $ZPE with 3 decimals
+    constructor() ERC20("Zeropoint", "ZPE") {
+        _mint(msg.sender, 1000000 * 10 ** decimals());
     }
 
-    function decimals() public view virtual override returns (uint8) {
-        return 3;
-    }
-
-    function mint(address to, uint256 amount) external onlyOwner {
+    function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);
     }
 
-    function burn(uint256 amount) external {
-        _burn(msg.sender, amount);
+    function burn(address from, uint256 amount) public onlyOwner {
+        _burn(from, amount);
+    }
+
+    // Provide energy and reward with $ZPE
+    function provideEnergy(address user, uint256 amount) external onlyOwner {
+        _mint(user, amount);
+    }
+
+    // Consume energy by burning $ZPE
+    function consumeEnergy(address user, uint256 amount) external {
+        require(balanceOf(user) >= amount, "Insufficient $ZPE");
+        _burn(user, amount);
     }
 }
