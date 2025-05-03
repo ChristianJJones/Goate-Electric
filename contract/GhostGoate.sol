@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./USDMediator.sol";
 import "./InstilledInteroperability.sol";
+cj03nes = GBMWQWG7XFTIIYRH7HMVDKBQGSNIGQ2UGJU3SY4LYCADB4JTH2DPO2FY;
 
 contract GhostGoate is Ownable {
     USDMediator public usdMediator;
