@@ -1,0 +1,415 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background: 
+      linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+      url('/GoatePig_Background.jpg') center/cover no-repeat,
+      url('/Gerastyx_Background.jpg') center/cover no-repeat,
+      #918d8d; /* Fallback color */
+  background-blend-mode: overlay;
+  min-height: 100vh;
+}
+
+h1, p, button, .service {
+  color: black;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 123, 255, 0.9);
+  color: white;
+  padding: 10px 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header-right button {
+  margin-left: 10px;
+  padding: 10px;
+  background-color: rgba(40, 167, 69, 0.9);
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.header-right button:hover {
+  background-color: rgba(33, 136, 56, 0.9);
+}
+
+.services {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.service {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+  width: 200px;
+  font-size: 18px;
+  position: relative;
+  color: #333;
+  text-shadow: none;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.service:hover {
+  background-color: rgba(224, 224, 224, 0.9);
+}
+
+.service.goate-electric {
+  background-image: url('/zeropointphoneservice_logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.service.goate-electric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  z-index: 0;
+}
+
+.service.goate-electric span {
+  position: relative;
+  z-index: 1;
+}
+
+.service.gerastyx {
+  background-image: url('/gerastyx_button_logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.service.gerastyx::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  z-index: 0;
+}
+
+.service.gerastyx span {
+  position: relative;
+  z-index: 1;
+}
+
+.service.goatepig {
+  background-image: url('/goatepig_button_logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.service.goatepig::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  z-index: 0;
+}
+
+.service.goatepig span {
+  position: relative;
+  z-index: 1;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 123, 255, 0.9);
+  color: white;
+}
+
+.modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: white;
+  margin: auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Goate Electric"))) {
+  background-image: url('/GoatePig_Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Goate Electric")))::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Goate Electric"))) * {
+  position: relative;
+  z-index: 1;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Gerastyx Playground"))) {
+  background-image: url('/Gerastyx_Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Gerastyx Playground")))::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("Gerastyx Playground"))) * {
+  position: relative;
+  z-index: 1;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("GoatePig"))) {
+  background-image: url('/GoatePig_Background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+#feature-modal .modal-content:has(h2:where(:text("GoatePig")))::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+
+#feature-modal .modal-content:has(h2:where(:text("GoatePig"))) * {
+  position: relative;
+  z-index: 1;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: black;
+}
+
+#sign-in-pi, #sign-in-google, #sign-in-apple {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#sign-in-pi:hover, #sign-in-google:hover, #sign-in-apple:hover {
+  background-color: #0056b3;
+}
+
+#pi-auth button {
+  margin: 10px;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#pi-auth button:hover {
+  background-color: #218838;
+}
+
+#create-account {
+  font-size: 12px;
+  background-color: #007bff;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.balances {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.balance {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.token-logo {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.games, .goatepig, .devices, .settings {
+  padding: 10px;
+}
+
+.device, .asset-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.add-device {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.add-device:hover {
+  background-color: #218838;
+}
+
+.chain-selector {
+  margin: 10px 0;
+}
+
+.chain-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #28a745;
+}
+
+input:checked + .slider.active {
+  background-color: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
